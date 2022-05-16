@@ -1,4 +1,4 @@
-# <This script needs to be ran from within <Project-name> root directory>
+# <This script needs to be ran from within s2wav root directory>
 
 # Install core and extra requirements
 echo -ne 'Building Dependencies... \r'

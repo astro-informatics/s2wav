@@ -1,7 +1,7 @@
 **************************
 Namespaces
 **************************
-Automatically generated documentation for **<Project-name>** APIs. All functionality is accessible through a pip installation of the **<Project-name>** package.
+Automatically generated documentation for **s2wav** APIs. All functionality is accessible through a pip installation of the **s2wav** package.
 
 .. tabs:: 
 	

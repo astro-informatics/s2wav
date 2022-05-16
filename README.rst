@@ -1,9 +1,9 @@
-.. image:: https://img.shields.io/badge/GitHub-PyTemplate-brightgreen.svg?style=flat
-    :target: https://github.com/astro-informatics/code_template
-.. image:: https://github.com/astro-informatics/code_template/actions/workflows/python.yml/badge.svg?branch=main
-    :target: https://github.com/astro-informatics/code_template/actions/workflows/python.yml
+.. image:: https://img.shields.io/badge/GitHub-s2wav-brightgreen.svg?style=flat
+    :target: https://github.com/astro-informatics/s2wav
+.. image:: https://github.com/astro-informatics/s2wav/actions/workflows/python.yml/badge.svg?branch=main
+    :target: https://github.com/astro-informatics/s2wav/actions/workflows/python.yml
 .. image:: https://readthedocs.org/projects/ansicolortags/badge/?version=latest
-    :target: https://astro-informatics.github.io/code_template
+    :target: https://astro-informatics.github.io/s2wav
 .. image:: https://codecov.io/gh/astro-informatics/code_template/branch/main/graph/badge.svg?token=8QMXOZK746
     :target: https://codecov.io/gh/astro-informatics/code_template
 .. image:: https://img.shields.io/badge/License-GPL-blue.svg
@@ -11,7 +11,7 @@
 .. image:: http://img.shields.io/badge/arXiv-xxxx.xxxxx-orange.svg?style=flat
     :target: https://arxiv.org/abs/xxxx.xxxxx
 
-|logo| <project-name>
+|logo| s2wav
 =================================================================================================================
 
 .. |logo| raw:: html
@@ -70,11 +70,11 @@ From the root directory. Keep in mind that installing from the mirror site won't
 
 Attribution
 ===========
-A BibTeX entry for <project-name> is:
+A BibTeX entry for s2wav is:
 
 .. code-block:: 
 
-     @article{<project-name>, 
+     @article{s2wav, 
         author = {Author~List},
          title = {"A totally amazing name"},
        journal = {ArXiv},
@@ -85,12 +85,12 @@ A BibTeX entry for <project-name> is:
 License
 =======
 
-``<project-name>`` is released under the GPL-3 license (see `LICENSE.txt <https://github.com/astro-informatics/code_template/blob/main/LICENSE.txt>`_), subject to 
-the non-commercial use condition (see `LICENSE_EXT.txt <https://github.com/astro-informatics/code_template/blob/main/LICENSE_EXT.txt>`_)
+s2wav is released under the GPL-3 license (see `LICENSE.txt <https://github.com/astro-informatics/s2wav/blob/main/LICENSE.txt>`_), subject to 
+the non-commercial use condition (see `LICENSE_EXT.txt <https://github.com/astro-informatics/s2wav/blob/main/LICENSE_EXT.txt>`_)
 
 .. code-block::
 
-     LatentWaves
+     s2wav
      Copyright (C) 2022 Author names & contributors
 
      This program is released under the GPL-3 license (see LICENSE.txt), 

@@ -1,4 +1,4 @@
-import project_name.logs as lg
+import s2wav.logs as lg
 import pytest
 
 
