@@ -1,11 +1,11 @@
 |GitHub| |Build Status| |Docs| |CodeCov| |GPL license| |ArXiv|
 
-.. |GitHub| image:: https://img.shields.io/badge/GitHub-PyTemplate-brightgreen.svg?style=flat
-    :target: https://github.com/astro-informatics/code_template
-.. |Build Status| image:: https://github.com/astro-informatics/code_template/actions/workflows/python.yml/badge.svg
-    :target: https://github.com/astro-informatics/code_template/actions/workflows/python.yml
+.. |GitHub| image:: https://img.shields.io/badge/GitHub-s2wav-brightgreen.svg?style=flat
+    :target: https://github.com/astro-informatics/s2wav
+.. |Build Status| image:: https://github.com/astro-informatics/s2wav/actions/workflows/python.yml/badge.svg?branch=main
+    :target: https://github.com/astro-informatics/s2wav/actions/workflows/python.yml
 .. |Docs| image:: https://readthedocs.org/projects/ansicolortags/badge/?version=latest
-    :target: https://astro-informatics.github.io/code_template
+    :target: https://astro-informatics.github.io/s2wav
 .. |CodeCov| image:: https://codecov.io/gh/astro-informatics/code_template/branch/main/graph/badge.svg?token=8QMXOZK746
     :target: https://codecov.io/gh/astro-informatics/code_template
 .. |GPL License| image:: https://img.shields.io/badge/License-GPL-blue.svg
@@ -13,10 +13,11 @@
 .. |ArXiv| image:: http://img.shields.io/badge/arXiv-xxxx.xxxxx-orange.svg?style=flat
     :target: https://arxiv.org/abs/xxxx.xxxxx
 
-<project-name>
+
+s2wav
 =================================================================================================================
 
-Add some basic discussion about ``<project-name>`` here.
+Add some basic discussion about ``s2wav`` here.
 
 Installation
 ============
@@ -34,11 +35,11 @@ Author names & Contributors
 
 Attribution
 ===========
-A BibTeX entry for <project-name> is:
+A BibTeX entry for s2wav is:
 
 .. code-block:: 
 
-     @article{<project-name>, 
+     @article{s2wav, 
         author = {Author~List},
          title = {"A totally amazing name"},
        journal = {ArXiv},
@@ -49,12 +50,12 @@ A BibTeX entry for <project-name> is:
 License
 =======
 
-``<project-name>`` is released under the GPL-3 license (see `LICENSE.txt <https://github.com/astro-informatics/code_template/blob/main/LICENSE.txt>`_), subject to 
-the non-commercial use condition (see `LICENSE_EXT.txt <https://github.com/astro-informatics/code_template/blob/main/LICENSE_EXT.txt>`_)
+``s2wav`` is released under the GPL-3 license (see `LICENSE.txt <https://github.com/astro-informatics/s2wav/blob/main/LICENSE.txt>`_), subject to 
+the non-commercial use condition (see `LICENSE_EXT.txt <https://github.com/astro-informatics/s2wav/blob/main/LICENSE_EXT.txt>`_)
 
 .. code-block::
 
-     LatentWaves
+     s2wav
      Copyright (C) 2022 Author names & contributors
 
      This program is released under the GPL-3 license (see LICENSE.txt), 
