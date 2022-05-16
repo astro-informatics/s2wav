@@ -1,7 +1,7 @@
 .. image:: https://img.shields.io/badge/GitHub-s2wav-brightgreen.svg?style=flat
     :target: https://github.com/astro-informatics/s2wav
-.. image:: https://github.com/astro-informatics/s2wav/actions/workflows/python.yml/badge.svg?branch=main
-    :target: https://github.com/astro-informatics/s2wav/actions/workflows/python.yml
+.. image:: https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml/badge.svg?branch=main
+    :target: https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml
 .. image:: https://readthedocs.org/projects/ansicolortags/badge/?version=latest
     :target: https://astro-informatics.github.io/s2wav
 .. image:: https://codecov.io/gh/astro-informatics/code_template/branch/main/graph/badge.svg?token=8QMXOZK746
