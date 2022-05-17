@@ -11,7 +11,7 @@
 .. image:: http://img.shields.io/badge/arXiv-xxxx.xxxxx-orange.svg?style=flat
     :target: https://arxiv.org/abs/xxxx.xxxxx
 
-|logo| s2wav
+|logo| s2wav: Differentiable and accelerated wavelet transforms on the sphere with JAX
 =================================================================================================================
 
 .. |logo| raw:: html
