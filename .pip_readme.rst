@@ -47,16 +47,14 @@ A BibTeX entry for s2wav is:
 License
 =======
 
-``s2wav`` is released under the GPL-3 license (see `LICENSE.txt <https://github.com/astro-informatics/s2wav/blob/main/LICENSE.txt>`_), subject to 
-the non-commercial use condition (see `LICENSE_EXT.txt <https://github.com/astro-informatics/s2wav/blob/main/LICENSE_EXT.txt>`_)
+s2wav is released under the GPL-3 license (see `LICENSE.txt <https://github.com/astro-informatics/s2wav/blob/main/LICENSE.txt>`_),
 
 .. code-block::
 
      s2wav
      Copyright (C) 2022 Author names & contributors
 
-     This program is released under the GPL-3 license (see LICENSE.txt), 
-     subject to a non-commercial use condition (see LICENSE_EXT.txt).
+     This program is released under the GPL-3 license (see LICENSE.txt).
 
      This program is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
