@@ -1,48 +1,51 @@
-"""Compute basic math tiling. """
+"""Script defining basic mathematical functions needed to carry out the tiling of the harmonic space. 
+"""
 import numpy as np
 
 
-def f_s2dw(k, B):
-    """Tiling function for S2DW wavelets"""
-    t = (k - (1 / B)) * (2.0 * B / (B - 1)) - 1
+def tiling_integrand(t: float, lam: float) -> float:
+    """Tiling integrand for wavelets. Intermediate step used to compute the wavelet 
+        and scaling function generating functions.
 
-    return np.exp(-2.0 / (1.0 - t**2.0)) / k
+    Args:
+        t (float): Real argument over which we integrate.
+        lam (float): Scaling factor, parameter of wavelet- and scaling function- generating
+        functions.
 
+    Returns:
+        Value of tiling integrand for given t and scaling factor.
+    """
+    s_arg = (t - (1 / lam)) * (2.0 * lam / (lam - 1)) - 1
 
+    integrand = np.exp(-2.0 / (1.0 - s_arg**2.0)) / t
 
-def f_needlet(t):
-    """Tiling function for needlets"""
-
-    return np.exp(-1.0 / (1.0 - t**2.0))
-
-
-def b3_spline(x):
-    """Computes cubis B-spline function"""
-    if (np.abs(x) < 10E-16):
-        return 0
-
-    A1 = np.abs((x - 2) * (x - 2) * (x - 2))
-    A2 = np.abs((x - 1) * (x - 1) * (x - 1))
-    A3 = np.abs(x * x * x)
-    A4 = np.abs((x + 1) * (x + 1) * (x + 1))
-    A5 = np.abs((x + 2) * (x + 2) * (x + 2))
-    Val = 1.0 / 12.0 * (A1 - 4.0 * A2 + 6.0 * A3 - 4.0 * A4 + A5)
-
-    return Val
+    return integrand
 
 
-def s2let_math_spline_scalingfct(x, y):
-    """Computes spline scaling function"""
-
-    res = 1.5 * b3_spline(2.0 * x / y)
-
-    return res
+def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
+    """Computes integral used to calculate smoothly decreasing function k_lambda.
+    Intermediate step used to compute the wavelet and scaling function generating functions.
 
 
-def s2let_math_kappa0_quadtrap_s2dw(a, b, n, B):
-    """Computes smooth "Schwartz" functions for scale-discretised wavelets"""
+    Uses the trapezium method to integrate tiling_integrand() in the limits from a to b
+    with scaling parameter lam.
     
-    assert isinstance(n, int) == True, "n must be an integer"
+    Args:
+        a (float): Lower limit of the numerical integration.
+        b (float): Upper limit of the numerical integration.
+        n (int): Number of steps to be performed during integration.
+        lam (float): Scaling factor used to compute tiling integrand.
+
+    Returns:
+        Integral of the tiling integrand from a to b.
+
+    Raises:
+        TypeError: If n is not of type integer
+        ValueError: If integrand is undefined
+    """
+    
+    if not isinstance(n, int) == True:
+        raise TypeError("n must be an integer")
 
     sum = 0.0
     h = (b - a) / n
@@ -52,32 +55,12 @@ def s2let_math_kappa0_quadtrap_s2dw(a, b, n, B):
     
     else:
         for i in range(n):
-            f1 = f_s2dw(a + i * h, B)
-            f2 = f_s2dw(a + (i + 1) * h, B)
+            f1 = tiling_integrand(a + i * h, lam)
+            f2 = tiling_integrand(a + (i + 1) * h, lam)
 
             if (not np.isnan(f1) and not np.isinf(f1) and not np.isnan(f2) and not np.isinf(f2)):
                 sum += ((f1 + f2) * h) / 2
-            
-    
-    return sum
-
-
-def s2let_math_kappa0_quadtrap_needlet(a, b, n):
-    """Computes smooth "Schwartz" functions for needlets"""
-
-    assert isinstance(n, int) == True, "n must be an integer"
-
-    sum = 0
-    h = (b - a) / n
-
-    if (a == b):
-        return 0
-    else:
-        for i in range(n):
-            f1 = f_needlet(a + i * h)
-            f2 = f_needlet(a + (i + 1) * h)
-
-            if (not np.isnan(f1) and not np.isinf(f1) and not np.isnan(f2) and not np.isinf(f2)):
-                sum += ((f1 + f2) * h) / 2
+            else:
+                raise ValueError("Inf or NaN encountered in integrand value")
     
     return sum
