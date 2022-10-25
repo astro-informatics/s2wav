@@ -1,6 +1,7 @@
 """Script defining basic mathematical functions needed to carry out the tiling of the harmonic space. 
 """
 import numpy as np
+import pytest
 
 
 def tiling_integrand(t: float, lam: float) -> float:
@@ -41,7 +42,6 @@ def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
 
     Raises:
         TypeError: If n is not of type integer
-        ValueError: If integrand is undefined
     """
     
     if not isinstance(n, int) == True:
@@ -60,7 +60,5 @@ def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
 
             if (not np.isnan(f1) and not np.isinf(f1) and not np.isnan(f2) and not np.isinf(f2)):
                 sum += ((f1 + f2) * h) / 2
-            else:
-                raise ValueError("Inf or NaN encountered in integrand value")
     
     return sum
