@@ -10,9 +10,8 @@ def tiling_integrand(t: float, lam: float) -> float:
 
     Args:
         t (float): Real argument over which we integrate.
-        lam (float): Scaling factor, parameter of wavelet- and scaling function- generating
-        functions.
-
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        
     Returns:
         Value of tiling integrand for given t and scaling factor.
     """
@@ -35,7 +34,7 @@ def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
         a (float): Lower limit of the numerical integration.
         b (float): Upper limit of the numerical integration.
         n (int): Number of steps to be performed during integration.
-        lam (float): Scaling factor used to compute tiling integrand.
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
 
     Returns:
         Integral of the tiling integrand from a to b.
