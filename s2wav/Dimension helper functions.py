@@ -16,7 +16,7 @@ def ssht_sampling_mw_ss_nphi(L: int) -> int:
         L (int): Upper harmonic band-limit.
 
     Returns:
-        nphi: Number of phi samples.   
+        nphi (int): Number of phi samples.   
     '''
     return 2*L
 
@@ -29,7 +29,7 @@ def ssht_sampling_mw_nphi(L: int) -> int:
         L (int): Upper harmonic band-limit.
 
     Returns:
-        nphi: Number of phi samples.
+        nphi (int): Number of phi samples.
     '''
     return 2*L-1
 
@@ -44,7 +44,7 @@ def ssht_sampling_mw_ss_ntheta(L: int) -> int:
         L (int): Harmonic band-limit.
     
     Returns:
-        ntheta: Number of theta samples.   
+        ntheta (int): Number of theta samples.   
     '''
     return L+1
 
@@ -59,7 +59,7 @@ def ssht_sampling_mw_ntheta(L: int) -> int:
         L (int): Harmonic band-limit.
     
     Returns:
-        ntheta: Number of theta samples.
+        ntheta (int): Number of theta samples.
     '''
     return L
 
@@ -79,7 +79,7 @@ def s2let_bandlimit(s2let_kernel: str, lam: float, j: int) -> int:
         j (int): Wavelet scale.
     
     Returns:
-        Band-limit.
+        Band-limit (int).
     '''
     if s2let_kernel == "S2DW":
         return math.ceil(lam ** (j+1))
@@ -98,7 +98,7 @@ def s2let_L0(s2let_kernel: str, lam: float, j: int) -> int:
         j (int): Wavelet scale.
     
     Returns:
-        el_min.
+        el_min (int).
     '''
     if s2let_kernel == "S2DW":
         return math.ceil(lam ** (j-1))
@@ -116,7 +116,7 @@ def s2let_j_max(L: int, lam: float) -> int:
         lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
     
     Returns:
-        j_max
+        j_max (int).
     '''
     return math.ceil(log(L) / log(lam))
 
@@ -134,7 +134,7 @@ def s2let_n_phi(sampling_scheme: str, L: int) -> int:
         L (int): Upper harmonic band-limit.
 
     Returns:
-        nphi: Number of phi samples.
+        nphi (int): Number of phi samples.
     '''
     if sampling_scheme == "S2LET_SAMPLING_MW_SS":
         return ssht_sampling_mw_ss_nphi(L)
@@ -150,7 +150,7 @@ def s2let_n_theta(sampling_scheme: str, L: int) -> int:
         L (int): Upper harmonic band-limit.
 
     Returns: 
-        ntheta: Number of theta samples.
+        ntheta (int): Number of theta samples.
     '''
     if sampling_scheme == "S2LET_SAMPLING_MW_SS":
         return ssht_sampling_mw_ss_ntheta(L)
@@ -166,7 +166,7 @@ def s2let_n_px(sampling_scheme: str, L: int) -> int:
         L (int): Upper harmonic band-limit.
     
     Returns:
-        nphi * ntheta.
+        (int): nphi * ntheta.
     '''
     return s2let_n_phi(sampling_scheme, L) * s2let_n_theta(sampling_scheme, L)
 
@@ -178,7 +178,7 @@ def s2let_n_lm(L: int) -> int:
         L (int): Upper harmonic band-limit.
 
     Returns:
-        Square of L.
+        Square of L (int).
     '''
     return L*L
 
@@ -194,7 +194,7 @@ def s2let_n_lm_scal(upsample: bool, L: int, s2let_kernel: str, J_min: int, lam: 
         lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
     
     Returns:
-        The square of the band-limit.
+        The square of the band-limit (int).
     '''
     if bandlimit == upsample:
         bandlimit = L
@@ -219,7 +219,7 @@ def s2let_n_lmn_wav(lam: float, L: int, J_min: int, upsample: bool, s2let_kernel
         reality (int): A non-zero value indicates the signal, f, is real.
  
     Returns:
-        flmn_size.
+        flmn_size (int).
     '''
 
     J = s2let_j_max(lam, L)
@@ -259,7 +259,7 @@ def s2let_n_gamma(N: int, steerable: int) -> int:
         steerable (int): A non-zero value indicates that the signal is steerable.
 
     Returns:
-        ngamma: Number of gamma samples.
+        ngamma (int): Number of gamma samples.
     '''
     if steerable != 0:
         return N
@@ -279,7 +279,7 @@ def s2let_n_scal(upsample:bool, L: int, s2let_kernel: str, J_min: int, lam: floa
         sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
     
     Returns:
-        nphi * ntheta.
+       (int): nphi * ntheta.
     '''
     if bandlimit == upsample:
         bandlimit = L
@@ -304,7 +304,7 @@ def s2let_n_wav(lam: float, L: int, J_min: int, upsample: bool, s2let_kernel: st
         N (int): Upper orientational band-limit. Only flmn with n < N will be stored.
 
     Returns:
-        f_size.
+        f_size (int).
     '''
     J = s2let_j_max(lam, L)
     bandlimit = L
@@ -349,7 +349,7 @@ def s2let_n_wav_j(upsample: bool, L: int, s2let_kernel: str, j: int, lam: float,
         N (int): Upper orientational band-limit. Only flmn with n < N will be stored.
 
     Returns:
-        f_size.
+        f_size (int).
     '''
     if not upsample:
         L = min(s2let_bandlimit(s2let_kernel, j, lam, L ), L)
@@ -364,7 +364,7 @@ def s2let_n_wav_j(upsample: bool, L: int, s2let_kernel: str, j: int, lam: float,
     if steerable != 0:
         so3_sampling_ngamma = N
     else:
-        so3_sampling_ngamma = 2 * N - 1
+        so3_sampling_ngamma = 2 * N - 1 
 
     so3_sampling_f_size = so3_sampling_nalpha * so3_sampling_nbeta * so3_sampling_ngamma
 
