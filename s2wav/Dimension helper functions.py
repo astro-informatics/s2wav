@@ -13,7 +13,7 @@ def ssht_sampling_mw_ss_nphi(L: int) -> int:
     '''Computes the number of phi samples for McEwen and Wiaux symmetric sampling.
     
     Args:
-        L: Upper harmonic band-limit.
+        L (int): Upper harmonic band-limit.
 
     Returns:
         nphi: Number of phi samples.   
@@ -26,7 +26,7 @@ def ssht_sampling_mw_nphi(L: int) -> int:
     '''Computes the number of phi samples for McEwen and Wiaux sampling.
     
     Args:
-        L: Upper harmonic band-limit.
+        L (int): Upper harmonic band-limit.
 
     Returns:
         nphi: Number of phi samples.
@@ -41,7 +41,7 @@ def ssht_sampling_mw_ss_ntheta(L: int) -> int:
     Note: Computes the number of samples in [0, pi], *not* over extended domain.
 
     Args:
-        L: Harmonic band-limit.
+        L (int): Harmonic band-limit.
     
     Returns:
         ntheta: Number of theta samples.   
@@ -56,7 +56,7 @@ def ssht_sampling_mw_ntheta(L: int) -> int:
     Note: Computes the number of samples in (0, pi], *not* over extended domain.
 
     Args:
-        L: Harmonic band-limit.
+        L (int): Harmonic band-limit.
     
     Returns:
         ntheta: Number of theta samples.
@@ -74,9 +74,9 @@ def s2let_bandlimit(s2let_kernel: str, lam: float, j: int) -> int:
     '''Computes the band-limit of a specific wavelet scale.
 
     Args:
-        s2let_kernel: The wavelet type.
-        lam: Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-        j: Wavelet scale.
+        s2let_kernel (str): The wavelet type.
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        j (int): Wavelet scale.
     
     Returns:
         Band-limit.
@@ -93,9 +93,9 @@ def s2let_L0(s2let_kernel: str, lam: float, j: int) -> int:
     '''Computes the minimum harmonic index supported by the given wavelet scale.
 
     Args:
-        s2let_kernel: The wavelet type.
-        lam: Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-        j: Wavelet scale.
+        s2let_kernel (str): The wavelet type.
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        j (int): Wavelet scale.
     
     Returns:
         el_min.
@@ -112,8 +112,8 @@ def s2let_j_max(L: int, lam: float) -> int:
     '''Computes needlet maximum level required to ensure exact reconstruction.
 
     Args:
-        L: Upper harmonic band-limit.
-        lam: Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        L (int): Upper harmonic band-limit.
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
     
     Returns:
         j_max
@@ -130,8 +130,8 @@ def s2let_n_phi(sampling_scheme: str, L: int) -> int:
     '''Returns the number of phi samples.
 
     Args:
-        sampling_scheme: Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
-        L: Upper harmonic band-limit.
+        sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
+        L (int): Upper harmonic band-limit.
 
     Returns:
         nphi: Number of phi samples.
@@ -146,8 +146,8 @@ def s2let_n_theta(sampling_scheme: str, L: int) -> int:
     '''Returns the number of theta samples.
 
     Args:
-        sampling_scheme: Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
-        L: Upper harmonic band-limit.
+        sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
+        L (int): Upper harmonic band-limit.
 
     Returns: 
         ntheta: Number of theta samples.
@@ -162,8 +162,8 @@ def s2let_n_px(sampling_scheme: str, L: int) -> int:
     '''Returns the number of phi samples multiplied by the number of theta samples.
     
     Args:
-        sampling_scheme: Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
-        L: Upper harmonic band-limit.
+        sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
+        L (int): Upper harmonic band-limit.
     
     Returns:
         nphi * ntheta.
@@ -175,7 +175,7 @@ def s2let_n_lm(L: int) -> int:
     '''Returns the square of the harmonic band-limit.
     
     Args:
-        L: Upper harmonic band-limit.
+        L (int): Upper harmonic band-limit.
 
     Returns:
         Square of L.
@@ -187,11 +187,11 @@ def s2let_n_lm_scal(upsample: bool, L: int, s2let_kernel: str, J_min: int, lam: 
     '''Computes the square of the band-limit, after determining what the value of the band-limit is.
 
     Args:
-        upsample: Boolean parameter which determines whether to store the scales at j_max resolution or its own resolution.
-        L: Upper harmonic band-limit.
-        s2let_kernel: The wavelet type.
-        J_min: First wavelet scale to be used.
-        lam: Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        upsample (bool): Boolean parameter which determines whether to store the scales at j_max resolution or its own resolution.
+        L (int): Upper harmonic band-limit.
+        s2let_kernel (str): The wavelet type.
+        J_min (int): First wavelet scale to be used.
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
     
     Returns:
         The square of the band-limit.
@@ -210,13 +210,13 @@ def s2let_n_lmn_wav(lam: float, L: int, J_min: int, upsample: bool, s2let_kernel
     Calls upon functions originally defined in so3, which have been defined explicitly for the case needed here.
     
     Args:
-        lam: Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-        L: Upper harmonic band-limit.
-        J_min: First wavelet to be used.
-        upsample: Boolean parameter which determines whether to store the scales at j_max resolution or its own resolution.
-        N: Upper azimuthal band-limit.
-        storage: The type of storage (padded or compact).
-        reality: A non-zero value indicates the signal, f, is real.
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        L (int): Upper harmonic band-limit.
+        J_min (int): First wavelet to be used.
+        upsample (bool): Boolean parameter which determines whether to store the scales at j_max resolution or its own resolution.
+        N (int): Upper azimuthal band-limit.
+        storage (str): The type of storage (padded or compact).
+        reality (int): A non-zero value indicates the signal, f, is real.
  
     Returns:
         flmn_size.
@@ -255,8 +255,8 @@ def s2let_n_gamma(N: int, steerable: int) -> int:
     '''Computes the number of gamma samples for a given sampling scheme
     
     Args:
-        N: Upper orientational band-limit. Only flmn with n < N will be stored.
-        steerable: A non-zero value indicates that the signal is steerable.
+        N (int): Upper orientational band-limit. Only flmn with n < N will be stored.
+        steerable (int): A non-zero value indicates that the signal is steerable.
 
     Returns:
         ngamma: Number of gamma samples.
@@ -271,12 +271,12 @@ def s2let_n_scal(upsample:bool, L: int, s2let_kernel: str, J_min: int, lam: floa
     '''Computes the number of phi samples multiplies by the number of theta samples.
     
     Args:
-        upsample: Boolean parameter which determines whether to store the scales at j_max resolution or its own resolution.
-        L: Upper harmonic band-limit.
-        s2let_kernel: The wavelet type.
-        J_min: First wavelet to be used.
-        lam: Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-        sampling_scheme: Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
+        upsample (bool): Boolean parameter which determines whether to store the scales at j_max resolution or its own resolution.
+        L (int): Upper harmonic band-limit.
+        s2let_kernel (str): The wavelet type.
+        J_min (int): First wavelet to be used.
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
     
     Returns:
         nphi * ntheta.
@@ -294,13 +294,14 @@ def s2let_n_wav(lam: float, L: int, J_min: int, upsample: bool, s2let_kernel: st
     Calls upon functions originally defined in so3, which have been defined explicitly for the case needed here.
 
     Args:
-        lam: Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-        L: Upper harmonic band-limit.
-        J_min: First wavelet to be used.
-        upsample: Boolean parameter which determines whether to store the scales at j_max resolution or its own resolution.
-        s2let_kernel: The wavelet type.
-        sampling_scheme: Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
-        N: Upper orientational band-limit. Only flmn with n < N will be stored.
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        L (int): Upper harmonic band-limit.
+        J_min (int): First wavelet to be used.
+        upsample (bool): Boolean parameter which determines whether to store the scales at j_max resolution or its own resolution.
+        s2let_kernel (str): The wavelet type.
+        sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
+        steerable (int): A non-zero value indicates that the signal is steerable.
+        N (int): Upper orientational band-limit. Only flmn with n < N will be stored.
 
     Returns:
         f_size.
@@ -338,13 +339,14 @@ def s2let_n_wav_j(upsample: bool, L: int, s2let_kernel: str, j: int, lam: float,
     Calls upon functions originally defined in so3, which have been defined explicitly for the case needed here.
     
     Args:
-        upsample: Boolean parameter which determines whether to store the scales at j_max resolution or its own resolution.
-        L: Upper harmonic band-limit.
-        s2let_kernel: The wavelet type.
-        j: Wavelet scale.
-        lam: Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-        sampling_scheme: Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
-        N: Upper orientational band-limit. Only flmn with n < N will be stored.
+        upsample (bool): Boolean parameter which determines whether to store the scales at j_max resolution or its own resolution.
+        L (int): Upper harmonic band-limit.
+        s2let_kernel (str): The wavelet type.
+        j (int): Wavelet scale.
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
+        steerable (int): A non-zero value indicates that the signal is steerable.
+        N (int): Upper orientational band-limit. Only flmn with n < N will be stored.
 
     Returns:
         f_size.
