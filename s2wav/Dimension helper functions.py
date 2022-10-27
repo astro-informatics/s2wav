@@ -138,7 +138,7 @@ def n_phi(sampling_scheme: str, L: int) -> int:
     '''
     if sampling_scheme.lower() == "mwss":
         return sampling_mw_ss_nphi(L)
-    else:
+    elif sampling_scheme.lower() == "mw":
         return ampling_mw_nphi(L)
 
 
@@ -154,7 +154,7 @@ def n_theta(sampling_scheme: str, L: int) -> int:
     '''
     if sampling_scheme.lower() == "mwss":
         return sampling_mw_ss_ntheta(L)
-    else:
+    elif sampling_scheme.lower() == "mw":
         return sampling_mw_ntheta(L)
 
 
