@@ -81,7 +81,7 @@ def bandlimit(kernel: str, lam: float, j: int) -> int:
     Returns:
         Band-limit (int).
     '''
-    if kernel == "S2DW":
+    if kernel.lower() == "s2dw":
         return math.ceil(lam ** (j+1))
     else:
         #This code currently does not support other wavelet types.
@@ -100,7 +100,7 @@ def L0(kernel: str, lam: float, j: int) -> int:
     Returns:
         el_min (int).
     '''
-    if kernel == "S2DW":
+    if kernel.lower() == "s2dw":
         return math.ceil(lam ** (j-1))
     else:
         #This code currently does not support other wavelet types
@@ -136,7 +136,7 @@ def n_phi(sampling_scheme: str, L: int) -> int:
     Returns:
         nphi (int): Number of phi samples.
     '''
-    if sampling_scheme == "S2LET_SAMPLING_MW_SS":
+    if sampling_scheme.lower() == "mwss":
         return sampling_mw_ss_nphi(L)
     else:
         return ampling_mw_nphi(L)
@@ -152,7 +152,7 @@ def n_theta(sampling_scheme: str, L: int) -> int:
     Returns: 
         ntheta (int): Number of theta samples.
     '''
-    if sampling_scheme == "S2LET_SAMPLING_MW_SS":
+    if sampling_scheme.lower() == "mwss":
         return sampling_mw_ss_ntheta(L)
     else:
         return sampling_mw_ntheta(L)
@@ -233,12 +233,12 @@ def n_lmn_wav(lam: float, L: int, J_min: int, upsample: bool, kernel: str, N: in
             L = bandlimit
             N = min(N, bandlimit)
 
-        if storage == "SO3_STORAGE_PADDED":
+        if storage.lower() == "padded":
             if reality != 0:
                 sampling_flmn_size = N*L*L
             else:
                 sampling_flmn_size = (2*N-1)*L*L
-        elif storage == "SO3_STORAGE_COMPACT":
+        elif storage.lower() == "compact":
             # Both of these are based on the face that the sum over n*n from 1 to N-1 is (N-1)*N*(2N-1)/6.
             if reality != 0:
                 sampling_flmn_size = N*(6*L*L-(N-1)*(2*N-1))/6
@@ -317,7 +317,7 @@ def n_wav(lam: float, L: int, J_min: int, upsample: bool, kernel: str, sampling_
             bandlimit = min(bandlimit(kernel, i, lam, L), L)
             L = bandlimit
         
-            if sampling_scheme == "S2LET_SAMPLING_MW":
+            if sampling_scheme.lower() == "mw":
                 sampling_nalpha = 2 * L - 1
                 sampling_nbeta = L   
             else:
@@ -355,7 +355,7 @@ def n_wav_j(upsample: bool, L: int, kernel: str, j: int, lam: float, sampling_sc
     if not upsample:
         L = min(bandlimit(kernel, j, lam, L ), L)
     
-    if sampling_scheme == "S2LET_SAMPLING_MW":
+    if sampling_scheme.lower() == "mw":
         sampling_nalpha = 2 * L - 1
         sampling_nbeta = L
     else:
