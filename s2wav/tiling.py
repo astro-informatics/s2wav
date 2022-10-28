@@ -1,5 +1,3 @@
-"""Script defining basic mathematical functions needed to carry out the tiling of the harmonic space. 
-"""
 import numpy as np
 import pytest
 
@@ -8,12 +6,14 @@ def tiling_integrand(t: float, lam: float) -> float:
     """Tiling integrand for wavelets. Intermediate step used to compute the wavelet 
         and scaling function generating functions.
 
+        One of the basic mathematical functions needed to carry out the tiling of the harmonic space. 
+
     Args:
         t (float): Real argument over which we integrate.
         lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
         
     Returns:
-        Value of tiling integrand for given t and scaling factor.
+        float: Value of tiling integrand for given t and scaling factor.
     """
     s_arg = (t - (1 / lam)) * (2.0 * lam / (lam - 1)) - 1
 
@@ -28,8 +28,8 @@ def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
 
 
     Uses the trapezium method to integrate tiling_integrand() in the limits from a to b
-    with scaling parameter lam.
-    
+    with scaling parameter lam. One of the basic mathematical functions needed to carry out the tiling of the harmonic space. 
+
     Args:
         a (float): Lower limit of the numerical integration.
         b (float): Upper limit of the numerical integration.
@@ -37,7 +37,7 @@ def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
         lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
 
     Returns:
-        Integral of the tiling integrand from a to b.
+        float: Integral of the tiling integrand from a to b.
 
     Raises:
         TypeError: If n is not of type integer
