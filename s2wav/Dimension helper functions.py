@@ -178,7 +178,7 @@ def n_lm(L: int) -> int:
         L (int): Upper harmonic band-limit.
 
     Returns:
-        Square of L (int).
+        L squared (int): Total number of harmonic coefficients.
     '''
     return L*L
 
