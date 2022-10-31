@@ -130,7 +130,7 @@ def n_phi(sampling_scheme: str, L: int) -> int:
     '''Returns the number of phi samples.
 
     Args:
-        sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
+        sampling_scheme (str): Either 'mw' or 'mwss'.
         L (int): Upper harmonic band-limit.
 
     Returns:
@@ -146,7 +146,7 @@ def n_theta(sampling_scheme: str, L: int) -> int:
     '''Returns the number of theta samples.
 
     Args:
-        sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
+        sampling_scheme (str): Either 'mw' or 'mwss'.
         L (int): Upper harmonic band-limit.
 
     Returns: 
@@ -162,7 +162,7 @@ def n_px(sampling_scheme: str, L: int) -> int:
     '''Returns the number of phi samples multiplied by the number of theta samples.
     
     Args:
-        sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
+        sampling_scheme (str): Either 'mw' or 'mwss'.
         L (int): Upper harmonic band-limit.
     
     Returns:
@@ -277,7 +277,7 @@ def n_scal(upsample:bool, L: int, kernel: str, J_min: int, lam: float, sampling_
         kernel (str): The wavelet type.
         J_min (int): First wavelet to be used.
         lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-        sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
+        sampling_scheme (str): Either 'mw' or 'mwss'.
     
     Returns:
        (int): nphi * ntheta.
@@ -300,7 +300,7 @@ def n_wav(lam: float, L: int, J_min: int, upsample: bool, kernel: str, sampling_
         J_min (int): First wavelet to be used.
         upsample (bool): Boolean parameter which determines whether to store the scales at j_max resolution or its own resolution.
         kernel (str): The wavelet type.
-        sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
+        sampling_scheme (str): Either 'mw' or 'mwss'.
         steerable (int): A non-zero value indicates that the signal is steerable.
         N (int): Upper orientational band-limit. Only flmn with n < N will be stored.
 
@@ -345,7 +345,7 @@ def n_wav_j(upsample: bool, L: int, kernel: str, j: int, lam: float, sampling_sc
         kernel (str): The wavelet type.
         j (int): Wavelet scale.
         lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-        sampling_scheme (str): Either S2LET_SAMPLING_MW or S2LET_SAMPLING_MW_SS.
+        sampling_scheme (str): Either 'mw' or 'mwss'.
         steerable (int): A non-zero value indicates that the signal is steerable.
         N (int): Upper orientational band-limit. Only flmn with n < N will be stored.
 
