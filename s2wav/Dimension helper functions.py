@@ -196,7 +196,7 @@ def n_lm_scal(upsample: bool, L: int, kernel: str, J_min: int, lam: float) -> in
     Returns:
         band_lim_squared (int): The square of the band-limit.
     '''
-    if bandlimit == upsample:
+    if upsample == True:
         bandlimit = L
     else:
         bandlimit = min(bandlimit(kernel, J_min - 1, lam, L), L)
@@ -282,7 +282,7 @@ def n_scal(upsample:bool, L: int, kernel: str, J_min: int, lam: float, sampling_
     Returns:
        npix (int): Total number of pixels.
     '''
-    if bandlimit == upsample:
+    if upsample == True:
         bandlimit = L
     else:
         bandlimit = min(bandlimit(kernel, J_min -1, lam, L), L)
