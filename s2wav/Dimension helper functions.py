@@ -93,12 +93,12 @@ def L0(kernel: str, lam: float, j: int) -> int:
     '''Computes the minimum harmonic index supported by the given wavelet scale.
 
     Args:
-        ernel (str): The wavelet type.
+        kernel (str): The wavelet type.
         lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
         j (int): Wavelet scale.
     
     Returns:
-        el_min (int).
+        el_min (int): The minimum harmonic multipole "ell" which is supported by a given wavelet scale.
     '''
     if kernel.lower() == "s2dw":
         return math.ceil(lam ** (j-1))
@@ -116,7 +116,7 @@ def j_max(L: int, lam: float) -> int:
         lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
     
     Returns:
-        j_max (int).
+        j_max (int): The maximum wavelet scale used.
     '''
     return math.ceil(log(L) / log(lam))
 
@@ -166,7 +166,7 @@ def n_px(sampling_scheme: str, L: int) -> int:
         L (int): Upper harmonic band-limit.
     
     Returns:
-        (int): nphi * ntheta.
+        npix (int): Total number of pixels.
     '''
     return n_phi(sampling_scheme, L) * n_theta(sampling_scheme, L)
 
@@ -178,7 +178,7 @@ def n_lm(L: int) -> int:
         L (int): Upper harmonic band-limit.
 
     Returns:
-        L squared (int): Total number of harmonic coefficients.
+        L_squared (int): Total number of harmonic coefficients.
     '''
     return L*L
 
@@ -194,7 +194,7 @@ def n_lm_scal(upsample: bool, L: int, kernel: str, J_min: int, lam: float) -> in
         lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
     
     Returns:
-        The square of the band-limit (int).
+        band_lim_squared (int): The square of the band-limit.
     '''
     if bandlimit == upsample:
         bandlimit = L
@@ -220,7 +220,7 @@ def n_lmn_wav(lam: float, L: int, J_min: int, upsample: bool, kernel: str, N: in
         reality (int): A non-zero value indicates the signal, f, is real.
  
     Returns:
-        flmn_size (int).
+        flmn_size (int): The length of the Wigner space coefficients f,l,m,n.
     '''
 
     J = j_max(lam, L)
@@ -280,7 +280,7 @@ def n_scal(upsample:bool, L: int, kernel: str, J_min: int, lam: float, sampling_
         sampling_scheme (str): Either 'mw' or 'mwss'.
     
     Returns:
-       (int): nphi * ntheta.
+       npix (int): Total number of pixels.
     '''
     if bandlimit == upsample:
         bandlimit = L
@@ -305,7 +305,7 @@ def n_wav(lam: float, L: int, J_min: int, upsample: bool, kernel: str, sampling_
         N (int): Upper orientational band-limit. Only flmn with n < N will be stored.
 
     Returns:
-        f_size (int).
+        f_size (int): The length of the Wigner space coefficients f,l,m,n, in pixel-space.
     '''
     J = j_max(lam, L)
     bandlimit = L
@@ -350,7 +350,7 @@ def n_wav_j(upsample: bool, L: int, kernel: str, j: int, lam: float, sampling_sc
         N (int): Upper orientational band-limit. Only flmn with n < N will be stored.
 
     Returns:
-        f_size (int).
+        f_size (int): The length of the Wigner space coefficients f,l,m,n, in pixel-space.
     '''
     if not upsample:
         L = min(bandlimit(kernel, j, lam, L ), L)
