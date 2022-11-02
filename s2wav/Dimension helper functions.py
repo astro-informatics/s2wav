@@ -252,17 +252,17 @@ def n_lmn_wav(lam: float, L: int, J_min: int, upsample: bool, kernel: str, N: in
     return total
 
 
-def n_gamma(N: int, steerable: int) -> int:
+def n_gamma(N: int, steerable: bool) -> int:
     '''Computes the number of gamma samples for a given sampling scheme
     
     Args:
         N (int): Upper orientational band-limit. Only flmn with n < N will be stored.
-        steerable (int): A non-zero value indicates that the signal is steerable.
+        steerable (bool): Indicates that the signal is steerable.
 
     Returns:
         ngamma (int): Number of gamma samples.
     '''
-    if steerable != 0:
+    if steerable:
         return N
     else:
         return 2 * N - 1
@@ -289,7 +289,7 @@ def n_scal(upsample:bool, L: int, kernel: str, J_min: int, lam: float, sampling_
     return n_phi(sampling_scheme, L) * n_theta(sampling_scheme, L)
 
 
-def n_wav(lam: float, L: int, J_min: int, upsample: bool, kernel: str, sampling_scheme: str, steerable: int, N:int) -> int:
+def n_wav(lam: float, L: int, J_min: int, upsample: bool, kernel: str, sampling_scheme: str, steerable: bool, N:int) -> int:
     '''Computes the sampling size of the signal, f.
     
     Calls upon functions originally defined in so3, which have been defined explicitly for the case needed here.
@@ -301,7 +301,7 @@ def n_wav(lam: float, L: int, J_min: int, upsample: bool, kernel: str, sampling_
         upsample (bool): Boolean parameter which determines whether to store the scales at j_max resolution or its own resolution.
         kernel (str): The wavelet type.
         sampling_scheme (str): Either 'mw' or 'mwss'.
-        steerable (int): A non-zero value indicates that the signal is steerable.
+        steerable (bool): Indicates that the signal is steerable.
         N (int): Upper orientational band-limit. Only flmn with n < N will be stored.
 
     Returns:
@@ -324,7 +324,7 @@ def n_wav(lam: float, L: int, J_min: int, upsample: bool, kernel: str, sampling_
                 sampling_nalpha = 2 * L
                 sampling_nbeta = L + 1
 
-            if steerable != 0:
+            if steerable:
                 sampling_ngamma = N
             else:
                 sampling_ngamma = 2 * N - 1
@@ -334,7 +334,7 @@ def n_wav(lam: float, L: int, J_min: int, upsample: bool, kernel: str, sampling_
     return total
 
 
-def n_wav_j(upsample: bool, L: int, kernel: str, j: int, lam: float, sampling_scheme: str, steerable: int, N: int) -> int:
+def n_wav_j(upsample: bool, L: int, kernel: str, j: int, lam: float, sampling_scheme: str, steerable: bool, N: int) -> int:
     '''Computes the sampling size of the signal, f.
 
     Calls upon functions originally defined in so3, which have been defined explicitly for the case needed here.
@@ -346,7 +346,7 @@ def n_wav_j(upsample: bool, L: int, kernel: str, j: int, lam: float, sampling_sc
         j (int): Wavelet scale.
         lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
         sampling_scheme (str): Either 'mw' or 'mwss'.
-        steerable (int): A non-zero value indicates that the signal is steerable.
+        steerable (bool): Indicates that the signal is steerable.
         N (int): Upper orientational band-limit. Only flmn with n < N will be stored.
 
     Returns:
@@ -362,7 +362,7 @@ def n_wav_j(upsample: bool, L: int, kernel: str, j: int, lam: float, sampling_sc
         sampling_nalpha = 2 * L
         sampling_nbeta = L + 1
     
-    if steerable != 0:
+    if steerable:
         sampling_ngamma = N
     else:
         sampling_ngamma = 2 * N - 1 
