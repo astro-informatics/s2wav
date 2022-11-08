@@ -118,7 +118,7 @@ def j_max(L: int, lam: float) -> int:
     Returns:
         j_max (int): The maximum wavelet scale used.
     '''
-    return math.ceil(log(L) / log(lam))
+    return math.ceil(math.log(L) / math.log(lam))
 
 
 
