@@ -22,7 +22,7 @@ def sampling_mw_ss_nphi(L: int) -> int:
 
 
 
-def ampling_mw_nphi(L: int) -> int:
+def sampling_mw_nphi(L: int) -> int:
     '''Computes the number of phi samples for McEwen and Wiaux sampling.
     
     Args:
@@ -118,7 +118,7 @@ def j_max(L: int, lam: float) -> int:
     Returns:
         j_max (int): The maximum wavelet scale used.
     '''
-    return math.ceil(log(L) / log(lam))
+    return math.ceil(math.log(L) / math.log(lam))
 
 
 
