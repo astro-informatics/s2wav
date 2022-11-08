@@ -22,7 +22,7 @@ def sampling_mw_ss_nphi(L: int) -> int:
 
 
 
-def ampling_mw_nphi(L: int) -> int:
+def sampling_mw_nphi(L: int) -> int:
     '''Computes the number of phi samples for McEwen and Wiaux sampling.
     
     Args:
