@@ -16,6 +16,7 @@ def tiling_integrand(t: float, lam: float) -> float:
         float: Value of tiling integrand for given t and scaling factor.
     """
     s_arg = (t - (1 / lam)) * (2.0 * lam / (lam - 1)) - 1
+    print("Term 1: ", (t - (1 / lam)), " Term 2: ", (2.0 * lam / (lam - 1)), " t : ", t)
 
     integrand = np.exp(-2.0 / (1.0 - s_arg**2.0)) / t
 
@@ -54,10 +55,10 @@ def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
     
     else:
         for i in range(n):
-            f1 = tiling_integrand(a + i * h, lam)
-            f2 = tiling_integrand(a + (i + 1) * h, lam)
+            if (a + i*h not in [1/lam, 1.] and a + (i+1)*h not in [1/lam, 1.]):
+                f1 = tiling_integrand(a + i * h, lam)
+                f2 = tiling_integrand(a + (i + 1) * h, lam)
 
-            if (not np.isnan(f1) and not np.isinf(f1) and not np.isnan(f2) and not np.isinf(f2)):
                 sum += ((f1 + f2) * h) / 2
-    
+
     return sum
