@@ -16,7 +16,6 @@ def tiling_integrand(t: float, lam: float) -> float:
         float: Value of tiling integrand for given t and scaling factor.
     """
     s_arg = (t - (1 / lam)) * (2.0 * lam / (lam - 1)) - 1
-    print("Term 1: ", (t - (1 / lam)), " Term 2: ", (2.0 * lam / (lam - 1)), " t : ", t)
 
     integrand = np.exp(-2.0 / (1.0 - s_arg**2.0)) / t
 
