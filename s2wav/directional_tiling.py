@@ -172,4 +172,4 @@ def tiling_wavelet(L: int, lam: float, spin: int, original_spin: int, N: int, J_
                     psi[j * L * L + ind] *= spin_normalization(el, original_spin) * (-1)**original_spin
 
 
-    return psi, phi
+    return (psi, phi)
