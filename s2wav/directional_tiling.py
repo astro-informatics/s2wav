@@ -2,6 +2,7 @@ import math
 from s2wav.helper_functions import j_max
 from scipy.special import loggamma
 import numpy as np
+from typing import Tuple
 
 
 #Two functions originally defined in s2let_math.c used for tiling.
@@ -128,7 +129,7 @@ def spin_normalization(spin: int, el: int) -> float:
         return math.sqrt(1.0 / factor)
 
 
-def tiling_wavelet(L: int, lam: float, spin: int, original_spin: int, N: int, J_min: int) -> tuple[np.ndarray, np.ndarray]:
+def tiling_wavelet(L: int, lam: float, spin: int, original_spin: int, N: int, J_min: int) -> Tuple[np.ndarray, np.ndarray]:
     '''Generates the harmonic coefficients for the directional tiling wavelets.
     
     This implementation is based on equation (7) in the wavelet computation paper [1].
@@ -142,7 +143,7 @@ def tiling_wavelet(L: int, lam: float, spin: int, original_spin: int, N: int, J_
         J_min (int): First wavelet scale used.
 
     Returns:
-        (tuple[np.ndarray, np.ndarray]):
+        (Tuple): (psi, phi)
             psi (np.ndarray): Harmonic coefficients of directional wavelets.
             phi (np.ndarray): Harmonic coefficients of scaling function.
 
