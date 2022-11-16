@@ -1,4 +1,0 @@
-numpy
-colorlog
-pyyaml
-scipy
