@@ -3,15 +3,15 @@ import pytest
 
 
 def tiling_integrand(t: float, lam: float) -> float:
-    """Tiling integrand for wavelets. Intermediate step used to compute the wavelet 
+    """Tiling integrand for wavelets. Intermediate step used to compute the wavelet
         and scaling function generating functions.
 
-        One of the basic mathematical functions needed to carry out the tiling of the harmonic space. 
+        One of the basic mathematical functions needed to carry out the tiling of the harmonic space.
 
     Args:
         t (float): Real argument over which we integrate.
         lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-        
+
     Returns:
         float: Value of tiling integrand for given t and scaling factor.
     """
@@ -28,7 +28,7 @@ def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
 
 
     Uses the trapezium method to integrate tiling_integrand() in the limits from a to b
-    with scaling parameter lam. One of the basic mathematical functions needed to carry out the tiling of the harmonic space. 
+    with scaling parameter lam. One of the basic mathematical functions needed to carry out the tiling of the harmonic space.
 
     Args:
         a (float): Lower limit of the numerical integration.
@@ -42,22 +42,27 @@ def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
     Raises:
         TypeError: If n is not of type integer
     """
-    
+
     if not isinstance(n, int) == True:
         raise TypeError("n must be an integer")
 
     sum = 0.0
     h = (b - a) / n
 
-    if (a == b):
+    if a == b:
         return 0
-    
+
     else:
         for i in range(n):
             f1 = tiling_integrand(a + i * h, lam)
             f2 = tiling_integrand(a + (i + 1) * h, lam)
 
-            if (not np.isnan(f1) and not np.isinf(f1) and not np.isnan(f2) and not np.isinf(f2)):
+            if (
+                not np.isnan(f1)
+                and not np.isinf(f1)
+                and not np.isnan(f2)
+                and not np.isinf(f2)
+            ):
                 sum += ((f1 + f2) * h) / 2
-    
+
     return sum
