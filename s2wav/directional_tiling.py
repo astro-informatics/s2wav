@@ -128,7 +128,7 @@ def spin_normalization(spin: int, el: int) -> float:
         return math.sqrt(1.0 / factor)
 
 
-def tiling_wavelet(L: int, lam: float, spin: int, original_spin: int, N: int, J_min: int) -> tuple(np.ndarray, np.ndarray):
+def tiling_wavelet(L: int, lam: float, spin: int, original_spin: int, N: int, J_min: int) -> tuple[np.ndarray, np.ndarray]:
     '''Generates the harmonic coefficients for the directional tiling wavelets.
     
     This implementation is based on equation (7) in the wavelet computation paper [1].
@@ -142,7 +142,7 @@ def tiling_wavelet(L: int, lam: float, spin: int, original_spin: int, N: int, J_
         J_min (int): First wavelet scale used.
 
     Returns:
-        (tuple):
+        (tuple[np.ndarray, np.ndarray]):
             psi (np.ndarray): Harmonic coefficients of directional wavelets.
             phi (np.ndarray): Harmonic coefficients of scaling function.
 
@@ -172,4 +172,4 @@ def tiling_wavelet(L: int, lam: float, spin: int, original_spin: int, N: int, J_
                     psi[j * L * L + ind] *= spin_normalization(el, original_spin) * (-1)**original_spin
 
 
-    return (psi, phi)
+    return psi, phi
