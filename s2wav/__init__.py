@@ -1,3 +1,3 @@
 from . import logs
-from . import dimension_helper_functions
-from . import tiling
+from . import helper_functions
+from . import directional_tiling
