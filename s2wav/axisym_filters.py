@@ -1,59 +1,89 @@
 import numpy as np
 from s2wav import tiling
-from s2wav import dimension_helper_functions
+from s2wav import helper_functions
+from typing import Tuple
+import pytest
 
+def k_lam(L:int, lam:float, quad_iters: int=300) -> float:
+    """Compute function k_lam defined in equation (12) in [1] used to compute scaling function generating function and
+        wavelet generating function.
 
-def tiling_phi2(L:int, lam:float) -> float:
+    Args:
+        L (int): Harmonic band-limit.
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        quad_iters (int): Total number of iterations for quadrature integration. Defaults to 300.
+    Returns:
+        np.ndarray: value of k_lam computed for values between 1/lam and 1, parametrised by l as required to compute 
+        the axisymmetric filters in tiling_axisym()
 
-    n = 300
-    J = dimension_helper_functions.j_max(L, lam)
-    print("J max is ", J)
+    Notes:
+        [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
+    """
 
-    kappanorm = tiling.part_scaling_fn(1/lam, 1.0, n, lam)
-    print("Found kappanorm")
-    phi2 = np.zeros((J + 2) * L)
+    J = helper_functions.j_max(L, lam)
+
+    normalisation = tiling.part_scaling_fn(1/lam, 1.0, quad_iters, lam)
+    k = np.zeros((J + 2) * L)
     
 
     for j in range(J+2):
         for l in range(L):
             if l < lam**(j-1):
-                phi2[l + j * L] = 1
+                k[l + j * L] = 1
             elif l > lam**j:
-                phi2[l + j * L] = 0
+                k[l + j * L] = 0
             else:
-                phi2[l + j * L] =  tiling.part_scaling_fn(l/lam**j, 1.0, n, lam)/ kappanorm
+                k[l + j * L] =  tiling.part_scaling_fn(l/lam**j, 1.0, quad_iters, lam)/ normalisation
             
 
-    return phi2
+    return k
 
 
-def tiling_axisym(L: int, lam:float, J_min: int):
+def filters_axisym(L: int, lam:float, J_min: int) -> Tuple[np.ndarray]:
+    """Computes wavelet kernels and scaling kernel in harmonic space, according to equations (15), (16) in [1]
+        without the normalisation factor.
+    
+    Args:
+        L (int): Harmonic band-limit.
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        J_min (int): First wavelet scale used.
+    Returns:
+        Tuple[np.ndarray]: Unnormalised wavelet kernels and scaling kernel in harmonic space.
+    
+    Notes:
+        [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
+    """
+    if not isinstance(L, int):
+        raise TypeError("L must be an integer")
+    
+    if L < 0:
+        raise ValueError("L must be non-negative")
+    
+    if not isinstance(J_min, int):
+        raise TypeError("J_min must be an integer")
 
-    J = dimension_helper_functions.j_max(L, lam)
+    J = helper_functions.j_max(L, lam)
+
+    if J_min >= J or J_min <0:
+        raise ValueError("J_min must be non-negative and less than J= "+str(J)+" for given L and lam.")
 
     previoustemp = 0.0
-    print("Finding phi2")
-    phi2 = tiling_phi2(L, lam)
-    kappa = np.zeros((J + 1) * L)
-    kappa0 = np.zeros(L)
-    print("Finding kappa0")
+    k = k_lam(L, lam)
+    Psi = np.zeros((J + 1) * L)
+    Phi = np.zeros(L)
     for l in range(L):
-      kappa0[l] = np.sqrt(phi2[l + J_min * L])
+      Phi[l] = np.sqrt(k[l + J_min * L])
     
     for j in range(J_min, J+1):
         for l in range(L):
-            diff = phi2[l + (j + 1) * L] - phi2[l + j * L] 
+            diff = k[l + (j + 1) * L] - k[l + j * L] 
             #check if sqrt is defined
             if diff < 0:
-              kappa[l + j * L] = previoustemp
+              Psi[l + j * L] = previoustemp
             else:
               temp = np.sqrt(diff)
-              kappa[l + j * L] = temp
-              previoustemp = temp
-
-        for l in range(L):
-            kappa[l + j * L] = kappa[l + j * L - 1]
+              Psi[l + j * L] = temp
+            previoustemp = temp
           
-    return kappa, kappa0
-
-print(tiling_axisym(10, 2, 2))
+    return Psi, Phi
+    
