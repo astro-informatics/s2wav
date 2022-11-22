@@ -2,21 +2,35 @@ import numpy as np
 from s2wav import tiling
 from s2wav import helper_functions
 from typing import Tuple
-import pytest
 
 def k_lam(L:int, lam:float, quad_iters: int=300) -> float:
-    """Compute function k_lam defined in equation (12) in [1] used to compute scaling function generating function and
-        wavelet generating function.
+    r"""Compute function :math:`k_{\lambda}` used as a wavelet generating function. 
+        
+    Specifically, this function is derived in [1] and is given by
+    
+    .. math::
+
+        k_{\lambda} \equiv \frac{ \int_t^1 \frac{\text{d}t^{\prime}}{t^{\prime}} s_{\lambda}^2(t^{\prime})}{ \int_{\frac{1}{\lambda}}^1 \frac{\text{d}t^{\prime}}{t^{\prime}} s_{\lambda}^2(t^{\prime})},
+    
+    where the integrand is defined to be
+
+    .. math:: 
+
+        s_{\lambda} \equiv s \Big ( \frac{2\lambda}{\lambda - 1}(t-\frac{1}{\lambda}) - 1 \Big ),
+    
+    for infinitely differentiable Cauchy-Schwartz function :math:`s(t) \in C^{\infty}`.
 
     Args:
         L (int): Harmonic band-limit.
-        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-        quad_iters (int): Total number of iterations for quadrature integration. Defaults to 300.
-    Returns:
-        np.ndarray: value of k_lam computed for values between 1/lam and 1, parametrised by l as required to compute 
-        the axisymmetric filters in tiling_axisym()
 
-    Notes:
+        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+
+        quad_iters (int, optional): Total number of iterations for quadrature integration. Defaults to 300.
+
+    Returns:
+        (np.ndarray): Value of :math:`k_{\lambda}` computed for values between :math:`\frac{1}{\lambda}` and 1, parametrised by :math:`\el` as required to compute the axisymmetric filters in :func:`~tiling_axisym`.
+
+    Note:
         [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
     """
 
@@ -39,18 +53,43 @@ def k_lam(L:int, lam:float, quad_iters: int=300) -> float:
     return k
 
 
-def filters_axisym(L: int, lam:float, J_min: int) -> Tuple[np.ndarray]:
-    """Computes wavelet kernels and scaling kernel in harmonic space, according to equations (15), (16) in [1]
-        without the normalisation factor.
+def filters_axisym(L: int, lam:float, J_min: int) -> Tuple[np.ndarray, np.ndarray]:
+    r"""Computes wavelet kernels :math:`\Psi^j_{\el m}` and scaling kernel :math:`\Phi_{\el m}` in harmonic space. 
+
+    Specifically, these kernels are derived in [1], where the wavelet kernels are defined (15) for scale :math:`j` to be 
+
+    .. math::
+
+        \Psi^j_{\el m} \equiv \sqrt{\frac{2\el+1}{4\pi}} \kappa_{\lambda}(\frac{\el}{\lambda^j})\delta_{m0},
+
+    where :math:`\kappa_{\lambda} = \sqrt{k_{\lambda}(t/\lambda) - k_{\lambda}(t)}` for :math:`k_{\lambda}` given in :func:`~k_lam`. Similarly, the scaling kernel is defined (16) as
+
+    .. math::
+
+        \Phi_{\el m} \equiv \sqrt{\frac{2\el+1}{4\pi}} \nu_{\lambda} (\frac{\el}{\lambda^{J_0}})\delta_{m0},
+    
+    where :math:`\nu_{\lambda} = \sqrt{k_{\lambda}(t)}` for :math:`k_{\lambda}` given in :func:`~k_lam`. Notice that :math:`\delta_{m0}` enforces that these kernels are axisymmetric, i.e. coefficients for :math:`m \not = \el` are zero. In this implementation the normalisation constant has been omitted as it is nulled in subsequent functions.
     
     Args:
         L (int): Harmonic band-limit.
+
         lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+
         J_min (int): First wavelet scale used.
+
+    Raises:
+        ValueError: L is not an integer.
+
+        ValueError: L is a negative integer.
+
+        ValueError: J_min is not an integer.
+
+        ValueError: J_min is negative or greater than J.
+
     Returns:
-        Tuple[np.ndarray]: Unnormalised wavelet kernels and scaling kernel in harmonic space.
+        (Tuple[np.ndarray, np.ndarray]): Unnormalised wavelet kernels and scaling kernel in harmonic space.
     
-    Notes:
+    Note:
         [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
     """
     if not isinstance(L, int):
@@ -69,21 +108,21 @@ def filters_axisym(L: int, lam:float, J_min: int) -> Tuple[np.ndarray]:
 
     previoustemp = 0.0
     k = k_lam(L, lam)
-    Psi = np.zeros((J + 1) * L)
-    Phi = np.zeros(L)
+    psi = np.zeros((J + 1) * L)
+    phi = np.zeros(L)
     for l in range(L):
-      Phi[l] = np.sqrt(k[l + J_min * L])
+      phi[l] = np.sqrt(k[l + J_min * L])
     
     for j in range(J_min, J+1):
         for l in range(L):
             diff = k[l + (j + 1) * L] - k[l + j * L] 
             #check if sqrt is defined
             if diff < 0:
-              Psi[l + j * L] = previoustemp
+              psi[l + j * L] = previoustemp
             else:
               temp = np.sqrt(diff)
-              Psi[l + j * L] = temp
+              psi[l + j * L] = temp
             previoustemp = temp
           
-    return Psi, Phi
+    return psi, phi
     
