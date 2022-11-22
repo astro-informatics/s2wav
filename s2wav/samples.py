@@ -440,7 +440,7 @@ def elm2ind(el: int, m: int) -> int:
 
 def elmn2ind(el: int, m: int, n: int, L: int, N: int = 1) -> int:
     """Convert from Wigner space 3D indexing of :math:`(\ell,m, n)` to 1D index.
-    
+
     Args:
         el (int): Harmonic degree :math:`\ell`.
 
