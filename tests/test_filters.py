@@ -23,7 +23,7 @@ def test_axisym_admissibility(L: int, J_min: int, lam: int):
         temp = Phi[el] ** 2 + Psi_j_sum[el]
         assert temp == pytest.approx(
             1, rel=1e-14
-        ), "Admissibility condition not satisfied at l = " + str(l)
+        ), "Admissibility condition not satisfied at l = " + str(el)
 
 
 @pytest.mark.parametrize("L", L_to_test)
