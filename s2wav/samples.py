@@ -419,3 +419,42 @@ def n_wav_j(
     sampling_f_size = sampling_nalpha * sampling_nbeta * sampling_ngamma
 
     return sampling_f_size
+
+def elm2ind(el: int, m: int) -> int:
+    """Convert from spherical harmonic 2D indexing of :math:`(\ell,m)` to 1D index.
+    1D index is defined by `el**2 + el + m`.
+
+    Warning:
+        Note that 1D storage of spherical harmonic coefficients is *not* the default.
+
+    Args:
+        el (int): Harmonic degree :math:`\el`.
+
+        m (int): Harmonic order :math:`m`.
+
+    Returns:
+        int: Corresponding 1D index value.
+    """
+
+    return el**2 + el + m
+
+def elmn2ind(el: int, m: int, n: int, L: int, N: int = 1) -> int:
+    """Convert from Wigner space 3D indexing of :math:`(\ell,m, n)` to 1D index.
+    
+    Args:
+        el (int): Harmonic degree :math:`\ell`.
+
+        m (int): Harmonic order :math:`m`.
+
+        n (int): Directional order :math:`n`.
+
+        L (int): Harmonic band-limit.
+
+        N (int, optional): Number of Fourier coefficients for tangent plane rotations (i.e. directionality). Defaults to 1.
+
+    Returns:
+        (int): Corresponding 1D index in Wigner space.
+    """
+    n_offset = (N - 1 + n) * L * L
+    el_offset = el * el
+    return n_offset + el_offset + el + m
