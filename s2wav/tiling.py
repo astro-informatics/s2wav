@@ -54,15 +54,10 @@ def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
 
     else:
         for i in range(n):
-            f1 = tiling_integrand(a + i * h, lam)
-            f2 = tiling_integrand(a + (i + 1) * h, lam)
+            if (a + i*h not in [1/lam, 1.] and a + (i+1)*h not in [1/lam, 1.]):
+                f1 = tiling_integrand(a + i * h, lam)
+                f2 = tiling_integrand(a + (i + 1) * h, lam)
 
-            if (
-                not np.isnan(f1)
-                and not np.isinf(f1)
-                and not np.isnan(f2)
-                and not np.isinf(f2)
-            ):
                 sum += ((f1 + f2) * h) / 2
 
     return sum
