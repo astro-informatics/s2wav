@@ -90,5 +90,5 @@ if __name__ == "__main__":
     f_wav = np.random.randn(f_wav_size) + 1j*np.random.randn(f_wav_size)
     f_scal = np.random.randn(f_scal_size) + 1j*np.random.randn(f_scal_size)
 
-    f = synthesis_transform(f_wav, f_scal, L, N, lam, J_min)
-
+    #f = synthesis_transform(f_wav, f_scal, L, N, lam, J_min)
+    #f_true = s2let.synthesis(f_wav, f_scal)
