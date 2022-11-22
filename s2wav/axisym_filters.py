@@ -87,7 +87,7 @@ def filters_axisym(L: int, lam:float, J_min: int) -> Tuple[np.ndarray, np.ndarra
         ValueError: J_min is negative or greater than J.
 
     Returns:
-        (Tuple[np.ndarray, np.ndarray]): Unnormalised wavelet kernels and scaling kernel in harmonic space.
+        (Tuple[np.ndarray, np.ndarray]): Unnormalised wavelet kernels :math:`\Psi^j_{\el m}` with shape :math:`[(J+1)*L], and scaling kernel :math:`\Phi_{\el m}` with shape :math:`[L]` in harmonic space.
     
     Note:
         [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
