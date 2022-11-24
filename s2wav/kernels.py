@@ -2,7 +2,7 @@ import numpy as np
 from s2wav import tiling, samples
 
 
-def k_lam(L: int, lam: float, quad_iters: int = 300) -> float:
+def k_lam(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
     r"""Compute function :math:`k_{\lambda}` used as a wavelet generating function.
 
     Specifically, this function is derived in [1] and is given by
@@ -22,7 +22,8 @@ def k_lam(L: int, lam: float, quad_iters: int = 300) -> float:
     Args:
         L (int): Harmonic band-limit.
 
-        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+            Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
 
         quad_iters (int, optional): Total number of iterations for quadrature integration. Defaults to 300.
 

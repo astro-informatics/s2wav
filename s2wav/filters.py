@@ -3,10 +3,12 @@ from s2wav import tiling, samples, kernels
 from typing import Tuple
 
 
-def filters_axisym(L: int, lam: float, J_min: int) -> Tuple[np.ndarray, np.ndarray]:
+def filters_axisym(
+    L: int, J_min: int = 0, lam: float = 2.0
+) -> Tuple[np.ndarray, np.ndarray]:
     r"""Computes wavelet kernels :math:`\Psi^j_{\el m}` and scaling kernel :math:`\Phi_{\el m}` in harmonic space.
 
-    Specifically, these kernels are derived in [1], where the wavelet kernels are defined (15) for scale :math:`j` to be
+    Specifically, these kernels are derived in `[1] <https://arxiv.org/pdf/1211.1680.pdf>`_, where the wavelet kernels are defined (15) for scale :math:`j` to be
 
     .. math::
 
@@ -23,9 +25,10 @@ def filters_axisym(L: int, lam: float, J_min: int) -> Tuple[np.ndarray, np.ndarr
     Args:
         L (int): Harmonic band-limit.
 
-        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
 
-        J_min (int): First wavelet scale used.
+        lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+            Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
 
     Raises:
         ValueError: L is not an integer.
@@ -37,7 +40,7 @@ def filters_axisym(L: int, lam: float, J_min: int) -> Tuple[np.ndarray, np.ndarr
         ValueError: J_min is negative or greater than J.
 
     Returns:
-        (Tuple[np.ndarray, np.ndarray]): Unnormalised wavelet kernels :math:`\Psi^j_{\el m}` with shape :math:`[(J+1)*L], and scaling kernel :math:`\Phi_{\el m}` with shape :math:`[L]` in harmonic space.
+        Tuple[np.ndarray, np.ndarray]: Unnormalised wavelet kernels :math:`\Psi^j_{\el m}` with shape :math:`[(J+1)*L], and scaling kernel :math:`\Phi_{\el m}` with shape :math:`[L]` in harmonic space.
 
     Note:
         [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
@@ -62,8 +65,8 @@ def filters_axisym(L: int, lam: float, J_min: int) -> Tuple[np.ndarray, np.ndarr
 
     previoustemp = 0.0
     k = kernels.k_lam(L, lam)
-    psi = np.zeros((J + 1) * L)
-    phi = np.zeros(L)
+    psi = np.zeros((J + 1, L), np.float64)
+    phi = np.zeros(L, np.float64)
     for l in range(L):
         phi[l] = np.sqrt(k[l + J_min * L])
 
@@ -74,34 +77,40 @@ def filters_axisym(L: int, lam: float, J_min: int) -> Tuple[np.ndarray, np.ndarr
                 psi[l + j * L] = previoustemp
             else:
                 temp = np.sqrt(diff)
-                psi[l + j * L] = temp
+                psi[j, l] = temp
             previoustemp = temp
 
     return psi, phi
 
 
 def filters_directional(
-    L: int, lam: float, spin: int, original_spin: int, N: int, J_min: int
+    L: int,
+    N: int = 1,
+    J_min: int = 0,
+    lam: float = 2.0,
+    spin: int = 0,
+    original_spin: int = 0,
 ) -> Tuple[np.ndarray, np.ndarray]:
     r"""Generates the harmonic coefficients for the directional tiling wavelets.
 
-    This implementation is based on equation (33) in the wavelet computation paper [1].
+    This implementation is based on equation 36 in the wavelet computation paper `[1] <https://arxiv.org/pdf/1509.06749.pdf>`_.
 
     Args:
         L (int): Harmonic band-limit.
 
-        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        N (int, optional): Upper azimuthal band-limit. Defaults to 1.
 
-        spin (int): Spin (integer) to perform the transform.
+        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
 
-        original_spin (int): Spin number the wavelet was lowered from.
+        lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+            Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
 
-        N (int): Upper orientational band-limit. Only flmn with :math:`n < N` will be stored.
+        spin (int, optional): Spin (integer) to perform the transform. Defaults to 0.
 
-        J_min (int): First wavelet scale used.
+        original_spin (int, optional): Spin number the wavelet was lowered from. Defaults to 0.
 
     Returns:
-        (Tuple[np.ndarray, np.ndarray]): Tuple of wavelet and scaling kernels (:math:`\Psi^j_{\el n}`, :math:`\Phi_{\el m}`)
+        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels (:math:`\Psi^j_{\el n}`, :math:`\Phi_{\el m}`)
             psi (np.ndarray): Harmonic coefficients of directional wavelets with shape :math:`[L^2(J+1)]`.
             phi (np.ndarray): Harmonic coefficients of scaling function with shape :math:`[L]`.
 
@@ -112,13 +121,13 @@ def filters_directional(
     el_min = max(abs(spin), abs(original_spin))
 
     phi = np.zeros(L, dtype=np.float64)
-    psi = np.zeros((J + 1) * L * L, dtype=np.complex128)
+    psi = np.zeros((J + 1, L * L), dtype=np.complex128)
 
-    kappa, kappa0 = filters_axisym(L, lam, J_min)
-    s_elm = tiling.tiling_direction(N, L)
+    kappa, kappa0 = filters_axisym(L, J_min, lam)
+    s_elm = tiling.tiling_direction(L, N)
 
     for el in range(el_min, L):
-        phi[el] = np.sqrt((2 * el + 1) / 4.0 * np.pi) * kappa0[el]
+        phi[el] = np.sqrt((2 * el + 1) / (4.0 * np.pi)) * kappa0[el]
         if original_spin != 0:
             phi[el] *= (
                 tiling.spin_normalization(el, original_spin) * (-1) ** original_spin
@@ -128,13 +137,13 @@ def filters_directional(
         ind = el_min * el_min
         for el in range(el_min, L):
             for m in range(-el, el + 1):
-                psi[j * L * L + ind] = (
+                psi[j, ind] = (
                     np.sqrt((2 * el + 1) / (8.0 * np.pi * np.pi))
-                    * kappa[j * L + el]
+                    * kappa[j, el]
                     * s_elm[ind]
                 )
                 if original_spin != 0:
-                    psi[j * L * L + ind] *= (
+                    psi[j, ind] *= (
                         tiling.spin_normalization(el, original_spin)
                         * (-1) ** original_spin
                     )
