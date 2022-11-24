@@ -99,5 +99,3 @@ def synthesis_transform(
         for m in range(-el, el + 1):
             lm_ind = samples.elm2ind(el, m)
             flm[lm_ind] += f_scal_lm[lm_ind] * phi
-
-    return ssht.inverse(flm, L)
