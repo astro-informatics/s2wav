@@ -31,12 +31,6 @@ def filters_axisym(
             Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
 
     Raises:
-        ValueError: L is not an integer.
-
-        ValueError: L is a negative integer.
-
-        ValueError: J_min is not an integer.
-
         ValueError: J_min is negative or greater than J.
 
     Returns:
@@ -45,15 +39,6 @@ def filters_axisym(
     Note:
         [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
     """
-    if not isinstance(L, int):
-        raise TypeError("L must be an integer")
-
-    if L < 0:
-        raise ValueError("L must be non-negative")
-
-    if not isinstance(J_min, int):
-        raise TypeError("J_min must be an integer")
-
     J = samples.j_max(L, lam)
 
     if J_min >= J or J_min < 0:
