@@ -61,8 +61,13 @@ def synthesis_transform(
         [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
         [2] J. McEwen et. al., "Directional spin wavelets on the sphere", arXiv preprint arXiv:1509.06749 (2015).
     """
-    assert f_wav.shape == shapes.f_wav(L, N, J_min, lam, sampling)
-    assert f_scal.shape == shapes.f_scal(L, sampling)
+    assert f_wav.shape == shapes.f_wav(
+        L, N, J_min, lam, sampling
+    ), f"Shape of wavelet coefficients {f_wav.shape} incorrect, should be {shapes.f_wav(L, N, J_min, lam, sampling)}."
+
+    assert f_scal.shape == shapes.f_scal(
+        L, sampling
+    ), f"Shape of scaling coefficients {f_scal.shape} incorrect, should be {shapes.f_scal(L, sampling)}."
 
     J = samples.j_max(L, lam)
     flmn_shape = shapes.flmn_wav(L, N, J_min, lam)
