@@ -12,12 +12,12 @@ lam_to_test = [2, 3]
 @pytest.mark.parametrize("J_min", J_min_to_test)
 @pytest.mark.parametrize("lam", lam_to_test)
 def test_axisym_admissibility(L: int, J_min: int, lam: int):
-    Psi, Phi = filters.filters_axisym(L, lam, J_min)
+    Psi, Phi = filters.filters_axisym(L, J_min, lam)
     J = samples.j_max(L, lam)
     Psi_j_sum = np.zeros_like(Phi)
     for j in range(J_min, J + 1):
         for el in range(L):
-            Psi_j_sum[el] += np.abs(Psi[el + j * L]) ** 2
+            Psi_j_sum[el] += np.abs(Psi[j, el]) ** 2
 
     for el in range(L):
         temp = Phi[el] ** 2 + Psi_j_sum[el]
@@ -31,9 +31,8 @@ def test_axisym_admissibility(L: int, J_min: int, lam: int):
 @pytest.mark.parametrize("J_min", J_min_to_test)
 @pytest.mark.parametrize("lam", lam_to_test)
 def test_directional_admissibility(L: int, N: int, J_min: int, lam: int):
-    original_spin = spin = 0
-
-    psi, phi = filters.filters_directional(L, lam, spin, original_spin, N, J_min)
+    spin = 0
+    psi, phi = filters.filters_directional(L, N, J_min, lam)
     J = samples.j_max(L, lam)
 
     ident = np.zeros(L, dtype=np.complex128)
@@ -50,8 +49,8 @@ def test_directional_admissibility(L: int, N: int, J_min: int, lam: int):
                     * np.pi
                     * np.pi
                     / (2 * el + 1)
-                    * psi[j * L * L + ind]
-                    * np.conj(psi[j * L * L + ind])
+                    * psi[j, ind]
+                    * np.conj(psi[j, ind])
                 )
                 ind += 1
 
@@ -64,7 +63,7 @@ def test_directional_admissibility(L: int, N: int, J_min: int, lam: int):
 @pytest.mark.parametrize("L", L_to_test)
 @pytest.mark.parametrize("N", N_to_test)
 def test_directional_tiling(L: int, N: int):
-    s_elm = tiling.tiling_direction(N, L)
+    s_elm = tiling.tiling_direction(L, N)
     ind = 1
     for el in range(1, L):
         temp = 0

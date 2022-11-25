@@ -2,18 +2,19 @@ import numpy as np
 from s2wav.math_utils import binomial_coefficient
 
 
-def tiling_integrand(t: float, lam: float) -> float:
-    r"""Tiling integrand for scale-discretised wavelets [1].
+def tiling_integrand(t: float, lam: float = 2.0) -> float:
+    r"""Tiling integrand for scale-discretised wavelets `[1] <https://arxiv.org/pdf/1211.1680.pdf>`_.
 
     Intermediate step used to compute the wavelet and scaling function generating functions. One of the basic mathematical functions needed to carry out the tiling of the harmonic space.
 
     Args:
         t (float): Real argument over which we integrate.
 
-        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+        lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+            Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
 
     Returns:
-        (float): Value of tiling integrand for given :math:`t` and scaling factor.
+        float: Value of tiling integrand for given :math:`t` and scaling factor.
 
     Note:
         [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
@@ -25,7 +26,7 @@ def tiling_integrand(t: float, lam: float) -> float:
     return integrand
 
 
-def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
+def part_scaling_fn(a: float, b: float, n: int, lam: float = 2.0) -> float:
     r"""Computes integral used to calculate smoothly decreasing function :math:`k_{\lambda}`.
 
     Intermediate step used to compute the wavelet and scaling function generating functions. Uses the trapezium method to integrate :func:`~tiling_integrand` in the limits from :math:`a \rightarrow b` with scaling parameter :math:`\lambda`. One of the basic mathematical functions needed to carry out the tiling of the harmonic space.
@@ -37,13 +38,14 @@ def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
 
         n (int): Number of steps to be performed during integration.
 
-        lam (float): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-
-    Returns:
-        (float): Integral of the tiling integrand from :math:`a \rightarrow b`.
+        lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+            Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
 
     Raises:
         TypeError: If :math:`n` is not of type integer
+
+    Returns:
+        float: Integral of the tiling integrand from :math:`a \rightarrow b`.
     """
 
     if not isinstance(n, int) == True:
@@ -69,7 +71,7 @@ def part_scaling_fn(a: float, b: float, n: int, lam: float) -> float:
     return sum
 
 
-def tiling_direction(N: int, L: int) -> np.ndarray:
+def tiling_direction(L: int, N: int = 1) -> np.ndarray:
     r"""Generates the harmonic coefficients for the directionality component of the tiling functions.
 
     Formally, this function implements the follow equation
@@ -78,15 +80,16 @@ def tiling_direction(N: int, L: int) -> np.ndarray:
 
         _{s}\eta_{\el m} = \nu \vu \sqrt{\frac{1}{2^{\gamma}} \big ( \binom{\gamma}{(\gamma - m)/2} \big )}
 
-    which was first derived in [1].
+    which was first derived in `[1] <https://arxiv.org/pdf/1211.1680.pdf>`_.
 
     Args:
-        N (int): Upper orientational band-limit. Only flmn with :math:`n < N` will be stored.
-
         L (int): Harmonic band-limit.
 
+        N (int, optional): Upper orientational band-limit. Only flmn with :math:`n < N` will be stored.
+            Defaults to 1.
+
     Returns:
-        s_elm (np.ndarray): Harmonic coefficients of directionality components :math:`_{s}\eta_{\el m}`.
+        np.ndarray: Harmonic coefficients of directionality components :math:`_{s}\eta_{\el m}`.
 
     Notes:
         [1] J. McEwen et. al., "Directional spin wavelets on the sphere", arXiv preprint arXiv:1509.06749 (2015).
@@ -119,16 +122,16 @@ def tiling_direction(N: int, L: int) -> np.ndarray:
     return s_elm
 
 
-def spin_normalization(el: int, spin: int) -> float:
+def spin_normalization(el: int, spin: int = 0) -> float:
     r"""Computes the normalization factor for spin-lowered wavelets, which is :math:`\sqrt{\frac{(l+s)!}{(l-s)!}}`.
 
     Args:
-        spin (int): Spin (integer) to perform the transform.
-
         el (int): Harmonic index :math:`\el`.
 
+        spin (int): Spin of field over which to perform the transform. Defaults to 0.
+
     Returns:
-        (float): Normalization factor for spin-lowered wavelets.
+        float: Normalization factor for spin-lowered wavelets.
     """
     factor = 1
 
