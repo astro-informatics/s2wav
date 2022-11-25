@@ -54,6 +54,9 @@ def synthesis_transform(
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
 
+    Raises:
+        AssertionError: Shape of wavelet/scaling coefficients incorrect.
+
     Returns:
         np.ndarray: Signal :math:`f` on the sphere with shape :math:`[n_{\theta}, n_{\phi}]`.
 
