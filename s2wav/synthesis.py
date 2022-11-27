@@ -78,16 +78,16 @@ def synthesis_transform(
 
     # Convert scaling/wavelet coefficients from pixel-space
     # to harmonic/Wigner space.
-    f_scal_lm = ssht.forward(f_scal, L)
+    f_scal_lm = ssht_to_s2wav(ssht.forward(f_scal, L), L)
     f_wav_lmn = np.zeros(flmn_shape, dtype=np.complex128)
 
     for j in range(J_min, J + 1):
         params.L0 = samples.L0(j, lam, kernel)
         temp = so3.forward(f_wav[j, ...].flatten("C"), params)
-        f_wav_lmn[j, ...] = temp.reshape(flmn_shape[1], flmn_shape[2])
+        f_wav_lmn[j, ...] = so3_to_s2wav(temp, L, N)
 
     # Generate the directional wavelet kernels
-    flm = np.zeros(L * L, dtype=np.complex128)
+    flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
     wav_lm, scal_l = filters.filters_directional(L, N, J_min, lam, spin, spin0)
 
     # Sum the all scaling harmonic coefficients for each lm
@@ -95,17 +95,51 @@ def synthesis_transform(
         for n in range(-N + 1, N, 2):
             for el in range(max(abs(spin), abs(n)), L):
                 if el != 0:
-                    lm_ind = samples.elm2ind(el, n)
-                    psi = wav_lm[j, lm_ind]
+                    psi = wav_lm[j, el, L - 1 + n]
                     for m in range(-el, el + 1):
-                        lm_ind = samples.elm2ind(el, m)
-                        flm[lm_ind] += f_wav_lmn[j, N - 1 + n, lm_ind] * psi
+                        flm[el, L - 1 + m] += (
+                            f_wav_lmn[j, N - 1 + n, el, L - 1 + m] * psi
+                        )
 
     # Sum the all scaling harmonic coefficients for each lm
     for el in range(np.abs(spin), L):
         phi = np.sqrt(4 * np.pi / (2 * el + 1)) * scal_l[el]
         for m in range(-el, el + 1):
-            lm_ind = samples.elm2ind(el, m)
-            flm[lm_ind] += f_scal_lm[lm_ind] * phi
+            flm[el, L - 1 + m] += f_scal_lm[el, L - 1 + m] * phi
 
-    return ssht.inverse(flm, L, Reality=reality)
+    return ssht.inverse(s2wav_to_ssht(flm, L), L, Reality=reality)
+
+
+def so3_to_s2wav(flmn, L, N):
+    """Temporary function to convert flmn from so3 to s2wav indexing"""
+    temp = flmn.reshape(2 * N - 1, L * L)
+    flmn_out = np.zeros((2 * N - 1, L, 2 * L - 1), dtype=np.complex128)
+    for n in range(-N + 1, N):
+        ind = 0
+        for el in range(L):
+            for m in range(-el, el + 1):
+                flmn_out[N - 1 + n, el, L - 1 + m] = temp[N - 1 + n, ind]
+                ind += 1
+    return flmn_out
+
+
+def ssht_to_s2wav(flm, L):
+    """Temporary function to convert flm from ssht to s2wav indexing"""
+    flm_out = np.zeros((L, 2 * L - 1), dtype=np.complex128)
+    ind = 0
+    for el in range(L):
+        for m in range(-el, el + 1):
+            flm_out[el, L - 1 + m] = flm[ind]
+            ind += 1
+    return flm_out
+
+
+def s2wav_to_ssht(flm, L):
+    """Temporary function to convert flm from s2wav to ssht indexing"""
+    flm_out = np.zeros(L * L, dtype=np.complex128)
+    ind = 0
+    for el in range(L):
+        for m in range(-el, el + 1):
+            flm_out[ind] = flm[el, L - 1 + m]
+            ind += 1
+    return flm_out
