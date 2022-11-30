@@ -19,7 +19,14 @@ def test_synthesis(wavelet_generator, L: int, N: int, J_min: int, lam: int):
     f_wav, f_scal = wavelet_generator(L=L, N=N, J_min=J_min, lam=lam)
 
     f = s2let.synthesis_wav2px(
-        f_wav.flatten("C"), f_scal.flatten("C"), lam, L, J_min, N, 0, upsample=True
+        f_wav.flatten("C"),
+        f_scal.flatten("C"),
+        lam,
+        L,
+        J_min,
+        N,
+        0,
+        upsample=True,
     )
     f_check = synthesis.synthesis_transform(f_wav, f_scal, L, N, J_min, lam)
 

@@ -41,7 +41,6 @@ def test_directional_admissibility(L: int, N: int, J_min: int, lam: int):
         ident[el] += 4.0 * np.pi / (2 * el + 1) * phi[el] * phi[el]
 
     for j in range(J + 1):
-        ind = spin * spin
         for el in range(np.abs(spin), L):
             for m in range(-el, el + 1):
                 ident[el] += (
@@ -49,10 +48,9 @@ def test_directional_admissibility(L: int, N: int, J_min: int, lam: int):
                     * np.pi
                     * np.pi
                     / (2 * el + 1)
-                    * psi[j, ind]
-                    * np.conj(psi[j, ind])
+                    * psi[j, el, L - 1 + m]
+                    * np.conj(psi[j, el, L - 1 + m])
                 )
-                ind += 1
 
     for el in range(max(np.abs(spin), 1), L):
         assert ident[el] == pytest.approx(
@@ -64,13 +62,33 @@ def test_directional_admissibility(L: int, N: int, J_min: int, lam: int):
 @pytest.mark.parametrize("N", N_to_test)
 def test_directional_tiling(L: int, N: int):
     s_elm = tiling.tiling_direction(L, N)
-    ind = 1
     for el in range(1, L):
         temp = 0
         for m in range(-el, el + 1):
-            temp += s_elm[ind] * np.conj(s_elm[ind])
-            ind += 1
+            temp += s_elm[el, L - 1 + m] * np.conj(s_elm[el, L - 1 + m])
 
         assert temp == pytest.approx(
             1 + 0j, rel=1e-14
         ), "Directional tiling satisfied l = " + str(el)
+
+
+@pytest.mark.parametrize("L", L_to_test)
+@pytest.mark.parametrize("J_min", J_min_to_test)
+@pytest.mark.parametrize("lam", lam_to_test)
+def test_axisym_vectorised(L: int, J_min: int, lam: int):
+    f = filters.filters_axisym(L, J_min, lam)
+    f_vect = filters.filters_axisym_vectorised(L, J_min, lam)
+    for i in range(2):
+        np.testing.assert_allclose(f[i], f_vect[i], rtol=1e-14)
+
+
+@pytest.mark.parametrize("L", L_to_test)
+@pytest.mark.parametrize("N", N_to_test)
+@pytest.mark.parametrize("J_min", J_min_to_test)
+@pytest.mark.parametrize("lam", lam_to_test)
+def test_directional_vectorised(L: int, N: int, J_min: int, lam: int):
+    f = filters.filters_directional(L, N, J_min, lam)
+    f_vect = filters.filters_directional_vectorised(L, N, J_min, lam)
+
+    for i in range(2):
+        np.testing.assert_allclose(f[i], f_vect[i], rtol=1e-14)
