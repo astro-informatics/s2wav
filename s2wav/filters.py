@@ -158,6 +158,15 @@ def filters_axisym_vectorised(
         with shape :math:`[(J+1)*L], and scaling kernel :math:`\Phi_{\el m}` with shape
         :math:`[L]` in harmonic space.
     """
+    J = samples.j_max(L, lam)
+
+    if J_min >= J or J_min < 0:
+        raise ValueError(
+            "J_min must be non-negative and less than J= "
+            + str(J)
+            + " for given L and lam."
+        )
+
     k = kernels.k_lam(L, lam)
     diff = (np.roll(k, -1, axis=0) - k)[:-1]
     diff[diff < 0] = 0
@@ -182,7 +191,7 @@ def filters_directional_vectorised(
         J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
 
         lam (float, optional): Wavelet parameter which determines the scale factor between
-            consecutive wavelet scales.Note that :math:`\lambda = 2` indicates dyadic
+            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
         spin (int, optional): Spin (integer) to perform the transform. Defaults to 0.

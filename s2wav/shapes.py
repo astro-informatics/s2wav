@@ -14,7 +14,7 @@ def f_scal(L: int, sampling: str = "mw") -> Tuple[int, int]:
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}. Defaults to "mw".
 
     Returns:
-        Tuple[int,int]: Scaling coefficients shape :math:`[n_{\theta}, n_{\phi}]`.
+        Tuple[int, int]: Scaling coefficients shape :math:`[n_{\theta}, n_{\phi}]`.
     """
     return samples.ntheta(L, sampling), samples.nphi(L, sampling)
 
@@ -39,7 +39,7 @@ def f_wav(
             Defaults to "mw".
 
     Returns:
-        Tuple[int, int, int,int]: Wavelet coefficients shape :math:`[n_{J}, n_{N}, L^2]`.
+        Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, n_{N}, L^2]`.
     """
     J = samples.j_max(L, lam)
     return (
@@ -57,7 +57,7 @@ def flm_scal(L: int) -> Tuple[int, int]:
         L (int): Harmonic bandlimit.
 
     Returns:
-        Tuple[int,int]: Scaling coefficients shape :math:`[L, 2*L-1]`.
+        Tuple[int, int]: Scaling coefficients shape :math:`[L, 2*L-1]`.
     """
     return L, 2 * L - 1
 

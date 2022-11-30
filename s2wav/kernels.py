@@ -97,7 +97,7 @@ def k_lam(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
         L (int): Harmonic band-limit.
 
         lam (float, optional): Wavelet parameter which determines the scale factor
-            between consecutive wavelet scales.Note that :math:`\lambda = 2` indicates
+            between consecutive wavelet scales. Note that :math:`\lambda = 2` indicates
             dyadic wavelets. Defaults to 2.
 
         quad_iters (int, optional): Total number of iterations for quadrature

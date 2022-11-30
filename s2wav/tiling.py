@@ -33,8 +33,6 @@ def tiling_direction(L: int, N: int = 1) -> np.ndarray:
     else:
         nu = 1j
 
-    ind = 1
-
     s_elm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
 
     for el in range(1, L):
@@ -51,8 +49,6 @@ def tiling_direction(L: int, N: int = 1) -> np.ndarray:
                 )
             else:
                 s_elm[el, L - 1 + m] = 0.0
-
-            ind += 1
 
     return s_elm
 
