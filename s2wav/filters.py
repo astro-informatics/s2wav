@@ -220,7 +220,7 @@ def filters_directional_vectorised(
 
     kappa *= np.sqrt((2 * np.arange(L) + 1) / 8.0) / np.pi
     kappa = np.einsum("ij,jk->ijk", kappa, s_elm)
-    kappa = kappa * spin_norms if spin0 != 0 else kappa
+    kappa = np.einsum("ijk,j->ijk", kappa, spin_norms) if spin0 != 0 else kappa
 
     kappa0[:el_min] = 0
     kappa[:, :el_min, :] = 0

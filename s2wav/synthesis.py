@@ -196,24 +196,91 @@ def vectorised_synthesis_transform(
 
     # Generate the directional wavelet kernels
     flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
-    wav_lm, scal_l = filters.filters_directional(L, N, J_min, lam, spin, spin0)
+    wav_lm, scal_l = filters.filters_directional_vectorised(
+        L, N, J_min, lam, spin, spin0
+    )
 
     # Sum the all scaling harmonic coefficients for each lm
     for j in range(J_min, J + 1):
         for n in range(-N + 1, N, 2):
-            add_this = np.array([np.hstack((np.zeros(L - 1 - el),  f_wav_lmn[j, N - 1 + n, el, L - 1 -el:L + el] 
-                                        * wav_lm[j, el, L - 1 + n] * int(el != 0), np.zeros(L-1-el))) 
-                                        for el in range(max(abs(spin), abs(n)), L)])
-            flm[max(abs(spin), abs(n)): L] += add_this
-            #for el in range(max(abs(spin), abs(n)), L):
-             #   flm[el, L - el -1 :L + el] += (
-              #              f_wav_lmn[j, N - 1 + n, el, L - 1 -el:L + el] * wav_lm[j, el, L - 1 + n] * int(el != 0)
-               #         )
+            add_this = np.array(
+                [
+                    np.hstack(
+                        (
+                            np.zeros(L - 1 - el),
+                            f_wav_lmn[j, N - 1 + n, el, L - 1 - el : L + el]
+                            * wav_lm[j, el, L - 1 + n]
+                            * int(el != 0),
+                            np.zeros(L - 1 - el),
+                        )
+                    )
+                    for el in range(max(abs(spin), abs(n)), L)
+                ]
+            )
+            flm[max(abs(spin), abs(n)) : L] += add_this
+            # for el in range(max(abs(spin), abs(n)), L):
+            #   flm[el, L - el -1 :L + el] += (
+            #              f_wav_lmn[j, N - 1 + n, el, L - 1 -el:L + el] * wav_lm[j, el, L - 1 + n] * int(el != 0)
+            #         )
 
     # Sum the all scaling harmonic coefficients for each lm
-    flm += np.array([np.hstack((np.zeros(L - 1 - el), f_scal_lm[el, L - 1 -el:L + el] * np.sqrt(4 * np.pi / (2 * el + 1)) * scal_l[el], np.zeros(L-1-el))) for el in range(np.abs(spin), L)])
+    flm += np.array(
+        [
+            np.hstack(
+                (
+                    np.zeros(L - 1 - el),
+                    f_scal_lm[el, L - 1 - el : L + el]
+                    * np.sqrt(4 * np.pi / (2 * el + 1))
+                    * scal_l[el],
+                    np.zeros(L - 1 - el),
+                )
+            )
+            for el in range(np.abs(spin), L)
+        ]
+    )
 
     return ssht.inverse(s2wav_to_ssht(flm, L), L, Reality=reality)
+
+
+def vectorised_synthesis_transform_matt(
+    f_wav: np.ndarray,
+    f_scal: np.ndarray,
+    L: int,
+    N: int = 1,
+    J_min: int = 0,
+    lam: float = 2.0,
+    spin: int = 0,
+    spin0: int = 0,
+    sampling: str = "mw",
+    reality: bool = False,
+) -> np.ndarray:
+    assert f_wav.shape == shapes.f_wav(L, N, J_min, lam, sampling)
+    assert f_scal.shape == shapes.f_scal(L, sampling)
+
+    J = samples.j_max(L, lam)
+    params = so3.create_parameter_dict(L=L, N=N)
+
+    f_scal_lm = ssht_to_s2wav(ssht.forward(f_scal, L), L)
+    wav_lm, scal_l = filters.filters_directional_vectorised(
+        L, N, J_min, lam, spin, spin0
+    )
+    flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
+
+    for j in range(J_min, J + 1):
+        params.L0 = samples.L0(j, lam)
+        temp = so3.forward(f_wav[j, ...].flatten("C"), params)
+        flm += np.einsum(
+            "ln,nlm->lm",
+            wav_lm[j, :, L - N : L - 1 + N : 2],
+            so3_to_s2wav(temp, L, N)[::2, :, :],
+        )
+
+    # Sum the all scaling harmonic coefficients for each lm
+    phi = scal_l * np.sqrt(4 * np.pi / (2 * np.arange(L) + 1))
+    flm += np.einsum("lm,l->lm", f_scal_lm, phi)
+
+    return ssht.inverse(s2wav_to_ssht(flm, L), L, Reality=reality)
+
 
 def generate_f_wav_scal(
     rng: np.random.Generator,
@@ -230,21 +297,24 @@ def generate_f_wav_scal(
     f_scal_shape = shapes.f_scal(L)
 
     f_wav = rng.uniform(size=f_wav_shape) + 1j * rng.uniform(size=f_wav_shape)
-    f_scal = rng.uniform(size=f_scal_shape) + 1j * rng.uniform(size=f_scal_shape)
+    f_scal = rng.uniform(size=f_scal_shape) + 1j * rng.uniform(
+        size=f_scal_shape
+    )
 
     return f_wav, f_scal
 
 
 if __name__ == "__main__":
-    L=8 
-    N=4 
-    J_min=0 
-    lam=2
+    L = 8
+    N = 4
+    J_min = 0
+    lam = 2
 
-    f_wav, f_scal = generate_f_wav_scal(np.random.default_rng(0), L=L, N=N, J_min=J_min, lam=lam)
+    f_wav, f_scal = generate_f_wav_scal(
+        np.random.default_rng(0), L=L, N=N, J_min=J_min, lam=lam
+    )
 
     f = vectorised_synthesis_transform(f_wav, f_scal, L, N, J_min, lam)
     f_check = synthesis_transform(f_wav, f_scal, L, N, J_min, lam)
 
     assert np.allclose(f, f_check)
-

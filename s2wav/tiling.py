@@ -87,8 +87,6 @@ def spin_normalization_vectorised(el: np.ndarray, spin: int = 0) -> float:
     Returns:
         float: Normalization factor for spin-lowered wavelets.
     """
-    factor = np.arange(-abs(spin) + 1, abs(spin) + 1).reshape(
-        1, 2 * abs(spin) + 1
-    )
-    factor = el.reshape(len(el), 1).dot(factor)
+    s = np.arange(-abs(spin) + 1, abs(spin) + 1)
+    factor = np.repeat(el[:, np.newaxis], 2 * abs(spin), axis=1) + s
     return np.sqrt(np.prod(factor, axis=1) ** (np.sign(spin)))
