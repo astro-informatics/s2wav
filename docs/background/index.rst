@@ -1,20 +1,17 @@
-**********************************************
-Some background information
-**********************************************
+
+Mathematics
+============
 Add some back ground text here 
 
-A subtitle alluding to more details
-=======================================================
+More details...
+--------------------
 Some more details 
 
-.. tabs::
+Some maths?
+--------------------
+maths
 
-   .. tab:: Some
 
-   .. tab:: Nice
-
-   .. tab:: Tabs
-
-.. note:: A note for additional practical or theoretical considerations!
-
-..warning:: A warning for something that could or has gone wrong!
+Some graphs?
+--------------------
+graphs

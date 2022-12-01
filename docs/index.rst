@@ -1,23 +1,7 @@
-|GitHub| |Build Status| |Docs| |CodeCov| |GPL license| |ArXiv|
+S2WAV: JAX accelerated spin-spherical harmonic transforms
+=========================================================
 
-.. |GitHub| image:: https://img.shields.io/badge/GitHub-s2wav-brightgreen.svg?style=flat
-    :target: https://github.com/astro-informatics/s2wav
-.. |Build Status| image:: https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml/badge.svg?branch=main
-    :target: https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml
-.. |Docs| image:: https://readthedocs.org/projects/ansicolortags/badge/?version=latest
-    :target: https://astro-informatics.github.io/s2wav
-.. |CodeCov| image:: https://codecov.io/gh/astro-informatics/code_template/branch/main/graph/badge.svg?token=8QMXOZK746
-    :target: https://codecov.io/gh/astro-informatics/code_template
-.. |GPL License| image:: https://img.shields.io/badge/License-GPL-blue.svg
-    :target: http://perso.crans.org/besson/LICENSE.html
-.. |ArXiv| image:: http://img.shields.io/badge/arXiv-xxxx.xxxxx-orange.svg?style=flat
-    :target: https://arxiv.org/abs/xxxx.xxxxx
-
-
-s2wav
-=================================================================================================================
-
-Add some basic discussion about ``s2wav`` here.
+Add some basic discussion about ``S2WAV`` here.
 
 Installation
 ============
@@ -35,11 +19,11 @@ Author names & Contributors
 
 Attribution
 ===========
-A BibTeX entry for s2wav is:
+A BibTeX entry for ``S2WAV`` is:
 
 .. code-block:: 
 
-     @article{s2wav, 
+     @article{S2WAV, 
         author = {Author~List},
          title = {"A totally amazing name"},
        journal = {ArXiv},
@@ -50,22 +34,20 @@ A BibTeX entry for s2wav is:
 License
 =======
 
-s2wav is released under the GPL-3 license (see `LICENSE.txt <https://github.com/astro-informatics/s2wav/blob/main/LICENSE.txt>`_),
+``S2WAV`` is released under the MIT license (see `LICENSE.txt <https://github.com/astro-informatics/S2WAV/blob/main/LICENCE.txt>`_).
 
 .. code-block::
 
-     s2wav
-     Copyright (C) 2022 Author names & contributors
+     S2WAV
+     Copyright (C) 2022 Matthew Price, Jason McEwen, Jessica Whitney, Alicja Polanska.
 
-     This program is released under the GPL-3 license (see LICENSE.txt).
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+     This program is released under the MIT license.
 
 .. bibliography:: 
     :notcited:
     :list: bullet
+
+* :ref:`modindex`
 
 .. toctree::
    :hidden:
@@ -84,17 +66,15 @@ s2wav is released under the GPL-3 license (see `LICENSE.txt <https://github.com/
 
 .. toctree::
    :hidden:
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Interactive Tutorials
    
    tutorials/example_notebook.nblink
 
 .. toctree::
    :hidden:
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: API
 
    api/index
-
-
 
