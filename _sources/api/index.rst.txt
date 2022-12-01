@@ -1,16 +1,16 @@
+:html_theme.sidebar_secondary.remove:
+
 **************************
-Namespaces
+API
 **************************
-Automatically generated documentation for **s2wav** APIs. All functionality is accessible through a pip installation of the **s2wav** package.
+Automatically generated documentation for ``S2WAV`` APIs. All functionality is accessible through a pip installation of the ``S2WAV`` package.
 
-.. tabs:: 
-	
-	.. tab:: Logs
+.. toctree::
+   :maxdepth: 1
+   :caption: Namespaces
 
-		.. include:: logs.rst
-	
-	.. tab:: some
-
-	.. tab:: other
-
-	.. tab:: apis
+   transforms/index
+   filters/index
+   samples/index
+   utility/index
+   logs/index
