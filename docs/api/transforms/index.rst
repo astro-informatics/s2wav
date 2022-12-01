@@ -1,16 +1,13 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-API
+Wavelet Transforms
 **************************
 Automatically generated documentation for ``S2WAV`` APIs. All functionality is accessible through a pip installation of the ``S2WAV`` package.
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Namespaces
+   :maxdepth: 2
+   :caption: Wavelet transform
 
-   transforms/index
-   filters/index
-   samples/index
-   utility/index
-   logs/index
+   transforms
+   
