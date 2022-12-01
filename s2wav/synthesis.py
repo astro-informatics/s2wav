@@ -1,6 +1,5 @@
 import numpy as np
 from s2wav import samples, filters, shapes
-from functools import partial
 from typing import Tuple
 
 # TODO: Switch to S2FFT
@@ -201,12 +200,14 @@ def vectorised_synthesis_transform(
     for j in range(J_min, J + 1):
         for n in range(-N + 1, N, 2):
             for el in range(max(abs(spin), abs(n)), L):
-                if el != 0:
-                    flm[el**2:el**2+2*el+1] += f_wav_lmn[j, N - 1 + n, el**2:el**2+2*el+1] * wav_lm[j, el**2 + el + n]
+                flm[el**2:el**2+2*el+1] += f_wav_lmn[j, N - 1 + n, el**2:el**2+2*el+1] * wav_lm[j, el**2 + el + n]*int(el != 0)
+                    #print(el**2, el**2+2*el+1)
+
 
     # Sum the all scaling harmonic coefficients for each lm
     for el in range(np.abs(spin), L):
         flm[el**2:el**2+2*el+1] += f_scal_lm[el**2:el**2+2*el+1] * np.sqrt(4 * np.pi / (2 * el + 1)) * scal_l[el]
+        print(el**2, el**2+2*el+1)
 
     return ssht.inverse(flm, L, Reality=reality)
 
