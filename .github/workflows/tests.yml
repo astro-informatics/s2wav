@@ -34,5 +34,5 @@ jobs:
     - name: Run tests
       run: |
         pytest --cov-report term --cov=s2wav --cov-config=.coveragerc 
-        codecov --token 1f998eff-7a78-4160-91c1-3376fb435d21
+        codecov --token ac038325-9d87-464b-983e-a55afca9e9ce
 
