@@ -53,3 +53,24 @@ def test_analysis(wavelet_generator, L: int, N: int, J_min: int, lam: int):
 
     np.testing.assert_allclose(f_wav, f_wav_check.flatten("C"), atol=1e-14)
     np.testing.assert_allclose(f_scal, f_scal_check.flatten("C"), atol=1e-14)
+
+@pytest.mark.parametrize("L", L_to_test)
+@pytest.mark.parametrize("N", N_to_test)
+@pytest.mark.parametrize("J_min", J_min_to_test)
+@pytest.mark.parametrize("lam", lam_to_test)
+def test_analysis_vectorised(wavelet_generator, L: int, N: int, J_min: int, lam: int):
+    f = np.random.randn(L, 2 * L - 1) + 1j * np.random.randn(L, 2 * L - 1)
+
+    f_wav, f_scal = s2let.analysis_px2wav(
+        f.flatten("C"),
+        lam,
+        L,
+        J_min,
+        N,
+        0,
+        upsample=True,
+    )
+    f_wav_check, f_scal_check = analysis.analysis_transform_vectorised(f, L, N, J_min, lam)
+
+    np.testing.assert_allclose(f_wav, f_wav_check.flatten("C"), atol=1e-14)
+    np.testing.assert_allclose(f_scal, f_scal_check.flatten("C"), atol=1e-14)
