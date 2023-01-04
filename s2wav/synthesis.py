@@ -104,8 +104,13 @@ def synthesis_transform(
     # Sum the all scaling harmonic coefficients for each lm
     for el in range(np.abs(spin), L):
         phi = np.sqrt(4 * np.pi / (2 * el + 1)) * scal_l[el]
-        for m in range(-el, el + 1):
+        flm[el, 0 + L - 1] = f_scal_lm[el, L - 1 + 0] * phi
+        for m in range(1, el + 1):
             flm[el, L - 1 + m] += f_scal_lm[el, L - 1 + m] * phi
+            if reality:
+                flm[el, -m + L - 1] = (-1) ** m * np.conj(flm[el, m + L - 1])
+            else:
+                flm[el, -m + L - 1] = f_scal_lm[el, L - 1 - m] * phi
 
     return ssht.inverse(s2wav_to_ssht(flm, L), L, Reality=reality)
 
