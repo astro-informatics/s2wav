@@ -25,7 +25,7 @@ def test_reality_synthesis(wavelet_generator, L: int, N: int, J_min: int, lam: i
         N,
         0,
         upsample=True,
-        reality=True
+        Reality=True
     )
     f_check = synthesis.synthesis_transform(f_wav, f_scal, L, N, J_min, lam, reality=True)
 
@@ -46,7 +46,7 @@ def test_reality_analysis(wavelet_generator, L: int, N: int, J_min: int, lam: in
         N,
         0,
         upsample=True,
-        reality=True
+        Reality=True
     )
     f_wav_check, f_scal_check = analysis.analysis_transform(f, L, N, J_min, lam, reality=True)
 
