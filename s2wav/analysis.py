@@ -66,10 +66,23 @@ def analysis_transform(
                 if el != 0:
                     psi = np.conj(wav_lm[j, el, L - 1 + n])
                     psi *= 8 * np.pi**2 / (2 * el + 1)
-                    for m in range(-el, el + 1):
+
+                    f_wav_lmn[j, N - 1 + n, el, L - 1] = flm[el, L - 1] * psi
+                    for m in range(1, el + 1):
                         f_wav_lmn[j, N - 1 + n, el, L - 1 + m] = (
-                            flm[el, L - 1 + m] * psi
-                        )
+                            flm[el, L - 1 + m] * psi         
+                        )     
+                        if reality:
+                            f_wav_lmn[j, N - 1 + n, el, L - 1 - m] = (
+                                (-1) ** m * np.conj(flm[el, m + L - 1]) * psi
+                            )        
+                        else:
+                            f_wav_lmn[j, N - 1 + n, el, L - 1 - m] = (
+                                flm[el, L - 1 - m] * psi
+                            )
+
+
+
 
     for el in range(abs(spin), L):
         phi = np.sqrt(4.0 * np.pi / (2 * el + 1)) * scal_l[el]
