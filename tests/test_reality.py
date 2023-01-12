@@ -16,7 +16,7 @@ def test_reality_synthesis(wavelet_generator, L: int, N: int, J_min: int, lam: i
     f_wav, f_scal = wavelet_generator(L=L, N=N, J_min=J_min, lam=lam)
 
 
-    f = s2let.synthesis_wav2px(
+    f = s2let.synthesis_wav2px_real(
         f_wav.flatten("C"),
         f_scal.flatten("C"),
         lam,
@@ -25,7 +25,6 @@ def test_reality_synthesis(wavelet_generator, L: int, N: int, J_min: int, lam: i
         N,
         0,
         upsample=True,
-        Reality=True
     )
     f_check = synthesis.synthesis_transform(f_wav, f_scal, L, N, J_min, lam, reality=True)
 
@@ -38,7 +37,7 @@ def test_reality_synthesis(wavelet_generator, L: int, N: int, J_min: int, lam: i
 def test_reality_analysis(wavelet_generator, L: int, N: int, J_min: int, lam: int):
     f = np.random.randn(L, 2 * L - 1) + 1j * np.random.randn(L, 2 * L - 1)
 
-    f_wav, f_scal = s2let.analysis_px2wav(
+    f_wav, f_scal = s2let.analysis_px2wav_real(
         f.flatten("C"),
         lam,
         L,
@@ -46,7 +45,6 @@ def test_reality_analysis(wavelet_generator, L: int, N: int, J_min: int, lam: in
         N,
         0,
         upsample=True,
-        Reality=True
     )
     f_wav_check, f_scal_check = analysis.analysis_transform(f, L, N, J_min, lam, reality=True)
 
