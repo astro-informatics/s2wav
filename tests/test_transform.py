@@ -15,7 +15,28 @@ lam_to_test = [2, 3]
 @pytest.mark.parametrize("N", N_to_test)
 @pytest.mark.parametrize("J_min", J_min_to_test)
 @pytest.mark.parametrize("lam", lam_to_test)
-def test_synthesis(wavelet_generator, L: int, N: int, J_min: int, lam: int):
+def test_synthesis_unvectorised(wavelet_generator, L: int, N: int, J_min: int, lam: int):
+    f_wav, f_scal = wavelet_generator(L=L, N=N, J_min=J_min, lam=lam)
+
+    f = s2let.synthesis_wav2px(
+        f_wav.flatten("C"),
+        f_scal.flatten("C"),
+        lam,
+        L,
+        J_min,
+        N,
+        0,
+        upsample=True,
+    )
+    f_check = synthesis.synthesis_transform_slow(f_wav, f_scal, L, N, J_min, lam)
+
+    np.testing.assert_allclose(f, f_check.flatten("C"), atol=1e-14)
+
+@pytest.mark.parametrize("L", L_to_test)
+@pytest.mark.parametrize("N", N_to_test)
+@pytest.mark.parametrize("J_min", J_min_to_test)
+@pytest.mark.parametrize("lam", lam_to_test)
+def test_vectorised_synthesis(wavelet_generator, L: int, N: int, J_min: int, lam: int):
     f_wav, f_scal = wavelet_generator(L=L, N=N, J_min=J_min, lam=lam)
 
     f = s2let.synthesis_wav2px(
