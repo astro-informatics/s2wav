@@ -1,6 +1,7 @@
 import pytest
 from s2wav import analysis, synthesis
 import pys2let as s2let
+import numpy as np
 
 L_to_test = [8, 16, 32]
 N_to_test = [4, 6, 8]
