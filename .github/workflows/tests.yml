@@ -34,7 +34,7 @@ jobs:
     - name: Install package
       run: |
         cd ..
-        git clone -b feature/precomptue --single-branch git@github.com:astro-informatics/s2fft.git
+        git clone -b feature/precompute --single-branch git@github.com:astro-informatics/s2fft.git
         cd s2fft && pip install . && cd ../s2wav && pwd
 
         sudo apt install pandoc
