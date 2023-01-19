@@ -33,12 +33,13 @@ jobs:
     
     - name: Install package
       run: |
-        git clone git@github.com:astro-informatics/s2fft.git
+        cd ..
+        git clone --branch feature/precomptue git@github.com:astro-informatics/s2fft.git
+        cd s2fft && pip install . && cd ../s2wav && pwd
+
         sudo apt install pandoc
         python -m pip install --upgrade pip 
-        
-        pip install git+ssh://github.com/astro-informatics/s2fft.git@feature/precompute  
-
+      
         bash build_s2wav.sh
     
     - name: Run tests
