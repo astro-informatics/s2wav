@@ -14,7 +14,6 @@ def analysis_transform(
     spin: int = 0,
     spin0: int = 0,
     sampling: str = "mw",
-    kernel: str = "s2dw",
     reality: bool = False,
     multiresolution: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -37,8 +36,6 @@ def analysis_transform(
         spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
 
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}. Defaults to "mw".
-
-        kernel (str, optional): The wavelet type from {"s2dw"}. Defaults to "s2dw".
 
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
             conjugate symmetry of harmonic coefficients. Defaults to False.
@@ -68,7 +65,7 @@ def analysis_transform(
                     psi = np.conj(wav_lm[j, el, L - 1 + n])
                     psi *= 8 * np.pi**2 / (2 * el + 1)
                     for m in range(-el, el + 1):
-                        f_wav_lmn[j, N - 1 + n, el, L - 1 + m] = (
+                        f_wav_lmn[j - J_min, N - 1 + n, el, L - 1 + m] = (
                             flm[el, L - 1 + m] * psi
                         )
 
@@ -81,9 +78,9 @@ def analysis_transform(
     f_wav = np.zeros(shapes.f_wav(L, N, J_min, lam), dtype=np.complex128)
 
     for j in range(J_min, J + 1):
-        params.L0 = samples.L0(j, lam, kernel)
-        temp = so3.inverse(s2wav_to_so3(f_wav_lmn[j, ...], L, N), params)
-        f_wav[j, ...] = temp.reshape(2 * N - 1, L, 2 * L - 1)
+        params.L0 = samples.L0(j, lam)
+        temp = so3.inverse(s2wav_to_so3(f_wav_lmn[j - J_min], L, N), params)
+        f_wav[j - J_min] = temp.reshape(2 * N - 1, L, 2 * L - 1)
 
     f_scal = ssht.inverse(s2wav_to_ssht(f_scal_lm, L), L)
 
@@ -99,7 +96,6 @@ def analysis_transform_vectorised(
     spin: int = 0,
     spin0: int = 0,
     sampling: str = "mw",
-    kernel: str = "s2dw",
     reality: bool = False,
     multiresolution: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -122,8 +118,6 @@ def analysis_transform_vectorised(
         spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
 
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}. Defaults to "mw".
-
-        kernel (str, optional): The wavelet type from {"s2dw"}. Defaults to "s2dw".
 
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
             conjugate symmetry of harmonic coefficients. Defaults to False.
@@ -149,23 +143,36 @@ def analysis_transform_vectorised(
     for j in range(J_min, J + 1):
         for n in range(-N + 1, N, 2):
             lower_bound = max(abs(spin), abs(n))
-            PSI = np.conj(wav_lm[j, lower_bound:L, L - 1 + n]) * 8 * np.pi ** 2 / (2 * np.arange(lower_bound, L) + 1)
-            f_wav_lmn[j, N - 1 + n, lower_bound:L , :] = np.einsum("lm,l->lm",flm[lower_bound:L, :], PSI)
+            PSI = (
+                np.conj(wav_lm[j, lower_bound:L, L - 1 + n])
+                * 8
+                * np.pi**2
+                / (2 * np.arange(lower_bound, L) + 1)
+            )
+            f_wav_lmn[j - J_min, N - 1 + n, lower_bound:L, :] = np.einsum(
+                "lm,l->lm", flm[lower_bound:L, :], PSI
+            )
 
-    PHI = np.sqrt(4.0* np.pi / (2 * np.arange(abs(spin), L) + 1)) * scal_l[abs(spin):L]
-    f_scal_lm[abs(spin):L, :] = np.einsum("lm,l->lm",flm[abs(spin):L, :], PHI)
+    PHI = (
+        np.sqrt(4.0 * np.pi / (2 * np.arange(abs(spin), L) + 1))
+        * scal_l[abs(spin) : L]
+    )
+    f_scal_lm[abs(spin) : L, :] = np.einsum(
+        "lm,l->lm", flm[abs(spin) : L, :], PHI
+    )
 
     params = so3.create_parameter_dict(L=L, N=N)
     f_wav = np.zeros(shapes.f_wav(L, N, J_min, lam), dtype=np.complex128)
 
     for j in range(J_min, J + 1):
-        params.L0 = samples.L0(j, lam, kernel)
-        temp = so3.inverse(s2wav_to_so3(f_wav_lmn[j, ...], L, N), params)
-        f_wav[j, ...] = temp.reshape(2 * N - 1, L, 2 * L - 1)
+        params.L0 = samples.L0(j, lam)
+        temp = so3.inverse(s2wav_to_so3(f_wav_lmn[j - J_min], L, N), params)
+        f_wav[j - J_min] = temp.reshape(2 * N - 1, L, 2 * L - 1)
 
     f_scal = ssht.inverse(s2wav_to_ssht(f_scal_lm, L), L)
 
     return f_wav, f_scal
+
 
 def s2wav_to_ssht(flm, L):
     """Temporary function to convert flm from ssht to s2wav indexing"""
@@ -199,5 +206,3 @@ def s2wav_to_so3(flmn, L, N):
                 flmn_out[N - 1 + n, ind] = flmn[N - 1 + n, el, L - 1 + m]
                 ind += 1
     return flmn_out.flatten("C")
-
-
