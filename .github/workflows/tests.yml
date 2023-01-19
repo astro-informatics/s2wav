@@ -27,10 +27,13 @@ jobs:
     
     - name: Install package
       run: |
+        sudo apt install pandoc
+        python -m pip install --upgrade pip 
+        
         eval `ssh-agent -s`
         ssh-add - <<< '${{ secrets.S2FFT_SECRET }}'
-        sudo apt install pandoc
-        python -m pip install --upgrade pip    
+        pip install git+ssh://github.com/astro-informatics/s2fft.git@feature/precompute  
+
         bash build_s2wav.sh
     
     - name: Run tests
