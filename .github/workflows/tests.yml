@@ -27,6 +27,8 @@ jobs:
     
     - name: Install package
       run: |
+        eval `ssh-agent -s`
+        ssh-add - <<< '${{ secrets.S2FFT_SECRET }}'
         sudo apt install pandoc
         python -m pip install --upgrade pip    
         bash build_s2wav.sh
