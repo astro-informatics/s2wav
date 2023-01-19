@@ -17,11 +17,11 @@ jobs:
 
     steps:
     - name: Setup SSH
-      uses: MrSquaare/ssh-setup-action@v1
+      uses: MrSquaare/ssh-setup-action@v2
       with:
           host: github.com
           private-key: ${{ secrets.S2FFT_SECRET }}
-          
+
     - name: Checkout Source
       uses: actions/checkout@v2.3.1
 
@@ -32,10 +32,12 @@ jobs:
     
     - name: Install package
       run: |
+        cd ..
+        git clone -b feature/precompute --single-branch git@github.com:astro-informatics/s2fft.git
+        cd s2fft && pip install . && cd ../s2wav && pwd
+
         sudo apt install pandoc
         python -m pip install --upgrade pip    
-
-        pip install git+ssh://github.com/astro-informatics/s2fft.git@feature/precompute
 
         bash build_s2wav.sh
 
