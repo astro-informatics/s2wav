@@ -17,6 +17,12 @@ jobs:
         python-version: [3.8]
 
     steps:
+    - name: Setup SSH
+      uses: MrSquaare/ssh-setup-action@v1
+      with:
+          host: github.com
+          private-key: ${{ secrets.S2FFT_SECRET }}
+
     - name: Checkout Source
       uses: actions/checkout@v2.3.1
     
@@ -26,9 +32,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
     
     - name: Install package
-      with:
-            host: github.com
-            private-key: ${{ secrets.S2FFT_SECRET }}
       run: |
         sudo apt install pandoc
         python -m pip install --upgrade pip 
