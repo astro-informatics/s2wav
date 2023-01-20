@@ -1,8 +1,6 @@
 import numpy as np
 from typing import Tuple
 from s2wav import samples, filters, shapes
-import so3
-import pyssht as ssht
 import s2fft
 
 
