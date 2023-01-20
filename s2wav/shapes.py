@@ -177,7 +177,49 @@ def f_wav_j(
     )
 
 
-def flm_scal(
+def construct_f(
+    L: int,
+    N: int = 1,
+    J_min: int = 0,
+    lam: float = 2.0,
+    sampling: str = "mw",
+    multiresolution: bool = False,
+) -> np.ndarray:
+    """Defines a list of arrays corresponding to f_wav.
+
+    Args:
+        L (int): Harmonic bandlimit.
+
+        N (int, optional): Upper orientational band-limit. Defaults to 1.
+
+        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
+
+        lam (float, optional): Wavelet parameter which determines the scale factor between
+            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
+            wavelets. Defaults to 2.
+
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}.
+            Defaults to "mw".
+
+        multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
+            resolution or its own resolution. Defaults to False.
+
+    Returns:
+        Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
+    """
+    J = samples.j_max(L, lam)
+    f = []
+    for j in range(J_min, J + 1):
+        f.append(
+            np.zeros(
+                f_wav_j(L, j, N, lam, sampling, multiresolution),
+                dtype=np.complex128,
+            )
+        )
+    return f
+
+
+def construct_flm(
     L: int, J_min: int = 0, lam: float = 2.0, multiresolution: bool = False
 ) -> Tuple[int, int]:
     r"""Returns the shape of scaling coefficients in harmonic space.
@@ -198,7 +240,7 @@ def flm_scal(
         Tuple[int, int]: Scaling coefficients shape :math:`[L, 2*L-1]`.
     """
     L_s = scal_bandlimit(L, J_min, lam, multiresolution)
-    return L_s, 2 * L_s - 1
+    return np.zeros((L_s, 2 * L_s - 1), dtype=np.complex128)
 
 
 def scal_bandlimit(

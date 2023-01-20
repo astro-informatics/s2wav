@@ -80,7 +80,7 @@ def s2wav_to_s2let(
     lam: float = 2.0,
     multiresolution: bool = False,
 ) -> int:
-    from s2wav import shapes, samples
+    from s2wav import samples
 
     J = samples.j_max(L, lam)
     f_wav_s2let = np.zeros(
@@ -121,5 +121,19 @@ def rng(seed):
 
 
 @pytest.fixture
+def f_wav_converter():
+    return s2wav_to_s2let
+
+
+@pytest.fixture
 def wavelet_generator(rng):
     return partial(generate_f_wav_scal, rng)
+
+
+@pytest.fixture
+def flm_generator(rng):
+    # Import s2fft (and indirectly numpy) locally to avoid
+    # `RuntimeWarning: numpy.ndarray size changed` when importing at module level
+    import s2fft
+
+    return partial(s2fft.utils.generate_flm, rng)

@@ -2,8 +2,8 @@ import pytest
 import numpy as np
 import pys2let as s2let
 
-from s2wav import synthesis, analysis
-
+from s2wav import synthesis, analysis, samples
+import s2fft
 
 L_to_test = [8, 10]
 N_to_test = [1, 2, 3]
@@ -86,8 +86,18 @@ def test_synthesis_vectorised(
 @pytest.mark.parametrize("N", N_to_test)
 @pytest.mark.parametrize("J_min", J_min_to_test)
 @pytest.mark.parametrize("lam", lam_to_test)
-def test_analysis(L: int, N: int, J_min: int, lam: int):
-    f = np.random.randn(L, 2 * L - 1) + 1j * np.random.randn(L, 2 * L - 1)
+@pytest.mark.parametrize("multiresolution", multiresolution)
+def test_analysis_looped(
+    flm_generator,
+    f_wav_converter,
+    L: int,
+    N: int,
+    J_min: int,
+    lam: int,
+    multiresolution: bool,
+):
+    flm = flm_generator(L=L, L_lower=0, spin=0, reality=False)
+    f = s2fft.transform.inverse(flm, L)
 
     f_wav, f_scal = s2let.analysis_px2wav(
         f.flatten("C"),
@@ -95,12 +105,16 @@ def test_analysis(L: int, N: int, J_min: int, lam: int):
         L,
         J_min,
         N,
-        0,
-        upsample=True,
+        spin=0,
+        upsample=not multiresolution,
     )
-    f_wav_check, f_scal_check = analysis.analysis_transform(f, L, N, J_min, lam)
-
-    np.testing.assert_allclose(f_wav, f_wav_check.flatten("C"), atol=1e-14)
+    f_wav_check, f_scal_check = analysis.analysis_transform_looped(
+        f, L, N, J_min, lam, multiresolution=multiresolution
+    )
+    f_wav_check = f_wav_converter(
+        f_wav_check, L, N, J_min, lam, multiresolution
+    )
+    np.testing.assert_allclose(f_wav, f_wav_check, atol=1e-14)
     np.testing.assert_allclose(f_scal, f_scal_check.flatten("C"), atol=1e-14)
 
 
@@ -108,8 +122,18 @@ def test_analysis(L: int, N: int, J_min: int, lam: int):
 @pytest.mark.parametrize("N", N_to_test)
 @pytest.mark.parametrize("J_min", J_min_to_test)
 @pytest.mark.parametrize("lam", lam_to_test)
-def test_analysis_vectorised(L: int, N: int, J_min: int, lam: int):
-    f = np.random.randn(L, 2 * L - 1) + 1j * np.random.randn(L, 2 * L - 1)
+@pytest.mark.parametrize("multiresolution", multiresolution)
+def test_analysis_vectorised(
+    flm_generator,
+    f_wav_converter,
+    L: int,
+    N: int,
+    J_min: int,
+    lam: int,
+    multiresolution: bool,
+):
+    flm = flm_generator(L=L, L_lower=0, spin=0, reality=False)
+    f = s2fft.transform.inverse(flm, L)
 
     f_wav, f_scal = s2let.analysis_px2wav(
         f.flatten("C"),
@@ -117,12 +141,15 @@ def test_analysis_vectorised(L: int, N: int, J_min: int, lam: int):
         L,
         J_min,
         N,
-        0,
-        upsample=True,
+        spin=0,
+        upsample=not multiresolution,
     )
     f_wav_check, f_scal_check = analysis.analysis_transform_vectorised(
-        f, L, N, J_min, lam
+        f, L, N, J_min, lam, multiresolution=multiresolution
     )
 
+    f_wav_check = f_wav_converter(
+        f_wav_check, L, N, J_min, lam, multiresolution
+    )
     np.testing.assert_allclose(f_wav, f_wav_check.flatten("C"), atol=1e-14)
     np.testing.assert_allclose(f_scal, f_scal_check.flatten("C"), atol=1e-14)

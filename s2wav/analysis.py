@@ -3,9 +3,10 @@ from typing import Tuple
 from s2wav import samples, filters, shapes
 import so3
 import pyssht as ssht
+import s2fft
 
 
-def analysis_transform(
+def analysis_transform_looped(
     f: np.ndarray,
     L: int,
     N: int = 1,
@@ -50,40 +51,40 @@ def analysis_transform(
         f_scal (np.ndarray): Array of scaling pixel-space coefficients
             with shape :math:`[n_{\theta}, n_{\phi}]`.
     """
-    flm = ssht_to_s2wav(ssht.forward(f, L, Reality=reality), L)
     J = samples.j_max(L, lam)
+    Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
 
-    f_wav_lmn = np.zeros(shapes.flmn_wav(L, N, J_min, lam), dtype=np.complex128)
-    f_scal_lm = np.zeros(shapes.flm_scal(L), dtype=np.complex128)
-
+    f_scal_lm = shapes.construct_flm(L, J_min, lam, multiresolution)
+    f_wav_lmn = shapes.construct_flmn(L, N, J_min, lam, multiresolution)
     wav_lm, scal_l = filters.filters_directional(L, N, J_min, lam, spin, spin0)
 
+    flm = s2fft.transform.forward(f, L, spin, sampling)
+
     for j in range(J_min, J + 1):
-        for n in range(-N + 1, N, 2):
-            for el in range(max(abs(spin), abs(n)), L):
+        Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
+        for n in range(-Nj + 1, Nj, 2):
+            for el in range(max(abs(spin), abs(n)), Lj):
                 if el != 0:
                     psi = np.conj(wav_lm[j, el, L - 1 + n])
                     psi *= 8 * np.pi**2 / (2 * el + 1)
                     for m in range(-el, el + 1):
-                        f_wav_lmn[j - J_min, N - 1 + n, el, L - 1 + m] = (
+                        f_wav_lmn[j - J_min][Nj - 1 + n, el, Lj - 1 + m] = (
                             flm[el, L - 1 + m] * psi
                         )
 
-    for el in range(abs(spin), L):
+    for el in range(abs(spin), Ls):
         phi = np.sqrt(4.0 * np.pi / (2 * el + 1)) * scal_l[el]
         for m in range(-el, el + 1):
-            f_scal_lm[el, L - 1 + m] = flm[el, L - 1 + m] * phi
+            f_scal_lm[el, Ls - 1 + m] = flm[el, L - 1 + m] * phi
 
-    params = so3.create_parameter_dict(L=L, N=N)
-    f_wav = np.zeros(shapes.f_wav(L, N, J_min, lam), dtype=np.complex128)
-
+    f_wav = shapes.construct_f(L, N, J_min, lam, sampling, multiresolution)
     for j in range(J_min, J + 1):
-        params.L0 = samples.L0(j, lam)
-        temp = so3.inverse(s2wav_to_so3(f_wav_lmn[j - J_min], L, N), params)
-        f_wav[j - J_min] = temp.reshape(2 * N - 1, L, 2 * L - 1)
+        Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
+        f_wav[j - J_min] = s2fft.wigner.transform.inverse(
+            f_wav_lmn[j - J_min], Lj, Nj, 0, sampling
+        )
 
-    f_scal = ssht.inverse(s2wav_to_ssht(f_scal_lm, L), L)
-
+    f_scal = s2fft.transform.inverse(f_scal_lm, Ls, spin, sampling)
     return f_wav, f_scal
 
 
@@ -132,77 +133,38 @@ def analysis_transform_vectorised(
         f_scal (np.ndarray): Array of scaling pixel-space coefficients
             with shape :math:`[n_{\theta}, n_{\phi}]`.
     """
-    flm = ssht_to_s2wav(ssht.forward(f, L, Reality=reality), L)
     J = samples.j_max(L, lam)
+    Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
 
-    f_wav_lmn = np.zeros(shapes.flmn_wav(L, N, J_min, lam), dtype=np.complex128)
-    f_scal_lm = np.zeros(shapes.flm_scal(L), dtype=np.complex128)
+    f_scal_lm = shapes.construct_flm(L, J_min, lam, multiresolution)
+    f_wav_lmn = shapes.construct_flmn(L, N, J_min, lam, multiresolution)
+    f_wav = shapes.construct_f(L, N, J_min, lam, sampling, multiresolution)
 
-    wav_lm, scal_l = filters.filters_directional(L, N, J_min, lam, spin, spin0)
-
-    for j in range(J_min, J + 1):
-        for n in range(-N + 1, N, 2):
-            lower_bound = max(abs(spin), abs(n))
-            PSI = (
-                np.conj(wav_lm[j, lower_bound:L, L - 1 + n])
-                * 8
-                * np.pi**2
-                / (2 * np.arange(lower_bound, L) + 1)
-            )
-            f_wav_lmn[j - J_min, N - 1 + n, lower_bound:L, :] = np.einsum(
-                "lm,l->lm", flm[lower_bound:L, :], PSI
-            )
-
-    PHI = (
-        np.sqrt(4.0 * np.pi / (2 * np.arange(abs(spin), L) + 1))
-        * scal_l[abs(spin) : L]
+    # Generate the directional wavelet kernels
+    wav_lm, scal_l = filters.filters_directional_vectorised(
+        L, N, J_min, lam, spin, spin0
     )
-    f_scal_lm[abs(spin) : L, :] = np.einsum(
-        "lm,l->lm", flm[abs(spin) : L, :], PHI
+    wav_lm = np.einsum(
+        "jln, l->jln", np.conj(wav_lm), 8 * np.pi**2 / (2 * np.arange(L) + 1)
     )
 
-    params = so3.create_parameter_dict(L=L, N=N)
-    f_wav = np.zeros(shapes.f_wav(L, N, J_min, lam), dtype=np.complex128)
+    flm = s2fft.transform.forward(f, L, spin, sampling)
 
+    # Project all wigner coefficients for each lmn onto wavelet coefficients
+    # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
-        params.L0 = samples.L0(j, lam)
-        temp = so3.inverse(s2wav_to_so3(f_wav_lmn[j - J_min], L, N), params)
-        f_wav[j - J_min] = temp.reshape(2 * N - 1, L, 2 * L - 1)
+        Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
+        f_wav_lmn[j - J_min][::2] = np.einsum(
+            "lm,ln->nlm",
+            flm[:Lj, L - Lj : L - 1 + Lj],
+            wav_lm[j, :Lj, L - Nj : L - 1 + Nj : 2],
+        )
+        f_wav[j - J_min] = s2fft.wigner.transform.inverse(
+            f_wav_lmn[j - J_min], Lj, Nj, 0, sampling
+        )
 
-    f_scal = ssht.inverse(s2wav_to_ssht(f_scal_lm, L), L)
+    # Project all harmonic coefficients for each lm onto scaling coefficients
+    phi = scal_l[:Ls] * np.sqrt(4 * np.pi / (2 * np.arange(Ls) + 1))
+    f_scal_lm = np.einsum("lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi)
 
-    return f_wav, f_scal
-
-
-def s2wav_to_ssht(flm, L):
-    """Temporary function to convert flm from ssht to s2wav indexing"""
-    flm_out = np.zeros(L * L, dtype=np.complex128)
-    ind = 0
-    for el in range(L):
-        for m in range(-el, el + 1):
-            flm_out[ind] = flm[el, L - 1 + m]
-            ind += 1
-    return flm_out
-
-
-def ssht_to_s2wav(flm, L):
-    """Temporary function to convert flm from ssht to s2wav indexing"""
-    flm_out = np.zeros((L, 2 * L - 1), dtype=np.complex128)
-    ind = 0
-    for el in range(L):
-        for m in range(-el, el + 1):
-            flm_out[el, L - 1 + m] = flm[ind]
-            ind += 1
-    return flm_out
-
-
-def s2wav_to_so3(flmn, L, N):
-    """Temporary function to convert flmn from so3 to s2wav indexing"""
-    flmn_out = np.zeros((2 * N - 1, L * L), dtype=np.complex128)
-    for n in range(-N + 1, N):
-        ind = 0
-        for el in range(L):
-            for m in range(-el, el + 1):
-                flmn_out[N - 1 + n, ind] = flmn[N - 1 + n, el, L - 1 + m]
-                ind += 1
-    return flmn_out.flatten("C")
+    return f_wav, s2fft.transform.inverse(f_scal_lm, Ls, spin, sampling)

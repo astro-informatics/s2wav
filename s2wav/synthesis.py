@@ -53,6 +53,7 @@ def synthesis_transform_looped(
     wav_lm, scal_l = filters.filters_directional(L, N, J_min, lam, spin, spin0)
 
     # Sum the all wavelet wigner coefficients for each lmn
+    # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
         Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
         temp = s2fft.wigner.transform.forward(
@@ -128,6 +129,7 @@ def synthesis_transform_vectorised(
     )
 
     # Sum the all wavelet wigner coefficients for each lmn
+    # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
         Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
         temp = s2fft.wigner.transform.forward(
