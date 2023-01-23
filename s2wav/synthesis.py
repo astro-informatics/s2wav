@@ -105,8 +105,9 @@ def synthesis_transform(
     for el in range(np.abs(spin), L):
         phi = np.sqrt(4 * np.pi / (2 * el + 1)) * scal_l[el]
         flm[el, 0 + L - 1] = f_scal_lm[el, L - 1 + 0] * phi
+        
         for m in range(1, el + 1):
-            flm[el, L - 1 + m] += f_scal_lm[el, L - 1 + m] * phi
+            flm[el, m + L - 1] = f_scal_lm[el, L - 1 + m] * phi
             if reality:
                 flm[el, -m + L - 1] = (-1) ** m * np.conj(flm[el, m + L - 1])
             else:
