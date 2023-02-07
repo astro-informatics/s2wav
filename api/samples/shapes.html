@@ -458,14 +458,128 @@
   <div class="section" id="module-s2wav.shapes">
 <span id="s2wav-shapes"></span><h1>s2wav.shapes<a class="headerlink" href="#module-s2wav.shapes" title="Permalink to this headline">#</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="s2wav.shapes.LN_j">
+<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">LN_j</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiresolution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#s2wav.shapes.LN_j" title="Permalink to this definition">#</a></dt>
+<dd><p>Computes the harmonic bandlimit and directionality for scale <span class="math notranslate nohighlight">\(j\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
+<li><p><strong>j</strong> (<em>int</em>) – Wavelet scale to consider.</p></li>
+<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – Upper orientational band-limit. Defaults to 1.</p></li>
+<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between
+consecutive wavelet scales. Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic
+wavelets. Defaults to 2.</p></li>
+<li><p><strong>sampling</strong> (<em>str</em><em>, </em><em>optional</em>) – Spherical sampling scheme from {“mw”,”mwss”}.
+Defaults to “mw”.</p></li>
+<li><p><strong>multiresolution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to store the scales at <span class="math notranslate nohighlight">\(j_{\text{max}}\)</span>
+resolution or its own resolution. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Total number of wavelet scales <span class="math notranslate nohighlight">\(n_{j}\)</span>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="s2wav.shapes.construct_f">
+<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">construct_f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J_min</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'mw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiresolution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#s2wav.shapes.construct_f" title="Permalink to this definition">#</a></dt>
+<dd><p>Defines a list of arrays corresponding to f_wav.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
+<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – Upper orientational band-limit. Defaults to 1.</p></li>
+<li><p><strong>J_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Lowest frequency wavelet scale to be used. Defaults to 0.</p></li>
+<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between
+consecutive wavelet scales. Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic
+wavelets. Defaults to 2.</p></li>
+<li><p><strong>sampling</strong> (<em>str</em><em>, </em><em>optional</em>) – Spherical sampling scheme from {“mw”,”mwss”}.
+Defaults to “mw”.</p></li>
+<li><p><strong>multiresolution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to store the scales at <span class="math notranslate nohighlight">\(j_{     ext{max}}\)</span>
+resolution or its own resolution. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Wavelet coefficients shape <span class="math notranslate nohighlight">\([n_{J}, L, 2L-1, n_{N}]\)</span>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[int, int, int, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="s2wav.shapes.construct_flm">
+<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">construct_flm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J_min</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiresolution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#s2wav.shapes.construct_flm" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the shape of scaling coefficients in harmonic space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
+<li><p><strong>J_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Lowest frequency wavelet scale to be used. Defaults to 0.</p></li>
+<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between
+consecutive wavelet scales. Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic
+wavelets. Defaults to 2.</p></li>
+<li><p><strong>multiresolution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to store the scales at <span class="math notranslate nohighlight">\(j_{\text{max}}\)</span>
+resolution or its own resolution. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Scaling coefficients shape <span class="math notranslate nohighlight">\([L, 2*L-1]\)</span>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[int, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="s2wav.shapes.construct_flmn">
+<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">construct_flmn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J_min</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiresolution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#s2wav.shapes.construct_flmn" title="Permalink to this definition">#</a></dt>
+<dd><p>Defines a list of arrays corresponding to flmn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
+<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – Upper orientational band-limit. Defaults to 1.</p></li>
+<li><p><strong>J_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Lowest frequency wavelet scale to be used. Defaults to 0.</p></li>
+<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between
+consecutive wavelet scales. Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic
+wavelets. Defaults to 2.</p></li>
+<li><p><strong>multiresolution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to store the scales at <span class="math notranslate nohighlight">\(j_{     ext{max}}\)</span>
+resolution or its own resolution. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Wavelet coefficients shape <span class="math notranslate nohighlight">\([n_{J}, L, 2L-1, n_{N}]\)</span>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[int, int, int, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="s2wav.shapes.f_scal">
-<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">f_scal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'mw'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#s2wav.shapes.f_scal" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">f_scal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J_min</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'mw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiresolution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#s2wav.shapes.f_scal" title="Permalink to this definition">#</a></dt>
 <dd><p>Computes the shape of scaling coefficients in pixel-space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
-<li><p><strong>sampling</strong> (<em>str</em><em>, </em><em>optional</em>) – Spherical sampling scheme from {“mw”,”mwss”}. Defaults to “mw”.</p></li>
+<li><p><strong>J_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Lowest frequency wavelet scale to be used. Defaults to 0.</p></li>
+<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between
+consecutive wavelet scales. Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic
+wavelets. Defaults to 2.</p></li>
+<li><p><strong>sampling</strong> (<em>str</em><em>, </em><em>optional</em>) – Spherical sampling scheme from {“mw”,”mwss”}.
+Defaults to “mw”.</p></li>
+<li><p><strong>multiresolution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to store the scales at <span class="math notranslate nohighlight">\(j_{\text{max}}\)</span>
+resolution or its own resolution. Defaults to False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -495,7 +609,7 @@ Defaults to “mw”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Wavelet coefficients shape <span class="math notranslate nohighlight">\([n_{J}, n_{N}, L^2]\)</span>.</p>
+<dd class="field-even"><p>Wavelet coefficients shape <span class="math notranslate nohighlight">\([n_{J}, n_{\theta}, n_{\phi}, n_{N}]\)</span>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Tuple[int, int, int, int]</p>
@@ -504,20 +618,39 @@ Defaults to “mw”.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="s2wav.shapes.flm_scal">
-<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">flm_scal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#s2wav.shapes.flm_scal" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the shape of scaling coefficients in harmonic space.</p>
+<dt class="sig sig-object py" id="s2wav.shapes.f_wav_j">
+<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">f_wav_j</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'mw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiresolution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#s2wav.shapes.f_wav_j" title="Permalink to this definition">#</a></dt>
+<dd><p>Computes the shape of wavelet coefficients <span class="math notranslate nohighlight">\(f^j\)</span> in pixel-space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
+<li><p><strong>j</strong> (<em>int</em>) – Wavelet scale to consider.</p></li>
+<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – Upper orientational band-limit. Defaults to 1.</p></li>
+<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between
+consecutive wavelet scales. Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic
+wavelets. Defaults to 2.</p></li>
+<li><p><strong>sampling</strong> (<em>str</em><em>, </em><em>optional</em>) – Spherical sampling scheme from {“mw”,”mwss”}.
+Defaults to “mw”.</p></li>
+<li><p><strong>multiresolution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to store the scales at <span class="math notranslate nohighlight">\(j_{\text{max}}\)</span>
+resolution or its own resolution. Defaults to False.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Scaling coefficients shape <span class="math notranslate nohighlight">\([L, 2*L-1]\)</span>.</p>
+<dd class="field-even"><p>Wavelet coefficients shape <span class="math notranslate nohighlight">\([n_{\theta}, n_{\phi}, n_{N}]\)</span>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Tuple[int, int]</p>
+<dd class="field-odd"><p>Tuple[int, int, int]</p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Each wavelet filter has compact support between a lower and upper harmonic degree.
+Therefore it is possible to conserve information with only a fraction of the
+data per scale <span class="math notranslate nohighlight">\(j\)</span>. As each scale <span class="math notranslate nohighlight">\(j\)</span> has a different shape the overall
+wavelet coefficients are stored as a list of arrays, this being the shape of
+one array within such a list.</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -536,10 +669,148 @@ wavelets. Defaults to 2.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Wavelet coefficients shape <span class="math notranslate nohighlight">\([n_{J}, n_{N}, L, 2L-1]\)</span>.</p>
+<dd class="field-even"><p>Wavelet coefficients shape <span class="math notranslate nohighlight">\([n_{J}, L, 2L-1, n_{N}]\)</span>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Tuple[int, int, int, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="s2wav.shapes.flmn_wav_j">
+<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">flmn_wav_j</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiresolution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#s2wav.shapes.flmn_wav_j" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the shape of wavelet coefficients <span class="math notranslate nohighlight">\(f^j_{\ell m n}\)</span> in Wigner space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
+<li><p><strong>j</strong> (<em>int</em>) – Wavelet scale to consider.</p></li>
+<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – Upper orientational band-limit. Defaults to 1.</p></li>
+<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between
+consecutive wavelet scales. Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic
+wavelets. Defaults to 2.</p></li>
+<li><p><strong>multiresolution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to store the scales at <span class="math notranslate nohighlight">\(j_{\text{max}}\)</span>
+resolution or its own resolution. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Wavelet coefficients shape <span class="math notranslate nohighlight">\([L, 2L-1, n_{N}]\)</span>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[int, int, int]</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Each wavelet filter has compact support between a lower and upper harmonic degree.
+Therefore it is possible to conserve information with only a fraction of the
+data per scale <span class="math notranslate nohighlight">\(j\)</span>. As each scale <span class="math notranslate nohighlight">\(j\)</span> has a different shape the overall
+wavelet coefficients are stored as a list of arrays, this being the shape of
+one array within such a list.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="s2wav.shapes.n_wav_scales">
+<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">n_wav_scales</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J_min</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#s2wav.shapes.n_wav_scales" title="Permalink to this definition">#</a></dt>
+<dd><p>Evalutes the total number of wavelet scales.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
+<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – Upper orientational band-limit. Defaults to 1.</p></li>
+<li><p><strong>J_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Lowest frequency wavelet scale to be used. Defaults to 0.</p></li>
+<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between
+consecutive wavelet scales. Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic
+wavelets. Defaults to 2.</p></li>
+<li><p><strong>sampling</strong> (<em>str</em><em>, </em><em>optional</em>) – Spherical sampling scheme from {“mw”,”mwss”}.
+Defaults to “mw”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Total number of wavelet scales <span class="math notranslate nohighlight">\(n_{j}\)</span>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="s2wav.shapes.scal_bandlimit">
+<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">scal_bandlimit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J_min</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiresolution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#s2wav.shapes.scal_bandlimit" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the harmominc bandlimit of the scaling coefficients.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
+<li><p><strong>J_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Lowest frequency wavelet scale to be used. Defaults to 0.</p></li>
+<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between
+consecutive wavelet scales. Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic
+wavelets. Defaults to 2.</p></li>
+<li><p><strong>multiresolution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to store the scales at <span class="math notranslate nohighlight">\(j_{\text{max}}\)</span>
+resolution or its own resolution. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Harmonic bandlimit of scaling coefficients.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="s2wav.shapes.wav_j_bandlimit">
+<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">wav_j_bandlimit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiresolution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#s2wav.shapes.wav_j_bandlimit" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the harmominc bandlimit of the scaling coefficients.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
+<li><p><strong>j</strong> (<em>int</em>) – Wavelet scale to consider.</p></li>
+<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between
+consecutive wavelet scales. Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic
+wavelets. Defaults to 2.</p></li>
+<li><p><strong>multiresolution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to store the scales at <span class="math notranslate nohighlight">\(j_{\text{max}}\)</span>
+resolution or its own resolution. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Harmonic bandlimit of scaling coefficients.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="s2wav.shapes.wavelet_shape_check">
+<span class="sig-prename descclassname"><span class="pre">s2wav.shapes.</span></span><span class="sig-name descname"><span class="pre">wavelet_shape_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f_w</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_s</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J_min</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'mw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiresolution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#s2wav.shapes.wavelet_shape_check" title="Permalink to this definition">#</a></dt>
+<dd><p>Checks the shape of wavelet coefficients are correct.</p>
+<p>If multiresolution is true, this check will iterate over each scale ensuring that
+each scale <span class="math notranslate nohighlight">\(j\)</span> is correctly bandlimited at <span class="math notranslate nohighlight">\(\lambda^j\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f_w</strong> (<em>np.ndarray</em>) – Array of wavelet pixel-space coefficients
+with shape <span class="math notranslate nohighlight">\([n_{J}, 2N-1, n_{\theta}, n_{\phi}]\)</span>.</p></li>
+<li><p><strong>f_s</strong> (<em>np.ndarray</em>) – Array of scaling pixel-space coefficients
+with shape <span class="math notranslate nohighlight">\([n_{\theta}, n_{\phi}]\)</span>.</p></li>
+<li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
+<li><p><strong>j</strong> (<em>int</em>) – Wavelet scale to consider.</p></li>
+<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – Upper orientational band-limit. Defaults to 1.</p></li>
+<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between
+consecutive wavelet scales. Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic
+wavelets. Defaults to 2.</p></li>
+<li><p><strong>sampling</strong> (<em>str</em><em>, </em><em>optional</em>) – Spherical sampling scheme from {“mw”,”mwss”}.
+Defaults to “mw”.</p></li>
+<li><p><strong>multiresolution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to store the scales at <span class="math notranslate nohighlight">\(j_{\text{max}}\)</span>
+resolution or its own resolution. Defaults to False.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
