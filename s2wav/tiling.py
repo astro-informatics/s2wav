@@ -78,15 +78,14 @@ def spin_normalization(el: int, spin: int = 0) -> float:
 
 def spin_normalization_vectorised(el: np.ndarray, spin: int = 0) -> float:
     r"""Vectorised version of :func:`~spin_normalization`.
-
     Args:
         el (int): Harmonic index :math:`\el`.
-
         spin (int): Spin of field over which to perform the transform. Defaults to 0.
-
     Returns:
         float: Normalization factor for spin-lowered wavelets.
     """
-    s = np.arange(-abs(spin) + 1, abs(spin) + 1)
-    factor = np.repeat(el[:, np.newaxis], 2 * abs(spin), axis=1) + s
+    factor = np.arange(-abs(spin) + 1, abs(spin) + 1).reshape(
+        1, 2 * abs(spin) + 1
+    )
+    factor = el.reshape(len(el), 1).dot(factor)
     return np.sqrt(np.prod(factor, axis=1) ** (np.sign(spin)))
