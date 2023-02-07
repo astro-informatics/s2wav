@@ -3,7 +3,3 @@ numpy
 colorlog
 pyyaml
 scipy
-
-# Refactor these away, then move to requirements-test.txt
-pyssht
-so3

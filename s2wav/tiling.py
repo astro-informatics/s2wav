@@ -78,12 +78,9 @@ def spin_normalization(el: int, spin: int = 0) -> float:
 
 def spin_normalization_vectorised(el: np.ndarray, spin: int = 0) -> float:
     r"""Vectorised version of :func:`~spin_normalization`.
-
     Args:
         el (int): Harmonic index :math:`\el`.
-
         spin (int): Spin of field over which to perform the transform. Defaults to 0.
-
     Returns:
         float: Normalization factor for spin-lowered wavelets.
     """
