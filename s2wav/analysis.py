@@ -56,45 +56,55 @@ def analysis_transform_looped(
     f_wav_lmn = shapes.construct_flmn(L, N, J_min, lam, multiresolution)
     wav_lm, scal_l = filters.filters_directional(L, N, J_min, lam, spin, spin0)
 
-    flm = s2fft.transform.forward(f, L, spin, sampling)
+    flm = s2fft.transform.forward(f, L, spin, sampling, None, reality)
 
     for j in range(J_min, J + 1):
         Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
         for n in range(-Nj + 1, Nj, 2):
             for el in range(max(abs(spin), abs(n)), Lj):
-                if el != 0:
-                    psi = np.conj(wav_lm[j, el, L - 1 + n])
-                    psi *= 8 * np.pi**2 / (2 * el + 1)
+                psi = np.conj(wav_lm[j, el, L - 1 + n])
+                psi *= 8 * np.pi**2 / (2 * el + 1)
 
-                    f_wav_lmn[j - J_min][ Nj - 1 + n, el, Lj - 1] = flm[el, L - 1 + 0] * psi
-                    for m in range(1, el + 1):
-                        f_wav_lmn[j - J_min][Nj - 1 + n, el, Lj - 1 + m] = (
-                            flm[el, L - 1 + m] * psi         
+                f_wav_lmn[j - J_min][Nj - 1 + n, el, Lj - 1] = (
+                    flm[el, L - 1 + 0] * psi
+                )
+                for m in range(1, el + 1):
+                    f_wav_lmn[j - J_min][Nj - 1 + n, el, Lj - 1 + m] = (
+                        flm[el, L - 1 + m] * psi
+                    )
+                    if reality:
+                        f_wav_lmn[j - J_min][Nj - 1 - n, el, Lj - 1 - m] = (
+                            -1
+                        ) ** (m + n) * np.conj(
+                            f_wav_lmn[j - J_min][Nj - 1 + n, el, Lj - 1 + m]
+                        )
+                    else:
+                        f_wav_lmn[j - J_min][Nj - 1 + n, el, Lj - 1 - m] = (
+                            flm[el, L - 1 - m] * psi
                         )
 
     for el in range(abs(spin), Ls):
         phi = np.sqrt(4.0 * np.pi / (2 * el + 1)) * scal_l[el]
+
         f_scal_lm[el, Ls - 1 + 0] = flm[el, L - 1 + 0] * phi
         for m in range(1, el + 1):
             f_scal_lm[el, Ls - 1 + m] = flm[el, L - 1 + m] * phi
 
             if reality:
-                f_scal_lm[el, Ls - 1 - m] = (
-                    (-1) ** m * np.conj(f_scal_lm[el, Ls - 1 + m])
+                f_scal_lm[el, Ls - 1 - m] = (-1) ** m * np.conj(
+                    f_scal_lm[el, Ls - 1 + m]
                 )
             else:
-                f_scal_lm[el, Ls - 1 - m] = (
-                    flm[el, L - 1 - m] * phi
-                )
+                f_scal_lm[el, Ls - 1 - m] = flm[el, L - 1 - m] * phi
 
     f_wav = shapes.construct_f(L, N, J_min, lam, sampling, multiresolution)
     for j in range(J_min, J + 1):
         Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
         f_wav[j - J_min] = s2fft.wigner.transform.inverse(
-            f_wav_lmn[j - J_min], Lj, Nj, 0, sampling
+            f_wav_lmn[j - J_min], Lj, Nj, 0, sampling, reality
         )
 
-    f_scal = s2fft.transform.inverse(f_scal_lm, Ls, spin, sampling)
+    f_scal = s2fft.transform.inverse(f_scal_lm, Ls, spin, sampling, None, reality, 0)
     return f_wav, f_scal
 
 
@@ -158,7 +168,7 @@ def analysis_transform_vectorised(
         "jln, l->jln", np.conj(wav_lm), 8 * np.pi**2 / (2 * np.arange(L) + 1)
     )
 
-    flm = s2fft.transform.forward(f, L, spin, sampling)
+    flm = s2fft.transform.forward(f, L, spin, sampling, None, reality)
 
     # Project all wigner coefficients for each lmn onto wavelet coefficients
     # Note that almost the entire compute is concentrated at the highest J
@@ -170,11 +180,11 @@ def analysis_transform_vectorised(
             wav_lm[j, :Lj, L - Nj : L - 1 + Nj : 2],
         )
         f_wav[j - J_min] = s2fft.wigner.transform.inverse(
-            f_wav_lmn[j - J_min], Lj, Nj, 0, sampling
+            f_wav_lmn[j - J_min], Lj, Nj, 0, sampling, reality
         )
 
     # Project all harmonic coefficients for each lm onto scaling coefficients
     phi = scal_l[:Ls] * np.sqrt(4 * np.pi / (2 * np.arange(Ls) + 1))
     f_scal_lm = np.einsum("lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi)
 
-    return f_wav, s2fft.transform.inverse(f_scal_lm, Ls, spin, sampling)
+    return f_wav, s2fft.transform.inverse(f_scal_lm, Ls, spin, sampling, None, reality)

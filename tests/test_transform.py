@@ -10,6 +10,7 @@ N_to_test = [1, 2, 3]
 J_min_to_test = [0, 1]
 lam_to_test = [2, 3]
 multiresolution = [False, True]
+reality = [False, True]
 
 
 @pytest.mark.parametrize("L", L_to_test)
@@ -17,6 +18,7 @@ multiresolution = [False, True]
 @pytest.mark.parametrize("J_min", J_min_to_test)
 @pytest.mark.parametrize("lam", lam_to_test)
 @pytest.mark.parametrize("multiresolution", multiresolution)
+@pytest.mark.parametrize("reality", reality)
 def test_synthesis_looped(
     wavelet_generator,
     L: int,
@@ -24,9 +26,10 @@ def test_synthesis_looped(
     J_min: int,
     lam: int,
     multiresolution: bool,
+    reality: bool,
 ):
     f_wav, f_scal, f_wav_s2let, f_scal_s2let = wavelet_generator(
-        L=L, N=N, J_min=J_min, lam=lam, multiresolution=multiresolution
+        L=L, N=N, J_min=J_min, lam=lam, multiresolution=multiresolution, reality=reality
     )
 
     f = s2let.synthesis_wav2px(
@@ -52,6 +55,7 @@ def test_synthesis_looped(
 @pytest.mark.parametrize("J_min", J_min_to_test)
 @pytest.mark.parametrize("lam", lam_to_test)
 @pytest.mark.parametrize("multiresolution", multiresolution)
+@pytest.mark.parametrize("reality", reality)
 def test_synthesis_vectorised(
     wavelet_generator,
     L: int,
@@ -59,9 +63,10 @@ def test_synthesis_vectorised(
     J_min: int,
     lam: int,
     multiresolution: bool,
+    reality: bool,
 ):
     f_wav, f_scal, f_wav_s2let, f_scal_s2let = wavelet_generator(
-        L=L, N=N, J_min=J_min, lam=lam, multiresolution=multiresolution
+        L=L, N=N, J_min=J_min, lam=lam, multiresolution=multiresolution, reality=reality
     )
 
     f = s2let.synthesis_wav2px(
@@ -76,9 +81,9 @@ def test_synthesis_vectorised(
     )
 
     f_check = synthesis.synthesis_transform_vectorised(
-        f_wav, f_scal, L, N, J_min, lam, multiresolution=multiresolution
+        f_wav, f_scal, L, N, J_min, lam, multiresolution=multiresolution, reality=reality
     )
-
+    f = np.real(f) if reality else f
     np.testing.assert_allclose(f, f_check.flatten("C"), atol=1e-14)
 
 
@@ -87,6 +92,7 @@ def test_synthesis_vectorised(
 @pytest.mark.parametrize("J_min", J_min_to_test)
 @pytest.mark.parametrize("lam", lam_to_test)
 @pytest.mark.parametrize("multiresolution", multiresolution)
+@pytest.mark.parametrize("reality", reality)
 def test_analysis_looped(
     flm_generator,
     f_wav_converter,
@@ -95,12 +101,14 @@ def test_analysis_looped(
     J_min: int,
     lam: int,
     multiresolution: bool,
+    reality: bool,
+
 ):
-    flm = flm_generator(L=L, L_lower=0, spin=0, reality=False)
-    f = s2fft.transform.inverse(flm, L)
+    flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
+    f = s2fft.transform.inverse(flm, L, reality=reality)
 
     f_wav, f_scal = s2let.analysis_px2wav(
-        f.flatten("C"),
+        f.flatten("C").astype(np.complex128),
         lam,
         L,
         J_min,
@@ -109,7 +117,7 @@ def test_analysis_looped(
         upsample=not multiresolution,
     )
     f_wav_check, f_scal_check = analysis.analysis_transform_looped(
-        f, L, N, J_min, lam, multiresolution=multiresolution
+        f, L, N, J_min, lam, reality=reality, multiresolution=multiresolution
     )
     f_wav_check = f_wav_converter(
         f_wav_check, L, N, J_min, lam, multiresolution
@@ -123,6 +131,7 @@ def test_analysis_looped(
 @pytest.mark.parametrize("J_min", J_min_to_test)
 @pytest.mark.parametrize("lam", lam_to_test)
 @pytest.mark.parametrize("multiresolution", multiresolution)
+@pytest.mark.parametrize("reality", reality)
 def test_analysis_vectorised(
     flm_generator,
     f_wav_converter,
@@ -131,12 +140,13 @@ def test_analysis_vectorised(
     J_min: int,
     lam: int,
     multiresolution: bool,
+    reality: bool,
 ):
-    flm = flm_generator(L=L, L_lower=0, spin=0, reality=False)
-    f = s2fft.transform.inverse(flm, L)
+    flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
+    f = s2fft.transform.inverse(flm, L, reality=reality)
 
     f_wav, f_scal = s2let.analysis_px2wav(
-        f.flatten("C"),
+        f.flatten("C").astype(np.complex128),
         lam,
         L,
         J_min,
@@ -145,7 +155,7 @@ def test_analysis_vectorised(
         upsample=not multiresolution,
     )
     f_wav_check, f_scal_check = analysis.analysis_transform_vectorised(
-        f, L, N, J_min, lam, multiresolution=multiresolution
+        f, L, N, J_min, lam, multiresolution=multiresolution, reality=reality
     )
 
     f_wav_check = f_wav_converter(
