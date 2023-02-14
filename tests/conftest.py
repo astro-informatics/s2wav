@@ -34,6 +34,7 @@ def generate_f_wav_scal(
     J_min: int,
     lam: float,
     sampling: str = "mw",
+    reality: bool = False,
     multiresolution: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     from s2wav import shapes, samples
@@ -53,7 +54,7 @@ def generate_f_wav_scal(
                         rng.uniform() + 1j * rng.uniform()
                     )
         f_wav.append(
-            s2fft.wigner.transform.inverse(flmn[j - J_min], Lj, Nj, 0, sampling)
+            s2fft.wigner.transform.inverse(flmn[j - J_min], Lj, Nj, 0, sampling, reality)
         )
 
     L_s = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
@@ -62,7 +63,7 @@ def generate_f_wav_scal(
         for m in range(-el, el + 1):
             flm[el, L_s - 1 + m] = rng.uniform() + 1j * rng.uniform()
 
-    f_scal = s2fft.transform.inverse(flm, L_s, 0, sampling)
+    f_scal = s2fft.transform.inverse(flm, L_s, 0, sampling, reality)
 
     return (
         f_wav,

@@ -175,7 +175,7 @@ def n_lmn_wav(
     lam: float = 2.0,
     kernel: str = "s2dw",
     storage: str = "padded",
-    reality: int = False,
+    reality: bool = False,
     upsample: bool = True,
 ) -> int:
     r"""Computes the total number of Wigner coefficients for directional wavelet kernels :math:`\Psi^j_{\el n}`.
@@ -196,7 +196,8 @@ def n_lmn_wav(
 
         storage (str, optional): The type of storage from {"padded","compact"}. Defaults to "padded".
 
-        reality (int, optional): A non-zero value indicates the signal :math:`f \in \mathbb{R}`.
+        reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
+            conjugate symmetry of harmonic coefficients. Defaults to False.
 
         upsample (bool, optional): Whether to store the scales at :math:`j_{\text{max}}` resolution
             or its own resolution. Defaults to True.
@@ -218,12 +219,12 @@ def n_lmn_wav(
             N = min(N, el)
 
         if storage.lower() == "padded":
-            if reality != 0:
+            if reality:
                 sampling_flmn_size = N * el * el
             else:
                 sampling_flmn_size = (2 * N - 1) * el * el
         elif storage.lower() == "compact":
-            if reality != 0:
+            if reality:
                 sampling_flmn_size = N * (6 * el * el - (N - 1) * (2 * N - 1)) / 6
             else:
                 sampling_flmn_size = (2 * N - 1) * (3 * el * el - N * (N - 1)) / 3
@@ -409,7 +410,7 @@ def n_wav_j(
 
 
 def elm2ind(el: int, m: int) -> int:
-    """Convert from spherical harmonic 2D indexing of :math:`(\ell,m)` to 1D index.
+    r"""Convert from spherical harmonic 2D indexing of :math:`(\ell,m)` to 1D index.
     1D index is defined by `ell**2 + ell + m`.
 
     Warning:
@@ -428,7 +429,7 @@ def elm2ind(el: int, m: int) -> int:
 
 
 def elmn2ind(el: int, m: int, n: int, L: int, N: int = 1) -> int:
-    """Convert from Wigner space 3D indexing of :math:`(\ell,m, n)` to 1D index.
+    r"""Convert from Wigner space 3D indexing of :math:`(\ell,m, n)` to 1D index.
 
     Args:
         el (int): Harmonic degree :math:`\ell`.

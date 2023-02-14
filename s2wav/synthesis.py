@@ -14,7 +14,8 @@ def synthesis_transform_looped(
     spin: int = 0,
     spin0: int = 0,
     sampling: str = "mw",
-    multiresolution: bool = False,
+    reality: bool = False,
+    multiresolution: bool = False
 ) -> np.ndarray:
     r"""Computes the synthesis directional wavelet transform [1,2].
     Specifically, this transform synthesises the signal :math:`_{s}f(\omega) \in \mathbb{S}^2` by summing the contributions from wavelet and scaling coefficients in harmonic space, see equation 27 from `[2] <https://arxiv.org/pdf/1509.06749.pdf>`_.
@@ -31,6 +32,8 @@ def synthesis_transform_looped(
         spin (int, optional): Spin (integer) of input signal. Defaults to 0.
         spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}. Defaults to "mw".
+        reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
+            conjugate symmetry of harmonic coefficients. Defaults to False.        
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
     Raises:
@@ -41,13 +44,14 @@ def synthesis_transform_looped(
         [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
         [2] J. McEwen et. al., "Directional spin wavelets on the sphere", arXiv preprint arXiv:1509.06749 (2015).
     """
+
     shapes.wavelet_shape_check(
         f_wav, f_scal, L, N, J_min, lam, sampling, multiresolution
     )
     J = samples.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
-    f_scal_lm = s2fft.transform.forward(f_scal, Ls, spin, sampling)
+    f_scal_lm = s2fft.transform.forward(f_scal, Ls, spin, sampling, None, reality)
 
     # Generate the directional wavelet kernels
     wav_lm, scal_l = filters.filters_directional(L, N, J_min, lam, spin, spin0)
@@ -57,7 +61,7 @@ def synthesis_transform_looped(
     for j in range(J_min, J + 1):
         Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
         temp = s2fft.wigner.transform.forward(
-            f_wav[j - J_min], Lj, Nj, 0, sampling
+            f_wav[j - J_min], Lj, Nj, 0, sampling, None, reality
         )
         for n in range(-Nj + 1, Nj, 2):
             for el in range(max(abs(spin), abs(n)), Lj):
@@ -68,10 +72,17 @@ def synthesis_transform_looped(
     # Sum the all scaling harmonic coefficients for each lm
     for el in range(np.abs(spin), Ls):
         phi = np.sqrt(4 * np.pi / (2 * el + 1)) * scal_l[el]
-        for m in range(-el, el + 1):
-            flm[el, L - 1 + m] += f_scal_lm[el, Ls - 1 + m] * phi
 
-    return s2fft.transform.inverse(flm, L, spin, sampling)
+        flm[el, 0 + L - 1] += f_scal_lm[el, Ls - 1 + 0] * phi
+        for m in range(1, el + 1):
+            flm[el, L - 1 + m] += f_scal_lm[el, Ls - 1 + m] * phi
+            if reality:
+                flm[el, -m + L - 1] += (-1) ** m * np.conj(flm[el, m + L - 1])
+            else:
+                flm[el, -m + L - 1] += f_scal_lm[el, Ls - 1 - m] * phi
+    
+    return s2fft.transform.inverse(flm, L, spin, sampling, None, reality)
+
 
 
 def synthesis_transform_vectorised(
@@ -114,6 +125,7 @@ def synthesis_transform_vectorised(
         [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
         [2] J. McEwen et. al., "Directional spin wavelets on the sphere", arXiv preprint arXiv:1509.06749 (2015).
     """
+    
     shapes.wavelet_shape_check(
         f_wav, f_scal, L, N, J_min, lam, sampling, multiresolution
     )
@@ -121,7 +133,7 @@ def synthesis_transform_vectorised(
     J = samples.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
-    f_scal_lm = s2fft.transform.forward(f_scal, Ls, spin, sampling)
+    f_scal_lm = s2fft.transform.forward(f_scal, Ls, spin, sampling, None, reality)
 
     # Generate the directional wavelet kernels
     wav_lm, scal_l = filters.filters_directional_vectorised(
@@ -133,16 +145,16 @@ def synthesis_transform_vectorised(
     for j in range(J_min, J + 1):
         Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
         temp = s2fft.wigner.transform.forward(
-            f_wav[j - J_min], Lj, Nj, 0, sampling
+            f_wav[j - J_min], Lj, Nj, 0, sampling, None, reality
         )
         flm[:Lj, L - Lj : L - 1 + Lj] += np.einsum(
             "ln,nlm->lm",
             wav_lm[j, :Lj, L - Nj : L - 1 + Nj : 2],
             temp[::2, :, :],
         )
-
+   
     # Sum the all scaling harmonic coefficients for each lm
     phi = scal_l[:Ls] * np.sqrt(4 * np.pi / (2 * np.arange(Ls) + 1))
     flm[:Ls, L - Ls : L - 1 + Ls] += np.einsum("lm,l->lm", f_scal_lm, phi)
 
-    return s2fft.transform.inverse(flm, L, spin, sampling)
+    return s2fft.transform.inverse(flm, L, spin, sampling, None, reality)
