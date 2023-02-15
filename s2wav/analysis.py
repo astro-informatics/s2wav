@@ -143,7 +143,7 @@ def analysis_transform_vectorised(
 
         spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}. Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required if sampling="healpix".  Defaults 
             to None.

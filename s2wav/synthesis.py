@@ -32,7 +32,7 @@ def synthesis_transform_looped(
             Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
         spin (int, optional): Spin (integer) of input signal. Defaults to 0.
         spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}. Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}. Defaults to "mw".
         nside (int, optional): HEALPix Nside resolution parameter.  Only required
             if sampling="healpix".  Defaults to None.
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
@@ -116,7 +116,7 @@ def synthesis_transform_vectorised(
             Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
         spin (int, optional): Spin (integer) of input signal. Defaults to 0.
         spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}. Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}. Defaults to "mw".
         nside (int, optional): HEALPix Nside resolution parameter.  Only required if sampling="healpix".  Defaults 
             to None.
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits

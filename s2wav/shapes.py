@@ -28,7 +28,7 @@ def f_scal(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}.
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
             Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required
@@ -63,7 +63,7 @@ def f_wav(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}.
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
             Defaults to "mw".
 
     Returns:
@@ -92,7 +92,7 @@ def n_wav_scales(L: int, N: int = 1, J_min: int = 0, lam: float = 2.0) -> int:
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}.
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
             Defaults to "mw".
 
     Returns:
@@ -121,7 +121,7 @@ def LN_j(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}.
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
             Defaults to "mw".
 
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
@@ -160,7 +160,7 @@ def f_wav_j(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}.
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
             Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required
@@ -206,7 +206,7 @@ def construct_f(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}.
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
             Defaults to "mw".
         
         nside (int, optional): HEALPix Nside resolution parameter.  Only required if 
@@ -436,7 +436,7 @@ def wavelet_shape_check(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}.
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
             Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required
