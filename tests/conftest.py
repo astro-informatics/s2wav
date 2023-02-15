@@ -101,14 +101,17 @@ def n_wav(
     J_min: int = 0,
     lam: float = 2.0,
     multiresolution: bool = False,
+    sampling: str = "mw",
 ) -> int:
     from s2wav import shapes, samples
+    from s2fft.wigner import samples as wigner_samples
 
     J = samples.j_max(L, lam)
     count = 0
     for j in range(J_min, J + 1):
         Lj = shapes.wav_j_bandlimit(L, j, lam, multiresolution)
-        count += (2 * N - 1) * Lj * (2 * Lj - 1)
+        count += np.prod(list(wigner_samples.f_shape(Lj, N, sampling)))
+
     return count
 
 

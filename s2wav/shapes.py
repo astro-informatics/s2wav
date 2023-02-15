@@ -3,6 +3,8 @@ import numpy as np
 import math
 from s2wav import samples
 from typing import Tuple
+from s2fft.wigner import samples as wigner_samples
+from s2fft import samples as harm_samples
 
 # TODO: Add support for symmetries etc.
 
@@ -12,6 +14,7 @@ def f_scal(
     J_min: int = 0,
     lam: float = 2.0,
     sampling: str = "mw",
+    nside: int = None,
     multiresolution: bool = False,
 ) -> Tuple[int, int]:
     r"""Computes the shape of scaling coefficients in pixel-space.
@@ -28,6 +31,9 @@ def f_scal(
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}.
             Defaults to "mw".
 
+        nside (int, optional): HEALPix Nside resolution parameter.  Only required
+            if sampling="healpix".  Defaults to None.
+
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
 
@@ -38,7 +44,7 @@ def f_scal(
         L_s = min(math.ceil(lam**J_min), L)
     else:
         L_s = L
-    return samples.ntheta(L_s, sampling), samples.nphi(L_s, sampling)
+    return harm_samples.f_shape(L_s, sampling, nside)
 
 
 def f_wav(
@@ -138,6 +144,7 @@ def f_wav_j(
     N: int = 1,
     lam: float = 2.0,
     sampling: str = "mw",
+    nside: int = None,
     multiresolution: bool = False,
 ) -> Tuple[int, int, int]:
     r"""Computes the shape of wavelet coefficients :math:`f^j` in pixel-space.
@@ -156,6 +163,9 @@ def f_wav_j(
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}.
             Defaults to "mw".
 
+        nside (int, optional): HEALPix Nside resolution parameter.  Only required
+            if sampling="healpix".  Defaults to None.
+
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
 
@@ -170,11 +180,8 @@ def f_wav_j(
         one array within such a list.
     """
     Lj, Nj = LN_j(L, j, N, lam, multiresolution)
-    return (
-        (2 * Nj - 1),
-        samples.ntheta(Lj, sampling),
-        samples.nphi(Lj, sampling),
-    )
+
+    return wigner_samples.f_shape(Lj, Nj, sampling, nside)
 
 
 def construct_f(
@@ -183,6 +190,7 @@ def construct_f(
     J_min: int = 0,
     lam: float = 2.0,
     sampling: str = "mw",
+    nside: int = None,
     multiresolution: bool = False,
 ) -> np.ndarray:
     """Defines a list of arrays corresponding to f_wav.
@@ -200,6 +208,9 @@ def construct_f(
 
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}.
             Defaults to "mw".
+        
+        nside (int, optional): HEALPix Nside resolution parameter.  Only required if 
+            sampling="healpix".  Defaults to None.
 
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
@@ -212,7 +223,7 @@ def construct_f(
     for j in range(J_min, J + 1):
         f.append(
             np.zeros(
-                f_wav_j(L, j, N, lam, sampling, multiresolution),
+                f_wav_j(L, j, N, lam, sampling, nside, multiresolution),
                 dtype=np.complex128,
             )
         )
@@ -400,6 +411,7 @@ def wavelet_shape_check(
     J_min: int = 0,
     lam: float = 2.0,
     sampling: str = "mw",
+    nside: int = None,
     multiresolution: bool = False,
 ):
     r"""Checks the shape of wavelet coefficients are correct.
@@ -427,14 +439,17 @@ def wavelet_shape_check(
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}.
             Defaults to "mw".
 
+        nside (int, optional): HEALPix Nside resolution parameter.  Only required
+            if sampling="healpix".  Defaults to None.
+
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
     """
     assert len(f_w) == n_wav_scales(L, N, J_min, lam)
-    assert f_s.shape == f_scal(L, J_min, lam, sampling, multiresolution)
+    assert f_s.shape == f_scal(L, J_min, lam, sampling, nside, multiresolution)
 
     J = samples.j_max(L, lam)
     for j in range(J_min, J + 1):
         assert f_w[j - J_min].shape == f_wav_j(
-            L, j, N, lam, sampling, multiresolution
+            L, j, N, lam, sampling, nside, multiresolution
         )

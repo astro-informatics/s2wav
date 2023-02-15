@@ -13,6 +13,7 @@ def analysis_transform_looped(
     spin: int = 0,
     spin0: int = 0,
     sampling: str = "mw",
+    nside: int = None,
     reality: bool = False,
     multiresolution: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -34,7 +35,10 @@ def analysis_transform_looped(
 
         spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}. Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}. Defaults to "mw".
+
+        nside (int, optional): HEALPix Nside resolution parameter.  Only required if sampling="healpix".  Defaults 
+            to None.
 
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
             conjugate symmetry of harmonic coefficients. Defaults to False.
@@ -56,7 +60,7 @@ def analysis_transform_looped(
     f_wav_lmn = shapes.construct_flmn(L, N, J_min, lam, multiresolution)
     wav_lm, scal_l = filters.filters_directional(L, N, J_min, lam, spin, spin0)
 
-    flm = s2fft.transform.forward(f, L, spin, sampling, None, reality)
+    flm = s2fft.transform.forward(f, L, spin, sampling, nside, reality)
 
     for j in range(J_min, J + 1):
         Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
@@ -97,14 +101,14 @@ def analysis_transform_looped(
             else:
                 f_scal_lm[el, Ls - 1 - m] = flm[el, L - 1 - m] * phi
 
-    f_wav = shapes.construct_f(L, N, J_min, lam, sampling, multiresolution)
+    f_wav = shapes.construct_f(L, N, J_min, lam, sampling, nside, multiresolution)
     for j in range(J_min, J + 1):
         Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
         f_wav[j - J_min] = s2fft.wigner.transform.inverse(
-            f_wav_lmn[j - J_min], Lj, Nj, 0, sampling, reality
+            f_wav_lmn[j - J_min], Lj, Nj, 0, sampling, reality, nside
         )
 
-    f_scal = s2fft.transform.inverse(f_scal_lm, Ls, spin, sampling, None, reality, 0)
+    f_scal = s2fft.transform.inverse(f_scal_lm, Ls, spin, sampling, nside, reality, 0)
     return f_wav, f_scal
 
 
@@ -117,6 +121,7 @@ def analysis_transform_vectorised(
     spin: int = 0,
     spin0: int = 0,
     sampling: str = "mw",
+    nside: int = None,
     reality: bool = False,
     multiresolution: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -139,6 +144,9 @@ def analysis_transform_vectorised(
         spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
 
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}. Defaults to "mw".
+
+        nside (int, optional): HEALPix Nside resolution parameter.  Only required if sampling="healpix".  Defaults 
+            to None.
 
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
             conjugate symmetry of harmonic coefficients. Defaults to False.
@@ -168,7 +176,7 @@ def analysis_transform_vectorised(
         "jln, l->jln", np.conj(wav_lm), 8 * np.pi**2 / (2 * np.arange(L) + 1)
     )
 
-    flm = s2fft.transform.forward(f, L, spin, sampling, None, reality)
+    flm = s2fft.transform.forward(f, L, spin, sampling, nside, reality)
 
     # Project all wigner coefficients for each lmn onto wavelet coefficients
     # Note that almost the entire compute is concentrated at the highest J
@@ -180,11 +188,11 @@ def analysis_transform_vectorised(
             wav_lm[j, :Lj, L - Nj : L - 1 + Nj : 2],
         )
         f_wav[j - J_min] = s2fft.wigner.transform.inverse(
-            f_wav_lmn[j - J_min], Lj, Nj, 0, sampling, reality
+            f_wav_lmn[j - J_min], Lj, Nj, 0, sampling, reality, nside
         )
 
     # Project all harmonic coefficients for each lm onto scaling coefficients
     phi = scal_l[:Ls] * np.sqrt(4 * np.pi / (2 * np.arange(Ls) + 1))
     f_scal_lm = np.einsum("lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi)
 
-    return f_wav, s2fft.transform.inverse(f_scal_lm, Ls, spin, sampling, None, reality)
+    return f_wav, s2fft.transform.inverse(f_scal_lm, Ls, spin, sampling, nside, reality)
