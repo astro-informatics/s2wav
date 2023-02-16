@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from s2wav.filter_factory import filters, tiling
-from s2wav.utils import samples
+from s2wav.utils.shapes import j_max
 
 L_to_test = [8, 16, 32]
 N_to_test = [4, 6, 8]
@@ -14,7 +14,7 @@ lam_to_test = [2, 3]
 @pytest.mark.parametrize("lam", lam_to_test)
 def test_axisym_admissibility(L: int, J_min: int, lam: int):
     Psi, Phi = filters.filters_axisym(L, J_min, lam)
-    J = samples.j_max(L, lam)
+    J = j_max(L, lam)
     Psi_j_sum = np.zeros_like(Phi)
     for j in range(J_min, J + 1):
         for el in range(L):
@@ -34,7 +34,7 @@ def test_axisym_admissibility(L: int, J_min: int, lam: int):
 def test_directional_admissibility(L: int, N: int, J_min: int, lam: int):
     spin = 0
     psi, phi = filters.filters_directional(L, N, J_min, lam)
-    J = samples.j_max(L, lam)
+    J = j_max(L, lam)
 
     ident = np.zeros(L, dtype=np.complex128)
 
