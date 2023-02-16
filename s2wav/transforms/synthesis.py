@@ -1,6 +1,6 @@
 import numpy as np
-from s2wav import samples, filters, shapes
-from typing import Tuple
+from s2wav.utils import samples, shapes
+from s2wav.filter_factory import filters
 from s2fft import base_transforms as base
 
 

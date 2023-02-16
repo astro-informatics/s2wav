@@ -2,7 +2,8 @@ import pytest
 import numpy as np
 import pys2let as s2let
 
-from s2wav import synthesis, analysis, samples
+from s2wav.transforms import synthesis, analysis
+from s2wav.utils import samples
 from s2fft import base_transforms as base
 
 

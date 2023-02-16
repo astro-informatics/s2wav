@@ -1,5 +1,6 @@
 import numpy as np
-from s2wav import tiling, samples, kernels
+from s2wav.filter_factory import tiling, kernels
+from s2wav.utils import samples
 from typing import Tuple
 
 

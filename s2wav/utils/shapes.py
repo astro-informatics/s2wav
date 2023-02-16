@@ -1,11 +1,8 @@
-from audioop import mul
 import numpy as np
 import math
-from s2wav import samples
+from s2wav.utils import samples
 from typing import Tuple
 from s2fft.sampling import s2_samples, so3_samples
-
-# TODO: Add support for symmetries etc.
 
 
 def f_scal(
