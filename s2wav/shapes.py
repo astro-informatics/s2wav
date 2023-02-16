@@ -3,8 +3,7 @@ import numpy as np
 import math
 from s2wav import samples
 from typing import Tuple
-from s2fft.wigner import samples as wigner_samples
-from s2fft import samples as harm_samples
+from s2fft.sampling import s2_samples, so3_samples
 
 # TODO: Add support for symmetries etc.
 
@@ -44,7 +43,7 @@ def f_scal(
         L_s = min(math.ceil(lam**J_min), L)
     else:
         L_s = L
-    return harm_samples.f_shape(L_s, sampling, nside)
+    return s2_samples.f_shape(L_s, sampling, nside)
 
 
 def f_wav(
@@ -181,7 +180,7 @@ def f_wav_j(
     """
     Lj, Nj = LN_j(L, j, N, lam, multiresolution)
 
-    return wigner_samples.f_shape(Lj, Nj, sampling, nside)
+    return so3_samples.f_shape(Lj, Nj, sampling, nside)
 
 
 def construct_f(
@@ -208,8 +207,8 @@ def construct_f(
 
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
             Defaults to "mw".
-        
-        nside (int, optional): HEALPix Nside resolution parameter.  Only required if 
+
+        nside (int, optional): HEALPix Nside resolution parameter.  Only required if
             sampling="healpix".  Defaults to None.
 
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
