@@ -1,5 +1,11 @@
+from jax import jit, config
+
+config.update("jax_enable_x64", True)
+
+import jax.numpy as jnp
 import numpy as np
 import math
+from functools import partial
 from typing import Tuple
 from s2fft.sampling import s2_samples, so3_samples
 
@@ -211,6 +217,51 @@ def construct_f(
             )
         )
     return f
+@partial(jit, static_argnums=(0,1,2,3,4,5,6))
+def construct_f_jax(
+    L: int,
+    N: int = 1,
+    J_min: int = 0,
+    lam: float = 2.0,
+    sampling: str = "mw",
+    nside: int = None,
+    multiresolution: bool = False,
+) -> jnp.ndarray:
+    """Defines a list of arrays corresponding to f_wav.
+
+    Args:
+        L (int): Harmonic bandlimit.
+
+        N (int, optional): Upper orientational band-limit. Defaults to 1.
+
+        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
+
+        lam (float, optional): Wavelet parameter which determines the scale factor between
+            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
+            wavelets. Defaults to 2.
+
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
+            Defaults to "mw".
+
+        nside (int, optional): HEALPix Nside resolution parameter.  Only required if
+            sampling="healpix".  Defaults to None.
+
+        multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
+            resolution or its own resolution. Defaults to False.
+
+    Returns:
+        Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
+    """
+    J = j_max(L, lam)
+    f = []
+    for j in range(J_min, J + 1):
+        f.append(
+            jnp.zeros(
+                f_wav_j(L, j, N, lam, sampling, nside, multiresolution),
+                dtype=jnp.complex128,
+            )
+        )
+    return f
 
 
 def construct_flm(
@@ -235,6 +286,30 @@ def construct_flm(
     """
     L_s = scal_bandlimit(L, J_min, lam, multiresolution)
     return np.zeros((L_s, 2 * L_s - 1), dtype=np.complex128)
+
+@partial(jit, static_argnums=(0,1,2,3))
+def construct_flm_jax(
+    L: int, J_min: int = 0, lam: float = 2.0, multiresolution: bool = False
+) -> Tuple[int, int]:
+    r"""Returns the shape of scaling coefficients in harmonic space.
+
+    Args:
+        L (int): Harmonic bandlimit.
+
+        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
+
+        lam (float, optional): Wavelet parameter which determines the scale factor between
+            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
+            wavelets. Defaults to 2.
+
+        multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
+            resolution or its own resolution. Defaults to False.
+
+    Returns:
+        Tuple[int, int]: Scaling coefficients shape :math:`[L, 2*L-1]`.
+    """
+    L_s = scal_bandlimit(L, J_min, lam, multiresolution)
+    return jnp.zeros((L_s, 2 * L_s - 1), dtype=jnp.complex128)
 
 
 def scal_bandlimit(
