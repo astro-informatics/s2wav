@@ -1,6 +1,5 @@
 import numpy as np
 import math
-from s2wav.utils import samples
 from typing import Tuple
 from s2fft.sampling import s2_samples, so3_samples
 
@@ -43,37 +42,6 @@ def f_scal(
     return s2_samples.f_shape(L_s, sampling, nside)
 
 
-def f_wav(
-    L: int, N: int = 1, J_min: int = 0, lam: float = 2.0, sampling: str = "mw"
-) -> Tuple[int, int, int, int]:
-    r"""Computes the shape of wavelet coefficients in pixel-space.
-
-    Args:
-        L (int): Harmonic bandlimit.
-
-        N (int, optional): Upper orientational band-limit. Defaults to 1.
-
-        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
-
-        lam (float, optional): Wavelet parameter which determines the scale factor between
-            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
-            wavelets. Defaults to 2.
-
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
-            Defaults to "mw".
-
-    Returns:
-        Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, n_{\theta}, n_{\phi}, n_{N}]`.
-    """
-    J = samples.j_max(L, lam)
-    return (
-        (J - J_min + 1),
-        (2 * N - 1),
-        samples.ntheta(L, sampling),
-        samples.nphi(L, sampling),
-    )
-
-
 def n_wav_scales(L: int, N: int = 1, J_min: int = 0, lam: float = 2.0) -> int:
     r"""Evalutes the total number of wavelet scales.
 
@@ -94,7 +62,7 @@ def n_wav_scales(L: int, N: int = 1, J_min: int = 0, lam: float = 2.0) -> int:
     Returns:
         int: Total number of wavelet scales :math:`n_{j}`.
     """
-    return samples.j_max(L, lam) - J_min + 1
+    return j_max(L, lam) - J_min + 1
 
 
 def L0_j(j: int, lam: float = 2.0) -> int:
@@ -233,7 +201,7 @@ def construct_f(
     Returns:
         Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
     """
-    J = samples.j_max(L, lam)
+    J = j_max(L, lam)
     f = []
     for j in range(J_min, J + 1):
         f.append(
@@ -293,29 +261,6 @@ def scal_bandlimit(
         return min(math.ceil(lam**J_min), L)
     else:
         return L
-
-
-def flmn_wav(
-    L: int, N: int = 1, J_min: int = 0, lam: float = 2.0
-) -> Tuple[int, int, int, int]:
-    """Returns the shape of wavelet coefficients in Wigner space.
-
-    Args:
-        L (int): Harmonic bandlimit.
-
-        N (int, optional): Upper orientational band-limit. Defaults to 1.
-
-        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
-
-        lam (float, optional): Wavelet parameter which determines the scale factor between
-            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
-            wavelets. Defaults to 2.
-
-    Returns:
-        Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
-    """
-    J = samples.j_max(L, lam)
-    return (J - J_min + 1), (2 * N - 1), L, 2 * L - 1
 
 
 def flmn_wav_j(
@@ -407,7 +352,7 @@ def construct_flmn(
     Returns:
         Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
     """
-    J = samples.j_max(L, lam)
+    J = j_max(L, lam)
     flmn = []
     for j in range(J_min, J + 1):
         flmn.append(
@@ -416,6 +361,21 @@ def construct_flmn(
             )
         )
     return flmn
+
+
+def j_max(L: int, lam: float = 2.0) -> int:
+    r"""Computes needlet maximum level required to ensure exact reconstruction.
+
+    Args:
+        L (int): Harmonic band-limit.
+
+        lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+            Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
+
+    Returns:
+        int: The maximum wavelet scale used.
+    """
+    return int(np.ceil(np.log(L) / np.log(lam)))
 
 
 def wavelet_shape_check(
@@ -463,7 +423,7 @@ def wavelet_shape_check(
     assert len(f_w) == n_wav_scales(L, N, J_min, lam)
     assert f_s.shape == f_scal(L, J_min, lam, sampling, nside, multiresolution)
 
-    J = samples.j_max(L, lam)
+    J = j_max(L, lam)
     for j in range(J_min, J + 1):
         assert f_w[j - J_min].shape == f_wav_j(
             L, j, N, lam, sampling, nside, multiresolution

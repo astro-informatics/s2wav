@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Tuple
-from s2wav.utils import samples, shapes
+from s2wav.utils import shapes
 from s2wav.filter_factory import filters
 from s2fft import base_transforms as base
 
@@ -54,7 +54,7 @@ def analysis_transform_looped(
         f_scal (np.ndarray): Array of scaling pixel-space coefficients
             with shape :math:`[n_{\theta}, n_{\phi}]`.
     """
-    J = samples.j_max(L, lam)
+    J = shapes.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
 
     f_scal_lm = shapes.construct_flm(L, J_min, lam, multiresolution)
@@ -166,7 +166,7 @@ def analysis_transform_vectorised(
         f_scal (np.ndarray): Array of scaling pixel-space coefficients
             with shape :math:`[n_{\theta}, n_{\phi}]`.
     """
-    J = samples.j_max(L, lam)
+    J = shapes.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
 
     f_scal_lm = shapes.construct_flm(L, J_min, lam, multiresolution)
