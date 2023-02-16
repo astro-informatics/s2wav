@@ -3,7 +3,7 @@ import numpy as np
 import pys2let as s2let
 
 from s2wav import synthesis, analysis, samples
-import s2fft
+from s2fft import base_transforms as base
 
 
 L_to_test = [8, 10]
@@ -12,7 +12,7 @@ J_min_to_test = [0, 1]
 lam_to_test = [2, 3]
 multiresolution = [False, True]
 reality = [False, True]
-sampling_to_test = ['mw', 'mwss', 'dh']
+sampling_to_test = ["mw", "mwss", "dh"]
 
 
 @pytest.mark.parametrize("L", L_to_test)
@@ -31,7 +31,12 @@ def test_synthesis_looped(
     reality: bool,
 ):
     f_wav, f_scal, f_wav_s2let, f_scal_s2let = wavelet_generator(
-        L=L, N=N, J_min=J_min, lam=lam, multiresolution=multiresolution, reality=reality
+        L=L,
+        N=N,
+        J_min=J_min,
+        lam=lam,
+        multiresolution=multiresolution,
+        reality=reality,
     )
 
     f = s2let.synthesis_wav2px(
@@ -68,7 +73,12 @@ def test_synthesis_vectorised(
     reality: bool,
 ):
     f_wav, f_scal, f_wav_s2let, f_scal_s2let = wavelet_generator(
-        L=L, N=N, J_min=J_min, lam=lam, multiresolution=multiresolution, reality=reality
+        L=L,
+        N=N,
+        J_min=J_min,
+        lam=lam,
+        multiresolution=multiresolution,
+        reality=reality,
     )
 
     f = s2let.synthesis_wav2px(
@@ -83,7 +93,14 @@ def test_synthesis_vectorised(
     )
 
     f_check = synthesis.synthesis_transform_vectorised(
-        f_wav, f_scal, L, N, J_min, lam, multiresolution=multiresolution, reality=reality
+        f_wav,
+        f_scal,
+        L,
+        N,
+        J_min,
+        lam,
+        multiresolution=multiresolution,
+        reality=reality,
     )
     f = np.real(f) if reality else f
     np.testing.assert_allclose(f, f_check.flatten("C"), atol=1e-14)
@@ -106,7 +123,7 @@ def test_analysis_looped(
     reality: bool,
 ):
     flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
-    f = s2fft.transform.inverse(flm, L, reality=reality)
+    f = base.spherical.inverse(flm, L, reality=reality)
 
     f_wav, f_scal = s2let.analysis_px2wav(
         f.flatten("C").astype(np.complex128),
@@ -144,7 +161,7 @@ def test_analysis_vectorised(
     reality: bool,
 ):
     flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
-    f = s2fft.transform.inverse(flm, L, reality=reality)
+    f = base.spherical.inverse(flm, L, reality=reality)
 
     f_wav, f_scal = s2let.analysis_px2wav(
         f.flatten("C").astype(np.complex128),
@@ -184,18 +201,36 @@ def test_looped_round_trip(
     sampling: str,
 ):
 
-    nside = int(L/2)
+    nside = int(L / 2)
 
     flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
-    f = s2fft.transform.inverse(flm, L, reality=reality, sampling=sampling, nside=nside)
+    f = base.spherical.inverse(
+        flm, L, reality=reality, sampling=sampling, nside=nside
+    )
 
     f_wav, f_scal = analysis.analysis_transform_looped(
-        f, L, N, J_min, lam, multiresolution=multiresolution, reality=reality, sampling=sampling, nside=nside
+        f,
+        L,
+        N,
+        J_min,
+        lam,
+        multiresolution=multiresolution,
+        reality=reality,
+        sampling=sampling,
+        nside=nside,
     )
     print(f_wav[0].shape, f_scal.shape)
 
     f_check = synthesis.synthesis_transform_looped(
-        f_wav, f_scal, L, N, J_min, lam, multiresolution=multiresolution, sampling=sampling, nside=nside
+        f_wav,
+        f_scal,
+        L,
+        N,
+        J_min,
+        lam,
+        multiresolution=multiresolution,
+        sampling=sampling,
+        nside=nside,
     )
 
     np.testing.assert_allclose(f, f_check, atol=1e-14)
@@ -219,18 +254,36 @@ def test_vectorised_round_trip(
     sampling: str,
 ):
 
-    nside = int(L/2)
+    nside = int(L / 2)
 
     flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
-    f = s2fft.transform.inverse(flm, L, reality=reality, sampling=sampling, nside=nside)
+    f = base.spherical.inverse(
+        flm, L, reality=reality, sampling=sampling, nside=nside
+    )
 
     f_wav, f_scal = analysis.analysis_transform_vectorised(
-        f, L, N, J_min, lam, multiresolution=multiresolution, reality=reality, sampling=sampling, nside=nside
+        f,
+        L,
+        N,
+        J_min,
+        lam,
+        multiresolution=multiresolution,
+        reality=reality,
+        sampling=sampling,
+        nside=nside,
     )
     print(f_wav[0].shape, f_scal.shape)
 
     f_check = synthesis.synthesis_transform_vectorised(
-        f_wav, f_scal, L, N, J_min, lam, multiresolution=multiresolution, sampling=sampling, nside=nside
+        f_wav,
+        f_scal,
+        L,
+        N,
+        J_min,
+        lam,
+        multiresolution=multiresolution,
+        sampling=sampling,
+        nside=nside,
     )
 
     np.testing.assert_allclose(f, f_check, atol=1e-14)

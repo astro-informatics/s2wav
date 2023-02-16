@@ -38,7 +38,7 @@ def generate_f_wav_scal(
     multiresolution: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     from s2wav import shapes, samples
-    import s2fft
+    from s2fft import base_transforms as base
 
     J = samples.j_max(L, lam)
     flmn = shapes.construct_flmn(L, N, J_min, lam, multiresolution)
@@ -54,7 +54,7 @@ def generate_f_wav_scal(
                         rng.uniform() + 1j * rng.uniform()
                     )
         f_wav.append(
-            s2fft.wigner.transform.inverse(flmn[j - J_min], Lj, Nj, 0, sampling, reality)
+            base.wigner.inverse(flmn[j - J_min], Lj, Nj, 0, sampling, reality)
         )
 
     L_s = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
@@ -63,7 +63,7 @@ def generate_f_wav_scal(
         for m in range(-el, el + 1):
             flm[el, L_s - 1 + m] = rng.uniform() + 1j * rng.uniform()
 
-    f_scal = s2fft.transform.inverse(flm, L_s, 0, sampling, reality)
+    f_scal = base.spherical.inverse(flm, L_s, 0, sampling, reality)
 
     return (
         f_wav,
@@ -104,13 +104,13 @@ def n_wav(
     sampling: str = "mw",
 ) -> int:
     from s2wav import shapes, samples
-    from s2fft.wigner import samples as wigner_samples
+    from s2fft.sampling import so3_samples
 
     J = samples.j_max(L, lam)
     count = 0
     for j in range(J_min, J + 1):
         Lj = shapes.wav_j_bandlimit(L, j, lam, multiresolution)
-        count += np.prod(list(wigner_samples.f_shape(Lj, N, sampling)))
+        count += np.prod(list(so3_samples.f_shape(Lj, N, sampling)))
 
     return count
 
@@ -140,4 +140,4 @@ def flm_generator(rng):
     # `RuntimeWarning: numpy.ndarray size changed` when importing at module level
     import s2fft
 
-    return partial(s2fft.utils.generate_flm, rng)
+    return partial(s2fft.utils.signal_generator.generate_flm, rng)
