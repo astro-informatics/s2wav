@@ -3,14 +3,15 @@
 **************************
 API
 **************************
-Automatically generated documentation for ``S2WAV`` APIs. All functionality is accessible through a pip installation of the ``S2WAV`` package.
+Automatically generated documentation for ``S2WAV`` APIs. All functionality is accessible 
+through a pip installation of the ``S2WAV`` package. Below is an overview of the 
+directory structure for the software.
 
 .. toctree::
+   :hidden:
    :maxdepth: 1
    :caption: Namespaces
 
    transforms/index
-   filters/index
-   samples/index
+   filter_factory/index
    utility/index
-   logs/index

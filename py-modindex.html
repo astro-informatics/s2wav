@@ -26,6 +26,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom_tabs.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/fontawesome.min.css" />
@@ -40,6 +41,8 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
     <script src="_static/tabs.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'py-modindex';</script>
@@ -102,8 +105,8 @@
   
 
   
-    <img src="_static/placeholder_logo.png" class="logo__image only-light" alt="Logo image">
-    <img src="_static/placeholder_logo.png" class="logo__image only-dark" alt="Logo image">
+    <img src="_static/sax_logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="_static/sax_logo.png" class="logo__image only-dark" alt="Logo image">
   
   
 </a>
@@ -129,15 +132,8 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="background/index.html">
-                        Mathematics
-                      </a>
-                    </li>
-                
-
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="tutorials/example_notebook.html">
-                        Tutorial
+                      <a class="nav-link nav-internal" href="tutorials/index.html">
+                        Notebooks
                       </a>
                     </li>
                 
@@ -174,37 +170,6 @@
       
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://arxiv.org/abs/xxxx.xxxxx" title="ArXiv" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><img src="_static/arxiv-logomark-small.png" class="icon-link-image" alt="ArXiv"/></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://www.youtube.com/channel/UCrCOQsyQOJhOUaIYzmbkKQQ" title="YouTube" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-youtube fa-2x"></i></span>
-            <label class="sr-only">YouTube</label></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://github.com/astro-informatics/s2wav/" title="PyPi" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><img src="_static/pypi.png" class="icon-link-image" alt="PyPi"/></a>
-        </li>
         <li class="nav-item">
           
           
@@ -288,15 +253,8 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="background/index.html">
-                        Mathematics
-                      </a>
-                    </li>
-                
-
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="tutorials/example_notebook.html">
-                        Tutorial
+                      <a class="nav-link nav-internal" href="tutorials/index.html">
+                        Notebooks
                       </a>
                     </li>
                 
@@ -328,37 +286,6 @@
       
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://arxiv.org/abs/xxxx.xxxxx" title="ArXiv" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><img src="_static/arxiv-logomark-small.png" class="icon-link-image" alt="ArXiv"/></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://www.youtube.com/channel/UCrCOQsyQOJhOUaIYzmbkKQQ" title="YouTube" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-youtube fa-2x"></i></span>
-            <label class="sr-only">YouTube</label></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://github.com/astro-informatics/s2wav/" title="PyPi" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><img src="_static/pypi.png" class="icon-link-image" alt="PyPi"/></a>
-        </li>
         <li class="nav-item">
           
           
@@ -442,42 +369,42 @@
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/filters/filters.html#module-s2wav.filters"><code class="xref">s2wav.filters</code></a></td><td>
+       <a href="api/filter_factory/filters.html#module-s2wav.filter_factory.filters"><code class="xref">s2wav.filter_factory.filters</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/filters/kernels.html#module-s2wav.kernels"><code class="xref">s2wav.kernels</code></a></td><td>
+       <a href="api/filter_factory/kernels.html#module-s2wav.filter_factory.kernels"><code class="xref">s2wav.filter_factory.kernels</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/logs/logs.html#module-s2wav.logs"><code class="xref">s2wav.logs</code></a></td><td>
+       <a href="api/filter_factory/tiling.html#module-s2wav.filter_factory.tiling"><code class="xref">s2wav.filter_factory.tiling</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/utility/utils.html#module-s2wav.math_utils"><code class="xref">s2wav.math_utils</code></a></td><td>
+       <a href="api/transforms/analysis.html#module-s2wav.transforms.analysis"><code class="xref">s2wav.transforms.analysis</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/samples/samples.html#module-s2wav.samples"><code class="xref">s2wav.samples</code></a></td><td>
+       <a href="api/transforms/synthesis.html#module-s2wav.transforms.synthesis"><code class="xref">s2wav.transforms.synthesis</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/samples/shapes.html#module-s2wav.shapes"><code class="xref">s2wav.shapes</code></a></td><td>
+       <a href="api/utility/math_functions.html#module-s2wav.utils.math_functions"><code class="xref">s2wav.utils.math_functions</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/transforms/transforms.html#module-s2wav.synthesis"><code class="xref">s2wav.synthesis</code></a></td><td>
+       <a href="api/utility/samples.html#module-s2wav.utils.samples"><code class="xref">s2wav.utils.samples</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/filters/tiling.html#module-s2wav.tiling"><code class="xref">s2wav.tiling</code></a></td><td>
+       <a href="api/utility/shapes.html#module-s2wav.utils.shapes"><code class="xref">s2wav.utils.shapes</code></a></td><td>
        <em></em></td></tr>
    </table>
 
@@ -532,7 +459,7 @@
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Matthew Price, Jason McEwen, Jessica Whitney, Alicja Polanska.<br>
+    &copy; Copyright 2023, Matthew Price, Jason McEwen, Jessica Whitney, Alicja Polanska.<br>
 
 </p>
 

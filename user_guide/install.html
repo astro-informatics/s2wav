@@ -26,6 +26,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom_tabs.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/fontawesome.min.css" />
@@ -40,11 +41,13 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Mathematics" href="../background/index.html" />
-    <link rel="prev" title="S2WAV: JAX accelerated spin-spherical harmonic transforms" href="../index.html" />
+    <link rel="next" title="Notebooks" href="../tutorials/index.html" />
+    <link rel="prev" title="Differentiable and accelerated spherical wavelets" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="None">
   </head>
@@ -99,8 +102,8 @@
   
 
   
-    <img src="../_static/placeholder_logo.png" class="logo__image only-light" alt="Logo image">
-    <img src="../_static/placeholder_logo.png" class="logo__image only-dark" alt="Logo image">
+    <img src="../_static/sax_logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="../_static/sax_logo.png" class="logo__image only-dark" alt="Logo image">
   
   
 </a>
@@ -126,15 +129,8 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../background/index.html">
-                        Mathematics
-                      </a>
-                    </li>
-                
-
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../tutorials/example_notebook.html">
-                        Tutorial
+                      <a class="nav-link nav-internal" href="../tutorials/index.html">
+                        Notebooks
                       </a>
                     </li>
                 
@@ -171,37 +167,6 @@
       
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://arxiv.org/abs/xxxx.xxxxx" title="ArXiv" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><img src="../_static/arxiv-logomark-small.png" class="icon-link-image" alt="ArXiv"/></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://www.youtube.com/channel/UCrCOQsyQOJhOUaIYzmbkKQQ" title="YouTube" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-youtube fa-2x"></i></span>
-            <label class="sr-only">YouTube</label></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://github.com/astro-informatics/s2wav/" title="PyPi" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><img src="../_static/pypi.png" class="icon-link-image" alt="PyPi"/></a>
-        </li>
         <li class="nav-item">
           
           
@@ -285,15 +250,8 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../background/index.html">
-                        Mathematics
-                      </a>
-                    </li>
-                
-
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../tutorials/example_notebook.html">
-                        Tutorial
+                      <a class="nav-link nav-internal" href="../tutorials/index.html">
+                        Notebooks
                       </a>
                     </li>
                 
@@ -325,37 +283,6 @@
       
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://arxiv.org/abs/xxxx.xxxxx" title="ArXiv" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><img src="../_static/arxiv-logomark-small.png" class="icon-link-image" alt="ArXiv"/></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://www.youtube.com/channel/UCrCOQsyQOJhOUaIYzmbkKQQ" title="YouTube" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-youtube fa-2x"></i></span>
-            <label class="sr-only">YouTube</label></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://github.com/astro-informatics/s2wav/" title="PyPi" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><img src="../_static/pypi.png" class="icon-link-image" alt="PyPi"/></a>
-        </li>
         <li class="nav-item">
           
           
@@ -420,15 +347,8 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../background/index.html">
-                        Mathematics
-                      </a>
-                    </li>
-                
-
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../tutorials/example_notebook.html">
-                        Tutorial
+                      <a class="nav-link nav-internal" href="../tutorials/index.html">
+                        Notebooks
                       </a>
                     </li>
                 
@@ -469,10 +389,10 @@
             <article class="bd-article" role="main">
               
   <div class="section" id="installation">
-<span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">#</a></h1>
+<span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h1>
 <p>Link to <a class="reference external" href="https://pypi.org">PyPi</a> and provide link for source install.</p>
 <div class="section" id="quick-install-pypi">
-<h2>Quick install (PyPi)<a class="headerlink" href="#quick-install-pypi" title="Permalink to this headline">#</a></h2>
+<h2>Quick install (PyPi)<a class="headerlink" href="#quick-install-pypi" title="Permalink to this headline"></a></h2>
 <p>Install <code class="docutils literal notranslate"><span class="pre">S2WAV</span></code> from PyPi with a single command</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>s2wav
 </pre></div>
@@ -484,7 +404,7 @@
 <p>and locate <code class="docutils literal notranslate"><span class="pre">S2WAV</span></code>.</p>
 </div>
 <div class="section" id="install-from-source-github">
-<h2>Install from source (GitHub)<a class="headerlink" href="#install-from-source-github" title="Permalink to this headline">#</a></h2>
+<h2>Install from source (GitHub)<a class="headerlink" href="#install-from-source-github" title="Permalink to this headline"></a></h2>
 <p>When installing from source we recommend working within an existing conda environment, or creating a fresh conda environment to avoid any dependency conflicts,</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>s2wav_env<span class="w"> </span>python&gt;<span class="o">=</span><span class="m">3</span>.8
 conda<span class="w"> </span>activate<span class="w"> </span>s2wav_env
@@ -522,13 +442,13 @@ conda<span class="w"> </span>activate<span class="w"> </span>s2wav_env
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">S2WAV: JAX accelerated spin-spherical harmonic transforms</p>
+          <p class="prev-next-title">Differentiable and accelerated spherical wavelets</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="../background/index.html" title="next page">
+  <a class='right-next' id="next-link" href="../tutorials/index.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Mathematics</p>
+      <p class="prev-next-title">Notebooks</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -603,7 +523,7 @@ conda<span class="w"> </span>activate<span class="w"> </span>s2wav_env
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Matthew Price, Jason McEwen, Jessica Whitney, Alicja Polanska.<br>
+    &copy; Copyright 2023, Matthew Price, Jason McEwen, Jessica Whitney, Alicja Polanska.<br>
 
 </p>
 
