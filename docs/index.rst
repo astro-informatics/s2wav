@@ -55,7 +55,7 @@ the LICENSE file.
 
 .. toctree::
    :hidden:
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Interactive Tutorials
    
    tutorials/index

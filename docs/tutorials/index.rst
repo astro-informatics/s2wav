@@ -36,5 +36,5 @@ TODO: Add table here when results available
    :maxdepth: 3
    :caption: Jupyter Notebooks
 
-   transforms/wavelet_transform.nblink
-   precompute_transforms/wavelet_transform_precompute.nblink
+   transforms/wavelet_transforms.nblink
+   precompute_transforms/wavelet_transforms_precompute.nblink
