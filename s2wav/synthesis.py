@@ -14,6 +14,7 @@ def synthesis_transform_looped(
     spin: int = 0,
     spin0: int = 0,
     sampling: str = "mw",
+    nside: int = None,
     reality: bool = False,
     multiresolution: bool = False
 ) -> np.ndarray:
@@ -31,7 +32,9 @@ def synthesis_transform_looped(
             Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
         spin (int, optional): Spin (integer) of input signal. Defaults to 0.
         spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}. Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}. Defaults to "mw".
+        nside (int, optional): HEALPix Nside resolution parameter.  Only required
+            if sampling="healpix".  Defaults to None.
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
             conjugate symmetry of harmonic coefficients. Defaults to False.        
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
@@ -46,12 +49,12 @@ def synthesis_transform_looped(
     """
 
     shapes.wavelet_shape_check(
-        f_wav, f_scal, L, N, J_min, lam, sampling, multiresolution
+        f_wav, f_scal, L, N, J_min, lam, sampling, nside, multiresolution
     )
     J = samples.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
-    f_scal_lm = s2fft.transform.forward(f_scal, Ls, spin, sampling, None, reality)
+    f_scal_lm = s2fft.transform.forward(f_scal, Ls, spin, sampling, nside, reality)
 
     # Generate the directional wavelet kernels
     wav_lm, scal_l = filters.filters_directional(L, N, J_min, lam, spin, spin0)
@@ -61,7 +64,7 @@ def synthesis_transform_looped(
     for j in range(J_min, J + 1):
         Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
         temp = s2fft.wigner.transform.forward(
-            f_wav[j - J_min], Lj, Nj, 0, sampling, None, reality
+            f_wav[j - J_min], Lj, Nj, 0, sampling, reality, nside
         )
         for n in range(-Nj + 1, Nj, 2):
             for el in range(max(abs(spin), abs(n)), Lj):
@@ -81,7 +84,7 @@ def synthesis_transform_looped(
             else:
                 flm[el, -m + L - 1] += f_scal_lm[el, Ls - 1 - m] * phi
     
-    return s2fft.transform.inverse(flm, L, spin, sampling, None, reality)
+    return s2fft.transform.inverse(flm, L, spin, sampling, nside, reality)
 
 
 
@@ -95,6 +98,7 @@ def synthesis_transform_vectorised(
     spin: int = 0,
     spin0: int = 0,
     sampling: str = "mw",
+    nside: int = None,
     reality: bool = False,
     multiresolution: bool = False,
 ) -> np.ndarray:
@@ -112,7 +116,9 @@ def synthesis_transform_vectorised(
             Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
         spin (int, optional): Spin (integer) of input signal. Defaults to 0.
         spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss"}. Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}. Defaults to "mw".
+        nside (int, optional): HEALPix Nside resolution parameter.  Only required if sampling="healpix".  Defaults 
+            to None.
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
             conjugate symmetry of harmonic coefficients. Defaults to False.
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
@@ -127,13 +133,13 @@ def synthesis_transform_vectorised(
     """
     
     shapes.wavelet_shape_check(
-        f_wav, f_scal, L, N, J_min, lam, sampling, multiresolution
+        f_wav, f_scal, L, N, J_min, lam, sampling, nside, multiresolution
     )
 
     J = samples.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
-    f_scal_lm = s2fft.transform.forward(f_scal, Ls, spin, sampling, None, reality)
+    f_scal_lm = s2fft.transform.forward(f_scal, Ls, spin, sampling, nside, reality)
 
     # Generate the directional wavelet kernels
     wav_lm, scal_l = filters.filters_directional_vectorised(
@@ -145,7 +151,7 @@ def synthesis_transform_vectorised(
     for j in range(J_min, J + 1):
         Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
         temp = s2fft.wigner.transform.forward(
-            f_wav[j - J_min], Lj, Nj, 0, sampling, None, reality
+            f_wav[j - J_min], Lj, Nj, 0, sampling, reality, nside
         )
         flm[:Lj, L - Lj : L - 1 + Lj] += np.einsum(
             "ln,nlm->lm",
@@ -157,4 +163,4 @@ def synthesis_transform_vectorised(
     phi = scal_l[:Ls] * np.sqrt(4 * np.pi / (2 * np.arange(Ls) + 1))
     flm[:Ls, L - Ls : L - 1 + Ls] += np.einsum("lm,l->lm", f_scal_lm, phi)
 
-    return s2fft.transform.inverse(flm, L, spin, sampling, None, reality)
+    return s2fft.transform.inverse(flm, L, spin, sampling, nside, reality)
