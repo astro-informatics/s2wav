@@ -1,53 +1,50 @@
-S2WAV: JAX accelerated spin-spherical harmonic transforms
-=========================================================
+Differentiable and accelerated spherical wavelets
+===================================================
 
-Add some basic discussion about ``S2WAV`` here.
+``S2WAV`` is a JAX package for computing wavelet transforms on the sphere and rotation 
+group.  It leverages autodiff to provide differentiable transforms, which are also 
+deployable on modern hardware accelerators (e.g. GPUs and TPUs), and can be mapped 
+across multiple accelerators.
 
-Installation
-============
+More specifically, ``S2WAV`` provides support for scale-discretised wavelet transforms 
+on the sphere and rotation group (for both real and complex signals), with support for 
+adjoints where needed, and comes with a variety of different optimisations (e.g. precompute 
+or not, multi-resolution algorithms) that one may select depending on available resources 
+and desired angular resolution :math:`L`.
 
-Add some basic installation instructions here.
-    
-Documentation
-=============
+Contributors |:hammer:|
+------------------------
+TODO: Add core contributors photos etc here pre-release.
 
-Link to the full documentation (when deployed).
+We strongly encourage contributions from any interested developers; a simple example would be adding 
+support for more spherical sampling patterns!
 
-Contributors
-============
-Author names & Contributors
-
-Attribution
-===========
+Attribution |:books:|
+----------------------
 A BibTeX entry for ``S2WAV`` is:
 
 .. code-block:: 
 
-     @article{S2WAV, 
-        author = {Author~List},
-         title = {"A totally amazing name"},
-       journal = {ArXiv},
-        eprint = {arXiv:0000.00000},
-          year = {what year is it?!}
+     @article{price:s2wav, 
+        AUTHOR = {Author names},
+         TITLE = {"TBA"},
+        EPRINT = {arXiv:0000.00000},
+          YEAR = {2023}
      }
 
-License
-=======
+License |:memo:|
+-----------------
 
-``S2WAV`` is released under the MIT license (see `LICENSE.txt <https://github.com/astro-informatics/S2WAV/blob/main/LICENCE.txt>`_).
+Copyright 2023 Matthew Price, Jessica Whtiney, Alicja Polanska, Jason McEwen and contributors.
 
-.. code-block::
-
-     S2WAV
-     Copyright (C) 2022 Matthew Price, Jason McEwen, Jessica Whitney, Alicja Polanska.
-
-     This program is released under the MIT license.
+``S2WAV`` is free software made available under the MIT License. For details see
+the LICENSE file.
 
 .. bibliography:: 
     :notcited:
     :list: bullet
 
-* :ref:`modindex`
+.. * :ref:`modindex`
 
 .. toctree::
    :hidden:
@@ -56,20 +53,12 @@ License
 
    user_guide/install
 
-
 .. toctree::
    :hidden:
-   :maxdepth: 2
-   :caption: Background
-
-   background/index
-
-.. toctree::
-   :hidden:
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Interactive Tutorials
    
-   tutorials/example_notebook.nblink
+   tutorials/index
 
 .. toctree::
    :hidden:

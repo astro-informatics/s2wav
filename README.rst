@@ -1,4 +1,4 @@
-.. image:: https://img.shields.io/badge/GitHub-s2wav-brightgreen.svg?style=flat
+.. image:: https://img.shields.io/badge/GitHub-s2wav-blue.svg?style=flat
     :target: https://github.com/astro-informatics/s2wav
 .. image:: https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml/badge.svg?branch=main
     :target: https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml
@@ -6,94 +6,92 @@
     :target: https://astro-informatics.github.io/s2wav
 .. image:: https://codecov.io/gh/astro-informatics/s2wav/branch/main/graph/badge.svg?token=ZES6J4K3KZ 
     :target: https://codecov.io/gh/astro-informatics/s2wav
-.. image:: https://img.shields.io/badge/License-GPL-blue.svg
-    :target: http://perso.crans.org/besson/LICENSE.html
+.. image:: https://img.shields.io/badge/License-MIT-yellow.svg
+    :target: https://opensource.org/licenses/MIT
 .. image:: http://img.shields.io/badge/arXiv-xxxx.xxxxx-orange.svg?style=flat
     :target: https://arxiv.org/abs/xxxx.xxxxx
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
 
-|logo| s2wav: Differentiable and accelerated wavelet transforms on the sphere with JAX
+|logo| Differentiable and accelerated spherical wavelets with JAX
 =================================================================================================================
 
 .. |logo| raw:: html
 
-   <img src="./docs/assets/placeholder_logo.png" align="center" height="80" width="80">
-
-This is a very loose framework for people to start python projects from. To get up and running, go through the code carefully replacing ``Project-name`` with your 
-desired project name (check all documents!), don't forget to change the directory project_name as well! You will also need to update the links in all badges!
+   <img src="./docs/assets/sax_logo.png" align="left" height="85" width="98">
 
 
-Auto-formatting code
-====================
-To keep the code readable and organised you should (strongly) consider using the ``black`` package. Whenever you are finished updating a file, just run 
+``S2WAV`` is a JAX package for computing wavelet transforms on the sphere and rotation 
+group.  It leverages autodiff to provide differentiable transforms, which are also 
+deployable on modern hardware accelerators (e.g. GPUs and TPUs), and can be mapped 
+across multiple accelerators.
 
-.. code-block:: bash
+More specifically, ``S2WAV`` provides support for scale-discretised wavelet transforms 
+on the sphere and rotation group (for both real and complex signals), with support for 
+adjoints where needed, and comes with a variety of different optimisations (e.g. precompute 
+or not, multi-resolution algorithms) that one may select depending on available resources 
+and desired angular resolution :math:`L`.
 
-    black <file_to_tidy.py>
-
-or alternatively format everything by running
-
-.. code-block:: bash
-
-    black project_name/*
-
-This is important as the CI enforces black formatting (this can be disabled by removing the --black flag in pytest) so your unit tests will fail if you don't do this!
-
-CodeCov
-============
-To set up code coverage you will need to enter this  
-
-.. code-block:: bash
-
-    https://codecov.io/gh/{account-name}/{desired-repo} 
-
-into any browser, then go to settings and activate the repository. You will then need to find the ``repository upload token`` which 
-should be added to the github actions script (roughly line 29)
-
-.. code-block::
-
-    codecov --token <add your token here>
-
-Next time CI runs on main branch it will automatically update codecov. Now go back to codecov, copy the badge and put it in the readme, .pipreadme, and 
-the root index of the documentation!
-
-PyPi
-=====
-To deploy the code on PyPi first test the deployment on PyPi's mirror site by, first making an account on https://test.pypi.org and then running 
+Installation :computer:
+------------------------
+The Python dependencies for the ``S2WAV`` package are listed in the file 
+``requirements/requirements-core.txt`` and will be automatically installed into the 
+active python environment by `pip` when running
 
 .. code-block:: bash 
 
-    python setup.py bdist_wheel --universal
-    twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-    pip install -i https://test.pypi.org/simple/ project_name
+    pip install .        
+    
+from the root directory of the repository. Unit tests can then be executed to ensure the 
+installation was successful by running 
 
-From the root directory. Keep in mind that installing from the mirror site won't automatically find dependencies, so if you have an error because the pacakge can't find numpy that's probably why, and may not be an issue on the main PyPi site. To deploy the main PyPi site simply remove the --repostiry-url name, note that you can add multiple wheels to dist/*, to provide a package which may be pip installed for multiple python version, and on multiple machine architectures.
+.. code-block:: bash 
+
+    pytest tests/         # for pytest
+
+In the near future one will be able to install ``S2WAV`` directly from `PyPi` by 
+``pip install s2wav`` but this is not yet supported. Note that to run ``JAX`` on 
+NVIDIA GPUs you will need to follow the 
+`guide <https://github.com/google/jax#installation>`_ outlined by Google.
+
+Usage :rocket:
+--------------
+To import and use ``S2WAV``  is as simple follows: 
+
+.. code-block:: Python 
+
+    import s2wav 
+
+    # Compute wavelet coefficients
+    f_wav, f_scal = s2wav.analysis(f, L, N)
+
+    # Map back to signal on the sphere 
+    f = s2wav.synthesis(f_wav, f_scal, L, N)
+
+Contributors :hammer:
+------------------------
+TODO: Add core contributors photos etc here pre-release.
+
+We strongly encourage contributions from any interested developers; a simple example would be adding 
+support for more spherical sampling patterns!
 
 Attribution
-===========
-A BibTeX entry for s2wav is:
+--------------
+A BibTeX entry for ``S2WAV`` is:
 
 .. code-block:: 
 
-     @article{s2wav, 
-        author = {Author~List},
-         title = {"A totally amazing name"},
-       journal = {ArXiv},
-        eprint = {arXiv:0000.00000},
-          year = {what year is it?!}
+     @article{price:s2wav, 
+        AUTHOR = {Author names},
+         TITLE = {"TBA"},
+        EPRINT = {arXiv:0000.00000},
+          YEAR = {2023}
      }
 
-License
-=======
+License :memo:
+------------
 
-s2wav is released under the GPL-3 license (see `LICENSE.txt <https://github.com/astro-informatics/s2wav/blob/main/LICENSE.txt>`_),
+Copyright 2023 Matthew Price, Jessica Whtiney, Alicja Polanska, Jason McEwen and contributors.
 
-.. code-block::
-
-     s2wav
-     Copyright (C) 2022 Author names & contributors
-
-     This program is released under the GPL-3 license (see LICENSE.txt).
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+``S2WAV`` is free software made available under the MIT License. For details see
+the LICENSE file.

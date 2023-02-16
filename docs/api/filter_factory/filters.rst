@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-s2wav.filters
+Filter Generator
 **************************
-.. automodule:: s2wav.filters
+.. automodule:: s2wav.filter_factory.filters
    :members: 

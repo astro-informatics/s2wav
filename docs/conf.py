@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath(".."))
 
 project = "S2WAV"
 copyright = (
-    "2022, Matthew Price, Jason McEwen, Jessica Whitney, Alicja Polanska"
+    "2023, Matthew Price, Jason McEwen, Jessica Whitney, Alicja Polanska"
 )
 author = "Matthew Price, Jason McEwen, Jessica Whitney, Alicja Polanska"
 
@@ -42,17 +42,20 @@ release = "0.0.1"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinx_copybutton",
     "nbsphinx_link",
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinx.ext.mathjax",
     "sphinx.ext.githubpages",
+    "sphinx_rtd_theme",
     "nbsphinx",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_tabs.tabs",
     "sphinx_git",
     "sphinxcontrib.texfigure",
     "sphinx.ext.autosectionlabel",
+    "sphinxemoji.sphinxemoji",
 ]
 
 nbsphinx_execute = "never"
@@ -87,7 +90,7 @@ sphinx_tabs_disable_css_loading = True
 
 html_theme = "pydata_sphinx_theme"
 
-html_logo = "assets/placeholder_logo.png"
+html_logo = "assets/sax_logo.png"
 html_theme_options = {
     "footer_items": "copyright.html",
     "logo_only": True,
@@ -99,24 +102,24 @@ html_theme_options = {
     "header_links_before_dropdown": 5,
     "secondary_sidebar_items": ["page-toc", "edit-this-page", "sourcelink"],
     "icon_links": [
-        {
-            "name": "ArXiv",
-            "url": "https://arxiv.org/abs/xxxx.xxxxx",
-            "icon": "_static/arxiv-logomark-small.png",
-            "type": "local",
-        },
-        {
-            "name": "YouTube",
-            "url": "https://www.youtube.com/channel/UCrCOQsyQOJhOUaIYzmbkKQQ",
-            "icon": "fa-brands fa-youtube fa-2x",
-            "type": "fontawesome",
-        },
-        {
-            "name": "PyPi",
-            "url": "https://github.com/astro-informatics/s2wav/",
-            "icon": "_static/pypi.png",
-            "type": "local",
-        },
+        # {
+        #     "name": "ArXiv",
+        #     "url": "https://arxiv.org/abs/xxxx.xxxxx",
+        #     "icon": "_static/arxiv-logomark-small.png",
+        #     "type": "local",
+        # },
+        # {
+        #     "name": "YouTube",
+        #     "url": "https://www.youtube.com/channel/UCrCOQsyQOJhOUaIYzmbkKQQ",
+        #     "icon": "fa-brands fa-youtube fa-2x",
+        #     "type": "fontawesome",
+        # },
+        # {
+        #     "name": "PyPi",
+        #     "url": "https://github.com/astro-informatics/s2wav/",
+        #     "icon": "_static/pypi.png",
+        #     "type": "local",
+        # },
         {
             "name": "GitHub",
             "url": "https://github.com/astro-informatics/s2wav/",
@@ -139,18 +142,18 @@ html_theme_options = {
 }
 
 html_sidebars = {
-    "tutorials/*": [
-        "indices.html",
-        "navbar-nav.html",
-    ],
+    # "tutorials/*": [
+    #     "indices.html",
+    #     "navbar-nav.html",
+    # ],
     "user_guide/*": [
         "indices.html",
         "navbar-nav.html",
     ],
-    "background/*": [
-        "indices.html",
-        "navbar-nav.html",
-    ],
+    # "background/*": [
+    #     "indices.html",
+    #     "navbar-nav.html",
+    # ],
 }
 
 html_static_path = ["_static"]

@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-s2wav.shapes
+Tiling Functions
 **************************
-.. automodule:: s2wav.shapes
+.. automodule:: s2wav.filter_factory.tiling
    :members: 

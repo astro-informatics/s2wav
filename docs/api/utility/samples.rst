@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-logs
+Sampling Functions
 **************************
-.. automodule:: s2wav.logs
+.. automodule:: s2wav.utils.samples
    :members: 

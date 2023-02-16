@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-transforms
+Synthesis Transform
 **************************
-.. automodule:: s2wav.synthesis
+.. automodule:: s2wav.transforms.synthesis
    :members: 
