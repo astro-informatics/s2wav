@@ -379,31 +379,6 @@
   <div class="section" id="module-s2wav.utils.samples">
 <span id="sampling-functions"></span><h1>Sampling Functions<a class="headerlink" href="#module-s2wav.utils.samples" title="Permalink to this headline"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="s2wav.utils.samples.L0">
-<span class="sig-prename descclassname"><span class="pre">s2wav.utils.samples.</span></span><span class="sig-name descname"><span class="pre">L0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'s2dw'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#s2wav.utils.samples.L0" title="Permalink to this definition"></a></dt>
-<dd><p>Computes the minimum harmonic index supported by the given wavelet scale <span class="math notranslate nohighlight">\(j\)</span>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>j</strong> (<em>int</em>) – Wavelet scale to consider.</p></li>
-<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic wavelets. Defaults to 2.</p></li>
-<li><p><strong>kernel</strong> (<em>str</em><em>, </em><em>optional</em>) – The wavelet type from {“s2dw”}. Defaults to “s2dw”.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – Kernel type not supported.</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The minimum harmonic multipole <span class="math notranslate nohighlight">\(el\)</span> which is supported by a given wavelet scale.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="s2wav.utils.samples.elm2ind">
 <span class="sig-prename descclassname"><span class="pre">s2wav.utils.samples.</span></span><span class="sig-name descname"><span class="pre">elm2ind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">el</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#s2wav.utils.samples.elm2ind" title="Permalink to this definition"></a></dt>
 <dd><p>Convert from spherical harmonic 2D indexing of <span class="math notranslate nohighlight">\((\ell,m)\)</span> to 1D index.

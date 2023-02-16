@@ -16,7 +16,7 @@ Utility Functions
      - Computes the number of :math:`\theta` samples.
    * - :func:`~s2wav.utils.samples.j_bandlimit`
      - Computes the band-limit of a specific wavelet scale.
-   * - :func:`~s2wav.utils.samples.L0`
+   * - :func:`~s2wav.utils.shapes.L0_j`
      - Computes the minimum harmonic index supported by the given wavelet scale :math:`j`.
    * - :func:`~s2wav.utils.samples.n_px`
      - Returns the number of spherical pixels for a given sampling scheme.
