@@ -44,10 +44,10 @@ def generate_f_wav_scal(
 
     f_wav = []
     for j in range(J_min, J + 1):
-        Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
+        Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
 
         for n in range(-Nj + 1, Nj, 2):
-            for el in range(abs(n), Lj):
+            for el in range(max(abs(n), L0j), Lj):
                 for m in range(-el, el + 1):
                     flmn[j - J_min][Nj - 1 + n, el, Lj - 1 + m] = (
                         rng.uniform() + 1j * rng.uniform()

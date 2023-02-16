@@ -71,29 +71,6 @@ def j_bandlimit(j: int, lam: float = 2.0, kernel: str = "s2dw") -> int:
         raise ValueError(f"Kernel type {kernel} not supported!")
 
 
-def L0(j: int, lam: float = 2.0, kernel: str = "s2dw") -> int:
-    r"""Computes the minimum harmonic index supported by the given wavelet scale :math:`j`.
-
-    Args:
-        j (int): Wavelet scale to consider.
-
-        lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-            Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
-
-        kernel (str, optional): The wavelet type from {"s2dw"}. Defaults to "s2dw".
-
-    Raises:
-        ValueError: Kernel type not supported.
-
-    Returns:
-        int: The minimum harmonic multipole :math:`el` which is supported by a given wavelet scale.
-    """
-    if kernel.lower() == "s2dw":
-        return np.ceil(lam ** (j - 1))
-    else:
-        raise ValueError(f"Kernel type {kernel} not supported!")
-
-
 def j_max(L: int, lam: float = 2.0) -> int:
     r"""Computes needlet maximum level required to ensure exact reconstruction.
 
@@ -225,9 +202,13 @@ def n_lmn_wav(
                 sampling_flmn_size = (2 * N - 1) * el * el
         elif storage.lower() == "compact":
             if reality:
-                sampling_flmn_size = N * (6 * el * el - (N - 1) * (2 * N - 1)) / 6
+                sampling_flmn_size = (
+                    N * (6 * el * el - (N - 1) * (2 * N - 1)) / 6
+                )
             else:
-                sampling_flmn_size = (2 * N - 1) * (3 * el * el - N * (N - 1)) / 3
+                sampling_flmn_size = (
+                    (2 * N - 1) * (3 * el * el - N * (N - 1)) / 3
+                )
         else:
             raise ValueError(f"Storage method {storage} not recognised.")
 
