@@ -36,10 +36,10 @@ def generate_f_wav_scal(
     reality: bool = False,
     multiresolution: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    from s2wav.utils import shapes, samples
+    from s2wav.utils import shapes
     from s2fft import base_transforms as base
 
-    J = samples.j_max(L, lam)
+    J = shapes.j_max(L, lam)
     flmn = shapes.construct_flmn(L, N, J_min, lam, multiresolution)
 
     f_wav = []
@@ -80,9 +80,9 @@ def s2wav_to_s2let(
     lam: float = 2.0,
     multiresolution: bool = False,
 ) -> int:
-    from s2wav.utils import samples
+    from s2wav.utils.shapes import j_max
 
-    J = samples.j_max(L, lam)
+    J = j_max(L, lam)
     f_wav_s2let = np.zeros(
         n_wav(L, N, J_min, lam, multiresolution), dtype=np.complex128
     )
@@ -102,10 +102,10 @@ def n_wav(
     multiresolution: bool = False,
     sampling: str = "mw",
 ) -> int:
-    from s2wav.utils import shapes, samples
+    from s2wav.utils import shapes
     from s2fft.sampling import so3_samples
 
-    J = samples.j_max(L, lam)
+    J = shapes.j_max(L, lam)
     count = 0
     for j in range(J_min, J + 1):
         Lj = shapes.wav_j_bandlimit(L, j, lam, multiresolution)

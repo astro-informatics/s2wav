@@ -1,5 +1,5 @@
 import numpy as np
-from s2wav.utils import samples
+from s2wav.utils.shapes import j_max
 
 
 def tiling_integrand(t: float, lam: float = 2.0) -> float:
@@ -112,7 +112,7 @@ def k_lam(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
             sphere", A&A, vol. 558, p. A128, 2013.
     """
 
-    J = samples.j_max(L, lam)
+    J = j_max(L, lam)
 
     normalisation = part_scaling_fn(1 / lam, 1.0, quad_iters, lam)
     k = np.zeros((J + 2, L))

@@ -1,6 +1,6 @@
 import numpy as np
 from s2wav.filter_factory import tiling, kernels
-from s2wav.utils import samples
+from s2wav.utils import shapes
 from typing import Tuple
 
 
@@ -40,7 +40,7 @@ def filters_axisym(
     Note:
         [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
     """
-    J = samples.j_max(L, lam)
+    J = shapes.j_max(L, lam)
 
     if J_min >= J or J_min < 0:
         raise ValueError(
@@ -103,7 +103,7 @@ def filters_directional(
     Notes:
         [1] J. McEwen et. al., "Directional spin wavelets on the sphere", arXiv preprint arXiv:1509.06749 (2015).
     """
-    J = samples.j_max(L, lam)
+    J = shapes.j_max(L, lam)
     el_min = max(abs(spin), abs(spin0))
 
     phi = np.zeros(L, dtype=np.float64)
@@ -159,7 +159,7 @@ def filters_axisym_vectorised(
         with shape :math:`[(J+1)*L], and scaling kernel :math:`\Phi_{\el m}` with shape
         :math:`[L]` in harmonic space.
     """
-    J = samples.j_max(L, lam)
+    J = shapes.j_max(L, lam)
 
     if J_min >= J or J_min < 0:
         raise ValueError(

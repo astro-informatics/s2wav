@@ -1,5 +1,5 @@
 import numpy as np
-from s2wav.utils import samples, shapes
+from s2wav.utils import shapes
 from s2wav.filter_factory import filters
 from s2fft import base_transforms as base
 
@@ -51,7 +51,7 @@ def synthesis_transform_looped(
     shapes.wavelet_shape_check(
         f_wav, f_scal, L, N, J_min, lam, sampling, nside, multiresolution
     )
-    J = samples.j_max(L, lam)
+    J = shapes.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
     f_scal_lm = base.spherical.forward(
@@ -137,7 +137,7 @@ def synthesis_transform_vectorised(
         f_wav, f_scal, L, N, J_min, lam, sampling, nside, multiresolution
     )
 
-    J = samples.j_max(L, lam)
+    J = shapes.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
     f_scal_lm = base.spherical.forward(
