@@ -1,7 +1,6 @@
 """Collection of shared fixtures"""
 from functools import partial
 from typing import Tuple
-import pys2let as s2let
 import numpy as np
 import pytest
 
@@ -37,7 +36,7 @@ def generate_f_wav_scal(
     reality: bool = False,
     multiresolution: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    from s2wav import shapes, samples
+    from s2wav.utils import shapes, samples
     from s2fft import base_transforms as base
 
     J = samples.j_max(L, lam)
@@ -81,7 +80,7 @@ def s2wav_to_s2let(
     lam: float = 2.0,
     multiresolution: bool = False,
 ) -> int:
-    from s2wav import samples
+    from s2wav.utils import samples
 
     J = samples.j_max(L, lam)
     f_wav_s2let = np.zeros(
@@ -103,7 +102,7 @@ def n_wav(
     multiresolution: bool = False,
     sampling: str = "mw",
 ) -> int:
-    from s2wav import shapes, samples
+    from s2wav.utils import shapes, samples
     from s2fft.sampling import so3_samples
 
     J = samples.j_max(L, lam)

@@ -1,5 +1,5 @@
 import numpy as np
-from s2wav.math_utils import binomial_coefficient
+from s2wav.utils.math_functions import binomial_coefficient
 
 
 def tiling_direction(L: int, N: int = 1) -> np.ndarray:

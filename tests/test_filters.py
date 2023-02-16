@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
-from s2wav import filters, samples, tiling
+from s2wav.filter_factory import filters, tiling
+from s2wav.utils import samples
 
 L_to_test = [8, 16, 32]
 N_to_test = [4, 6, 8]

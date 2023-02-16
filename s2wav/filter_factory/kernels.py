@@ -1,6 +1,5 @@
 import numpy as np
-import math
-from s2wav import samples
+from s2wav.utils import samples
 
 
 def tiling_integrand(t: float, lam: float = 2.0) -> float:
