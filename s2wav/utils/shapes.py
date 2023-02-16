@@ -97,6 +97,24 @@ def n_wav_scales(L: int, N: int = 1, J_min: int = 0, lam: float = 2.0) -> int:
     return samples.j_max(L, lam) - J_min + 1
 
 
+def L0_j(j: int, lam: float = 2.0) -> int:
+    r"""Computes the minimum harmonic index supported by the given wavelet scale :math:`j`.
+
+    Args:
+        j (int): Wavelet scale to consider.
+
+        lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
+            Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
+
+    Raises:
+        ValueError: Kernel type not supported.
+
+    Returns:
+        int: The minimum harmonic multipole :math:`el` which is supported by a given wavelet scale.
+    """
+    return math.ceil(lam ** (j - 1))
+
+
 def LN_j(
     L: int,
     j: int = 0,
@@ -127,11 +145,12 @@ def LN_j(
         int: Total number of wavelet scales :math:`n_{j}`.
     """
     Lj = wav_j_bandlimit(L, j, lam, multiresolution)
+    L0j = L0_j(j, lam)
     Nj = N
     if multiresolution:
         Nj = min(N, Lj)
         Nj += (Nj + N) % 2
-    return Lj, Nj
+    return Lj, Nj, L0j
 
 
 def f_wav_j(
@@ -175,7 +194,7 @@ def f_wav_j(
         wavelet coefficients are stored as a list of arrays, this being the shape of
         one array within such a list.
     """
-    Lj, Nj = LN_j(L, j, N, lam, multiresolution)
+    Lj, Nj, _ = LN_j(L, j, N, lam, multiresolution)
 
     return so3_samples.f_shape(Lj, Nj, sampling, nside)
 
@@ -332,7 +351,7 @@ def flmn_wav_j(
         wavelet coefficients are stored as a list of arrays, this being the shape of
         one array within such a list.
     """
-    Lj, Nj = LN_j(L, j, N, lam, multiresolution)
+    Lj, Nj, _ = LN_j(L, j, N, lam, multiresolution)
     return 2 * Nj - 1, Lj, 2 * Lj - 1
 
 

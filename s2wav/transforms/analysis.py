@@ -64,9 +64,9 @@ def analysis_transform_looped(
     flm = base.spherical.forward(f, L, spin, sampling, nside, reality)
 
     for j in range(J_min, J + 1):
-        Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
+        Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
         for n in range(-Nj + 1, Nj, 2):
-            for el in range(max(abs(spin), abs(n)), Lj):
+            for el in range(max(abs(spin), abs(n), L0j), Lj):
                 psi = np.conj(wav_lm[j, el, L - 1 + n])
                 psi *= 8 * np.pi**2 / (2 * el + 1)
 
@@ -106,9 +106,9 @@ def analysis_transform_looped(
         L, N, J_min, lam, sampling, nside, multiresolution
     )
     for j in range(J_min, J + 1):
-        Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
+        Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
         f_wav[j - J_min] = base.wigner.inverse(
-            f_wav_lmn[j - J_min], Lj, Nj, 0, sampling, reality, nside
+            f_wav_lmn[j - J_min], Lj, Nj, L0j, sampling, reality, nside
         )
 
     f_scal = base.spherical.inverse(
@@ -186,14 +186,14 @@ def analysis_transform_vectorised(
     # Project all wigner coefficients for each lmn onto wavelet coefficients
     # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
-        Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
-        f_wav_lmn[j - J_min][::2] = np.einsum(
+        Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
+        f_wav_lmn[j - J_min][::2, L0j:] = np.einsum(
             "lm,ln->nlm",
-            flm[:Lj, L - Lj : L - 1 + Lj],
-            wav_lm[j, :Lj, L - Nj : L - 1 + Nj : 2],
+            flm[L0j:Lj, L - Lj : L - 1 + Lj],
+            wav_lm[j, L0j:Lj, L - Nj : L - 1 + Nj : 2],
         )
         f_wav[j - J_min] = base.wigner.inverse(
-            f_wav_lmn[j - J_min], Lj, Nj, 0, sampling, reality, nside
+            f_wav_lmn[j - J_min], Lj, Nj, L0j, sampling, reality, nside
         )
 
     # Project all harmonic coefficients for each lm onto scaling coefficients

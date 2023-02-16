@@ -64,12 +64,12 @@ def synthesis_transform_looped(
     # Sum the all wavelet wigner coefficients for each lmn
     # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
-        Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
+        Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
         temp = base.wigner.forward(
-            f_wav[j - J_min], Lj, Nj, 0, sampling, reality, nside
+            f_wav[j - J_min], Lj, Nj, L0j, sampling, reality, nside
         )
         for n in range(-Nj + 1, Nj, 2):
-            for el in range(max(abs(spin), abs(n)), Lj):
+            for el in range(max(abs(spin), abs(n), L0j), Lj):
                 psi = wav_lm[j, el, L - 1 + n]
                 for m in range(-el, el + 1):
                     flm[el, L - 1 + m] += temp[Nj - 1 + n, el, Lj - 1 + m] * psi
@@ -152,14 +152,14 @@ def synthesis_transform_vectorised(
     # Sum the all wavelet wigner coefficients for each lmn
     # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
-        Lj, Nj = shapes.LN_j(L, j, N, lam, multiresolution)
+        Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
         temp = base.wigner.forward(
-            f_wav[j - J_min], Lj, Nj, 0, sampling, reality, nside
+            f_wav[j - J_min], Lj, Nj, L0j, sampling, reality, nside
         )
-        flm[:Lj, L - Lj : L - 1 + Lj] += np.einsum(
+        flm[L0j:Lj, L - Lj : L - 1 + Lj] += np.einsum(
             "ln,nlm->lm",
-            wav_lm[j, :Lj, L - Nj : L - 1 + Nj : 2],
-            temp[::2, :, :],
+            wav_lm[j, L0j:Lj, L - Nj : L - 1 + Nj : 2],
+            temp[::2, L0j:, :],
         )
 
     # Sum the all scaling harmonic coefficients for each lm
