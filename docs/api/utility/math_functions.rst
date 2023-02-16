@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-math utils
+Maths Functions
 **************************
-.. automodule:: s2wav.math_utils
+.. automodule:: s2wav.utils.math_functions
    :members: 

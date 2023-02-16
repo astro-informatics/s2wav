@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-s2wav.kernels
+Wavelet Kernels
 **************************
-.. automodule:: s2wav.kernels
+.. automodule:: s2wav.filter_factory.kernels
    :members: 

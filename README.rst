@@ -10,6 +10,8 @@
     :target: https://opensource.org/licenses/MIT
 .. image:: http://img.shields.io/badge/arXiv-xxxx.xxxxx-orange.svg?style=flat
     :target: https://arxiv.org/abs/xxxx.xxxxx
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
 
 |logo| Differentiable and accelerated spherical wavelets with JAX
 =================================================================================================================
@@ -74,7 +76,7 @@ We strongly encourage contributions from any interested developers; a simple exa
 support for more spherical sampling patterns!
 
 Attribution
-===========
+--------------
 A BibTeX entry for ``S2WAV`` is:
 
 .. code-block:: 
