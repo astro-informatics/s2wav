@@ -11,7 +11,7 @@
 .. image:: http://img.shields.io/badge/arXiv-xxxx.xxxxx-orange.svg?style=flat
     :target: https://arxiv.org/abs/xxxx.xxxxx
 
-|logo| Differentiable and accelerated spherical wavelet transforms with JAX
+|logo| Differentiable and accelerated spherical wavelets with JAX
 =================================================================================================================
 
 .. |logo| raw:: html
