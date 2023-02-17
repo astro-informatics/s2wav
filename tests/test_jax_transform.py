@@ -1,19 +1,15 @@
-from jax import jit, config
-
-config.update("jax_enable_x64", True)
-
 import pytest
 import numpy as np
 import pys2let as s2let
 
-from s2wav.transforms import synthesis_jax, analysis
+from s2wav.transforms import synthesis_jax
 from s2wav.filter_factory import filters
-from s2fft import base_transforms as base
+from s2wav.utils import shapes
 
 
 L_to_test = [8, 10]
 N_to_test = [1, 2, 3]
-J_min_to_test = [0, 1]
+J_min_to_test = [1, 2]
 lam_to_test = [2, 3]
 multiresolution = [False, True]
 reality = [False, True]
@@ -35,6 +31,10 @@ def test_synthesis_jax(
     multiresolution: bool,
     reality: bool,
 ):
+    J = shapes.j_max(L, lam)
+    if J_min >= J:
+        pytest.skip("J_min larger than J which isn't a valid test case.")
+
     f_wav, f_scal, f_wav_s2let, f_scal_s2let = wavelet_generator(
         L=L,
         N=N,
@@ -66,7 +66,16 @@ def test_synthesis_jax(
         lam,
         multiresolution=multiresolution,
         reality=reality,
-        filters=filter
+        filters=filter,
     )
     f = np.real(f) if reality else f
+
+    import pyssht as ssht
+
+    flm1 = ssht.forward(np.array(f_check), L)
+    flm2 = ssht.forward(f.reshape(L, 2 * L - 1), L)
+    for l in range(L):
+        for m in range(-l, l + 1):
+            ind = ssht.elm2ind(l, m)
+            print(l, m, flm1[ind], flm2[ind], flm1[ind] - flm2[ind])
     np.testing.assert_allclose(f, f_check.flatten("C"), atol=1e-14)

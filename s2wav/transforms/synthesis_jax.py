@@ -9,6 +9,7 @@ import s2fft
 from functools import partial
 from typing import Tuple
 
+
 @partial(jit, static_argnums=(2, 3, 4, 5, 6, 7, 8, 9, 10, 11))
 def synthesis_transform_jax(
     f_wav: jnp.ndarray,
@@ -58,41 +59,28 @@ def synthesis_transform_jax(
     J = shapes.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = jnp.zeros((L, 2 * L - 1), dtype=jnp.complex128)
-    f_scal_lm = s2fft.forward_jax(
-        f_scal, Ls, spin, nside, sampling, reality
-    )
+    f_scal_lm = s2fft.forward_jax(f_scal, Ls, spin, nside, sampling, reality)
 
     # Sum the all wavelet wigner coefficients for each lmn
     # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
         Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
         temp = s2fft.wigner.forward_jax(
-            f_wav[j - J_min], Lj, Nj, nside, sampling, reality, L_lower = L0j
+            f_wav[j - J_min], Lj, Nj, nside, sampling, reality, L_lower=L0j
         )
-        flm = flm.at[L0j:Lj, L - Lj : L - 1 + Lj].add(jnp.einsum(
-            "ln,nlm->lm",
-            filters[0][j, L0j:Lj, L - Nj : L - 1 + Nj : 2],
-            temp[::2, L0j:, :], optimize = True
-        )
+        flm = flm.at[L0j:Lj, L - Lj : L - 1 + Lj].add(
+            jnp.einsum(
+                "ln,nlm->lm",
+                filters[0][j, L0j:Lj, L - Nj : L - 1 + Nj : 2],
+                temp[::2, L0j:, :],
+                optimize=True,
+            )
         )
 
     # Sum the all scaling harmonic coefficients for each lm
     phi = filters[1][:Ls] * jnp.sqrt(4 * jnp.pi / (2 * jnp.arange(Ls) + 1))
-    flm = flm.at[:Ls, L - Ls : L - 1 + Ls].add(jnp.einsum("lm,l->lm", f_scal_lm, phi, optimize = True))
+    flm = flm.at[:Ls, L - Ls : L - 1 + Ls].add(
+        jnp.einsum("lm,l->lm", f_scal_lm, phi, optimize=True)
+    )
 
     return s2fft.inverse_jax(flm, L, spin, nside, sampling, reality)
-
-
-
-
-if __name__=="__main__":
-    L = 8
-    N  = 3
-    f_wav = shapes.construct_f_jax(L,N)
-    f_scal = shapes.construct_flm_jax(L,N)
-
-    filters = filters.filters_directional_vectorised(L, N)
-    synthesis_transform_jax(f_wav,f_scal,L,N, filters=filters)
-
-
-

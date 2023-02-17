@@ -119,7 +119,7 @@ def LN_j(
         int: Total number of wavelet scales :math:`n_{j}`.
     """
     Lj = wav_j_bandlimit(L, j, lam, multiresolution)
-    L0j = L0_j(j, lam)
+    L0j = L0_j(j, lam) if multiresolution else 0
     Nj = N
     if multiresolution:
         Nj = min(N, Lj)
@@ -217,7 +217,9 @@ def construct_f(
             )
         )
     return f
-@partial(jit, static_argnums=(0,1,2,3,4,5,6))
+
+
+@partial(jit, static_argnums=(0, 1, 2, 3, 4, 5, 6))
 def construct_f_jax(
     L: int,
     N: int = 1,
@@ -287,7 +289,8 @@ def construct_flm(
     L_s = scal_bandlimit(L, J_min, lam, multiresolution)
     return np.zeros((L_s, 2 * L_s - 1), dtype=np.complex128)
 
-@partial(jit, static_argnums=(0,1,2,3))
+
+@partial(jit, static_argnums=(0, 1, 2, 3))
 def construct_flm_jax(
     L: int, J_min: int = 0, lam: float = 2.0, multiresolution: bool = False
 ) -> Tuple[int, int]:
