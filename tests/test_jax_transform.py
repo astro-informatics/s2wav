@@ -69,13 +69,4 @@ def test_synthesis_jax(
         filters=filter,
     )
     f = np.real(f) if reality else f
-
-    import pyssht as ssht
-
-    flm1 = ssht.forward(np.array(f_check), L)
-    flm2 = ssht.forward(f.reshape(L, 2 * L - 1), L)
-    for l in range(L):
-        for m in range(-l, l + 1):
-            ind = ssht.elm2ind(l, m)
-            print(l, m, flm1[ind], flm2[ind], flm1[ind] - flm2[ind])
     np.testing.assert_allclose(f, f_check.flatten("C"), atol=1e-14)
