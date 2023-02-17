@@ -441,6 +441,44 @@ def construct_flmn(
     return flmn
 
 
+@partial(jit, static_argnums=(0, 1, 2, 3, 4))
+def construct_flmn_jax(
+    L: int,
+    N: int = 1,
+    J_min: int = 0,
+    lam: float = 2.0,
+    multiresolution: bool = False,
+) -> jnp.ndarray:
+    """Defines a list of arrays corresponding to flmn.
+
+    Args:
+        L (int): Harmonic bandlimit.
+
+        N (int, optional): Upper orientational band-limit. Defaults to 1.
+
+        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
+
+        lam (float, optional): Wavelet parameter which determines the scale factor between
+            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
+            wavelets. Defaults to 2.
+
+        multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
+            resolution or its own resolution. Defaults to False.
+
+    Returns:
+        Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
+    """
+    J = j_max(L, lam)
+    flmn = []
+    for j in range(J_min, J + 1):
+        flmn.append(
+            jnp.zeros(
+                flmn_wav_j(L, j, N, lam, multiresolution), dtype=jnp.complex128
+            )
+        )
+    return flmn
+
+
 def j_max(L: int, lam: float = 2.0) -> int:
     r"""Computes needlet maximum level required to ensure exact reconstruction.
 
