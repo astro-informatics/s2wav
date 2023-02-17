@@ -27,7 +27,7 @@ def analysis_transform_jax(
     r"""Wavelet analysis from pixel space to wavelet space for complex signals.
 
     Args:
-        f (np.ndarray): Signal :math:`f` on the sphere with shape :math:`[n_{\theta}, n_{\phi}]`.
+        f (jnp.ndarray): Signal :math:`f` on the sphere with shape :math:`[n_{\theta}, n_{\phi}]`.
 
         L (int): Harmonic bandlimit.
 
@@ -54,10 +54,10 @@ def analysis_transform_jax(
             resolution or its own resolution. Defaults to False.
 
     Returns:
-        f_wav (np.ndarray): Array of wavelet pixel-space coefficients
+        f_wav (jnp.ndarray): Array of wavelet pixel-space coefficients
             with shape :math:`[n_{J}, 2N-1, n_{\theta}, n_{\phi}]`.
 
-        f_scal (np.ndarray): Array of scaling pixel-space coefficients
+        f_scal (jnp.ndarray): Array of scaling pixel-space coefficients
             with shape :math:`[n_{\theta}, n_{\phi}]`.
     """
     J = shapes.j_max(L, lam)
