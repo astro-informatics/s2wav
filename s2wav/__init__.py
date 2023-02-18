@@ -1,1 +1,1 @@
-from .transforms import analysis, synthesis
+from .transforms.jax_wavelets import analysis, synthesis
