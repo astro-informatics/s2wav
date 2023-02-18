@@ -68,7 +68,6 @@ def test_jax_synthesis(
         forward=True,
         reality=reality,
         multiresolution=multiresolution,
-        spmd=spmd,
     )
     f_check = jax_wavelets.synthesis(
         f_wav,
@@ -81,6 +80,7 @@ def test_jax_synthesis(
         reality=reality,
         filters=filter,
         precomps=precomps,
+        spmd=spmd,
     )
     f = np.real(f) if reality else f
     np.testing.assert_allclose(f, f_check.flatten("C"), atol=1e-14)
