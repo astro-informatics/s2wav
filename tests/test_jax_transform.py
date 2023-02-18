@@ -7,20 +7,13 @@ from s2wav.filter_factory import filters
 from s2wav.utils import shapes
 from s2fft import base_transforms as base
 
-# L_to_test = [6, 8]
-# N_to_test = [1, 2, 3]
-# J_min_to_test = [1, 2]
-# lam_to_test = [2, 3]
-# multiresolution = [False, True]
-# reality = [False, True]
-# sampling_to_test = ["mw", "mwss", "dh"]
-
-L_to_test = [6]
-N_to_test = [3]
-J_min_to_test = [1]
-lam_to_test = [2]
+L_to_test = [6, 8]
+N_to_test = [1, 2, 3]
+J_min_to_test = [1, 2]
+lam_to_test = [2, 3]
 multiresolution = [False, True]
-reality = [False]
+reality = [False, True]
+sampling_to_test = ["mw", "mwss", "dh"]
 
 
 @pytest.mark.parametrize("L", L_to_test)

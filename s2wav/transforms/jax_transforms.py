@@ -64,7 +64,6 @@ def generate_wigner_precomputes(
     return precomps
 
 
-@partial(jit, static_argnums=(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13))
 def synthesis_transform_jax(
     f_wav: jnp.ndarray,
     f_scal: jnp.ndarray,
@@ -145,6 +144,7 @@ def synthesis_transform_jax(
     # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
         Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
+        spmd_iter = spmd if N == Nj else False
         temp = s2fft.wigner.forward_jax(
             f_wav[j - J_min],
             Lj,
@@ -153,7 +153,7 @@ def synthesis_transform_jax(
             sampling,
             reality,
             precomps[j - J_min],
-            spmd,
+            spmd_iter,
             L_lower=L0j,
         )
         flm = flm.at[L0j:Lj, L - Lj : L - 1 + Lj].add(
@@ -174,7 +174,6 @@ def synthesis_transform_jax(
     return s2fft.inverse_jax(flm, L, spin, nside, sampling, reality)
 
 
-@partial(jit, static_argnums=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
 def analysis_transform_jax(
     f: jnp.ndarray,
     L: int,
@@ -239,7 +238,6 @@ def analysis_transform_jax(
     J = shapes.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
 
-    f_scal_lm = shapes.construct_flm_jax(L, J_min, lam, multiresolution)
     f_wav_lmn = shapes.construct_flmn_jax(L, N, J_min, lam, multiresolution)
     f_wav = shapes.construct_f_jax(L, N, J_min, lam, sampling, multiresolution)
 
@@ -256,6 +254,7 @@ def analysis_transform_jax(
     # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
         Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
+        spmd_iter = spmd if N == Nj else False
         f_wav_lmn[j - J_min] = (
             f_wav_lmn[j - J_min]
             .at[::2, L0j:]
@@ -276,16 +275,18 @@ def analysis_transform_jax(
             sampling,
             reality,
             precomps[j - J_min],
-            spmd,
+            spmd_iter,
             L0j,
         )
 
     # Project all harmonic coefficients for each lm onto scaling coefficients
     phi = filters[1][:Ls] * jnp.sqrt(4 * jnp.pi / (2 * jnp.arange(Ls) + 1))
-    f_scal_lm = jnp.einsum(
-        "lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi, optimize=True
-    )
 
     return f_wav, s2fft.inverse_jax(
-        f_scal_lm, Ls, spin, nside, sampling, reality
+        jnp.einsum("lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi, optimize=True),
+        Ls,
+        spin,
+        nside,
+        sampling,
+        reality,
     )
