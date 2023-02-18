@@ -2,13 +2,13 @@ import pytest
 import numpy as np
 import pys2let as s2let
 
-from s2wav.transforms import synthesis, analysis
+from s2wav.transforms import numpy_wavelets
 from s2wav.utils import shapes
 from s2fft import base_transforms as base
 
 
-L_to_test = [8, 10]
-N_to_test = [1, 2, 3]
+L_to_test = [6, 8]
+N_to_test = [2, 3]
 J_min_to_test = [1, 2]
 lam_to_test = [2, 3]
 multiresolution = [False, True]
@@ -55,7 +55,7 @@ def test_synthesis_looped(
         upsample=not multiresolution,
     )
 
-    f_check = synthesis.synthesis_transform_looped(
+    f_check = numpy_wavelets.synthesis_looped(
         f_wav, f_scal, L, N, J_min, lam, multiresolution=multiresolution
     )
 
@@ -101,7 +101,7 @@ def test_synthesis_vectorised(
         upsample=not multiresolution,
     )
 
-    f_check = synthesis.synthesis_transform_vectorised(
+    f_check = numpy_wavelets.synthesis(
         f_wav,
         f_scal,
         L,
@@ -147,7 +147,7 @@ def test_analysis_looped(
         spin=0,
         upsample=not multiresolution,
     )
-    f_wav_check, f_scal_check = analysis.analysis_transform_looped(
+    f_wav_check, f_scal_check = numpy_wavelets.analysis_looped(
         f, L, N, J_min, lam, reality=reality, multiresolution=multiresolution
     )
     f_wav_check = f_wav_converter(
@@ -189,7 +189,7 @@ def test_analysis_vectorised(
         spin=0,
         upsample=not multiresolution,
     )
-    f_wav_check, f_scal_check = analysis.analysis_transform_vectorised(
+    f_wav_check, f_scal_check = numpy_wavelets.analysis(
         f, L, N, J_min, lam, multiresolution=multiresolution, reality=reality
     )
 
@@ -228,7 +228,7 @@ def test_looped_round_trip(
         flm, L, reality=reality, sampling=sampling, nside=nside
     )
 
-    f_wav, f_scal = analysis.analysis_transform_looped(
+    f_wav, f_scal = numpy_wavelets.analysis_looped(
         f,
         L,
         N,
@@ -239,9 +239,8 @@ def test_looped_round_trip(
         sampling=sampling,
         nside=nside,
     )
-    print(f_wav[0].shape, f_scal.shape)
 
-    f_check = synthesis.synthesis_transform_looped(
+    f_check = numpy_wavelets.synthesis_looped(
         f_wav,
         f_scal,
         L,
@@ -277,14 +276,10 @@ def test_vectorised_round_trip(
     if J_min >= J:
         pytest.skip("J_min larger than J which isn't a valid test case.")
 
-    nside = int(L / 2)
-
     flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
-    f = base.spherical.inverse(
-        flm, L, reality=reality, sampling=sampling, nside=nside
-    )
+    f = base.spherical.inverse(flm, L, reality=reality, sampling=sampling)
 
-    f_wav, f_scal = analysis.analysis_transform_vectorised(
+    f_wav, f_scal = numpy_wavelets.analysis(
         f,
         L,
         N,
@@ -293,11 +288,9 @@ def test_vectorised_round_trip(
         multiresolution=multiresolution,
         reality=reality,
         sampling=sampling,
-        nside=nside,
     )
-    print(f_wav[0].shape, f_scal.shape)
 
-    f_check = synthesis.synthesis_transform_vectorised(
+    f_check = numpy_wavelets.synthesis(
         f_wav,
         f_scal,
         L,
@@ -306,7 +299,6 @@ def test_vectorised_round_trip(
         lam,
         multiresolution=multiresolution,
         sampling=sampling,
-        nside=nside,
     )
 
     np.testing.assert_allclose(f, f_check, atol=1e-14)

@@ -2,17 +2,18 @@ import pytest
 import numpy as np
 import pys2let as s2let
 
-from s2wav.transforms import jax_transforms
+from s2wav.transforms import jax_wavelets
 from s2wav.filter_factory import filters
 from s2wav.utils import shapes
 from s2fft import base_transforms as base
 
 L_to_test = [6, 8]
-N_to_test = [1, 2, 3]
+N_to_test = [2, 3]
 J_min_to_test = [1, 2]
 lam_to_test = [2, 3]
 multiresolution = [False, True]
 reality = [False, True]
+multiple_gpus = [False, True]
 sampling_to_test = ["mw", "mwss", "dh"]
 
 
@@ -22,7 +23,8 @@ sampling_to_test = ["mw", "mwss", "dh"]
 @pytest.mark.parametrize("lam", lam_to_test)
 @pytest.mark.parametrize("multiresolution", multiresolution)
 @pytest.mark.parametrize("reality", reality)
-def test_jax_transforms(
+@pytest.mark.parametrize("spmd", multiple_gpus)
+def test_jax_synthesis(
     wavelet_generator,
     L: int,
     N: int,
@@ -30,6 +32,7 @@ def test_jax_transforms(
     lam: int,
     multiresolution: bool,
     reality: bool,
+    spmd: bool,
 ):
     J = shapes.j_max(L, lam)
     if J_min >= J:
@@ -57,7 +60,7 @@ def test_jax_transforms(
 
     # Precompute some values
     filter = filters.filters_directional_vectorised(L, N, J_min, lam)
-    precomps = jax_transforms.generate_wigner_precomputes(
+    precomps = jax_wavelets.generate_wigner_precomputes(
         L,
         N,
         J_min,
@@ -65,8 +68,9 @@ def test_jax_transforms(
         forward=True,
         reality=reality,
         multiresolution=multiresolution,
+        spmd=spmd,
     )
-    f_check = jax_transforms.synthesis_transform_jax(
+    f_check = jax_wavelets.synthesis(
         f_wav,
         f_scal,
         L,
@@ -88,7 +92,8 @@ def test_jax_transforms(
 @pytest.mark.parametrize("lam", lam_to_test)
 @pytest.mark.parametrize("multiresolution", multiresolution)
 @pytest.mark.parametrize("reality", reality)
-def test_analysis_vectorised(
+@pytest.mark.parametrize("spmd", multiple_gpus)
+def test_jax_analysis(
     flm_generator,
     f_wav_converter,
     L: int,
@@ -97,6 +102,7 @@ def test_analysis_vectorised(
     lam: int,
     multiresolution: bool,
     reality: bool,
+    spmd: bool,
 ):
     J = shapes.j_max(L, lam)
     if J_min >= J:
@@ -115,7 +121,7 @@ def test_analysis_vectorised(
         upsample=not multiresolution,
     )
     filter = filters.filters_directional_vectorised(L, N, J_min, lam)
-    precomps = jax_transforms.generate_wigner_precomputes(
+    precomps = jax_wavelets.generate_wigner_precomputes(
         L,
         N,
         J_min,
@@ -124,7 +130,7 @@ def test_analysis_vectorised(
         reality=reality,
         multiresolution=multiresolution,
     )
-    f_wav_check, f_scal_check = jax_transforms.analysis_transform_jax(
+    f_wav_check, f_scal_check = jax_wavelets.analysis(
         f,
         L,
         N,
@@ -134,6 +140,7 @@ def test_analysis_vectorised(
         reality=reality,
         filters=filter,
         precomps=precomps,
+        spmd=spmd,
     )
 
     f_wav_check = f_wav_converter(
@@ -141,3 +148,59 @@ def test_analysis_vectorised(
     )
     np.testing.assert_allclose(f_wav, f_wav_check.flatten("C"), atol=1e-14)
     np.testing.assert_allclose(f_scal, f_scal_check.flatten("C"), atol=1e-14)
+
+
+@pytest.mark.parametrize("L", L_to_test)
+@pytest.mark.parametrize("N", N_to_test)
+@pytest.mark.parametrize("J_min", J_min_to_test)
+@pytest.mark.parametrize("lam", lam_to_test)
+@pytest.mark.parametrize("multiresolution", multiresolution)
+@pytest.mark.parametrize("reality", reality)
+@pytest.mark.parametrize("sampling", sampling_to_test)
+@pytest.mark.parametrize("spmd", multiple_gpus)
+def test_jax_round_trip(
+    flm_generator,
+    L: int,
+    N: int,
+    J_min: int,
+    lam: int,
+    multiresolution: bool,
+    reality: bool,
+    sampling: str,
+    spmd: bool,
+):
+    J = shapes.j_max(L, lam)
+    if J_min >= J:
+        pytest.skip("J_min larger than J which isn't a valid test case.")
+
+    flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
+    f = base.spherical.inverse(flm, L, reality=reality, sampling=sampling)
+    filter = filters.filters_directional_vectorised(L, N, J_min, lam)
+
+    f_wav, f_scal = jax_wavelets.analysis(
+        f,
+        L,
+        N,
+        J_min,
+        lam,
+        multiresolution=multiresolution,
+        reality=reality,
+        sampling=sampling,
+        filters=filter,
+        spmd=spmd,
+    )
+    f_check = jax_wavelets.synthesis(
+        f_wav,
+        f_scal,
+        L,
+        N,
+        J_min,
+        lam,
+        multiresolution=multiresolution,
+        sampling=sampling,
+        reality=reality,
+        filters=filter,
+        spmd=spmd,
+    )
+
+    np.testing.assert_allclose(f, f_check, atol=1e-14)

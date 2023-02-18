@@ -1,3 +1,2 @@
-from . import analysis
-from . import synthesis
-from . import jax_transforms
+from . import numpy_wavelets
+from . import jax_wavelets

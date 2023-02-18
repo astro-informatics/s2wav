@@ -64,7 +64,7 @@ def generate_wigner_precomputes(
     return precomps
 
 
-def synthesis_transform_jax(
+def synthesis(
     f_wav: jnp.ndarray,
     f_scal: jnp.ndarray,
     L: int,
@@ -134,7 +134,10 @@ def synthesis_transform_jax(
         [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
         [2] J. McEwen et. al., "Directional spin wavelets on the sphere", arXiv preprint arXiv:1509.06749 (2015).
     """
-
+    if precomps == None:
+        precomps = generate_wigner_precomputes(
+            L, N, J_min, lam, sampling, nside, True, reality, multiresolution
+        )
     J = shapes.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = jnp.zeros((L, 2 * L - 1), dtype=jnp.complex128)
@@ -174,7 +177,7 @@ def synthesis_transform_jax(
     return s2fft.inverse_jax(flm, L, spin, nside, sampling, reality)
 
 
-def analysis_transform_jax(
+def analysis(
     f: jnp.ndarray,
     L: int,
     N: int = 1,
@@ -235,6 +238,10 @@ def analysis_transform_jax(
         f_scal (jnp.ndarray): Array of scaling pixel-space coefficients
             with shape :math:`[n_{\theta}, n_{\phi}]`.
     """
+    if precomps == None:
+        precomps = generate_wigner_precomputes(
+            L, N, J_min, lam, sampling, nside, False, reality, multiresolution
+        )
     J = shapes.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
 
@@ -283,7 +290,9 @@ def analysis_transform_jax(
     phi = filters[1][:Ls] * jnp.sqrt(4 * jnp.pi / (2 * jnp.arange(Ls) + 1))
 
     return f_wav, s2fft.inverse_jax(
-        jnp.einsum("lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi, optimize=True),
+        jnp.einsum(
+            "lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi, optimize=True
+        ),
         Ls,
         spin,
         nside,
