@@ -163,15 +163,18 @@ def part_scaling_fn_jax(a: float, b: float, n: int, lam: float = 2.0) -> float:
         float: Integral of the tiling integrand from :math:`a \rightarrow b`.
     """
 
-    h = (b - a) / (2*n)
+    h = (b - a) / n
 
     x = jnp.linspace(a, b, num=n+1)
     s_arg = (x - (1 / lam)) * (2.0 * lam / (lam - 1)) - 1
-    s_arg = jnp.where((x > 1./lam) & (x < 1.), s_arg, jnp.zeros(n+1))
-    integrand = jnp.exp(-2.0 / (1.0 - s_arg**2.0)) / x
-    value = jnp.where(((x[:-1]>1/lam) & (x[:-1] < 1)) & ((x[1:]>1/lam) & (x[1:] < 1)), integrand[:-1]+integrand[1:], jnp.zeros(n))
+    #s_arg = jnp.where((x > 1./lam) & (x < 1.), s_arg, jnp.zeros(n+1))
+    #integrand = jnp.exp(-2.0 / (1.0 - s_arg**2.0)) / x
+    #value = jnp.where((x[:-1]>1/lam) & (x[:-1] < 1) & (x[1:]>1/lam) & (x[1:] < 1), integrand[:-1]+integrand[1:], jnp.zeros(n))
+    value = jnp.where((x[:-1] == 1/lam) | (x[:-1] == 1) | (x[1:] == 1/lam) | (x[1:] == 1), jnp.zeros(n), 
+                      (jnp.exp(-2.0 / (1.0 - s_arg**2.0)) / x)[:-1]+(jnp.exp(-2.0 / (1.0 - s_arg**2.0)) / x)[1:])
 
-    return jnp.sum((value) * h)
+
+    return jnp.sum(value * h /2)
 
 
 @partial(jit, static_argnums=(0, 1, 2)) #not sure about which arguments are static here
