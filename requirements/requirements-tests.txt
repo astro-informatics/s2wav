@@ -15,3 +15,6 @@ jupyter==1.0.0
 pys2let
 pyssht
 so3
+
+#JAX dependencies
+jaxlib

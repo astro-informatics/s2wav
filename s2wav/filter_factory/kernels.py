@@ -36,7 +36,7 @@ def tiling_integrand(t: float, lam: float = 2.0) -> float:
     return integrand
 
 
-@partial(jit, static_argnums=(0, 1, 2, 3)) #not sure about which arguments are static here
+
 def part_scaling_fn(a: float, b: float, n: int, lam: float = 2.0) -> float:
     r"""Computes integral used to calculate smoothly decreasing function :math:`k_{\lambda}`.
 
@@ -138,6 +138,41 @@ def k_lam(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
 
     return k
 
+@partial(jit, static_argnums=(2, 3)) #not sure about which arguments are static here
+def part_scaling_fn_jax(a: float, b: float, n: int, lam: float = 2.0) -> float:
+    r"""Computes integral used to calculate smoothly decreasing function :math:`k_{\lambda}`.
+
+    Intermediate step used to compute the wavelet and scaling function generating
+    functions. Uses the trapezium method to integrate :func:`~tiling_integrand` in the
+    limits from :math:`a \rightarrow b` with scaling parameter :math:`\lambda`. One of
+    the basic mathematical functions needed to carry out the tiling of the harmonic
+    space.
+
+    Args:
+        a (float): Lower limit of the numerical integration.
+
+        b (float): Upper limit of the numerical integration.
+
+        n (int): Number of steps to be performed during integration.
+
+        lam (float, optional): Wavelet parameter which determines the scale factor
+            between consecutive wavelet scales.Note that :math:`\lambda = 2` indicates
+            dyadic wavelets. Defaults to 2.
+
+    Returns:
+        float: Integral of the tiling integrand from :math:`a \rightarrow b`.
+    """
+
+    h = (b - a) / (2*n)
+
+    x = jnp.linspace(a, b, num=n+1)
+    s_arg = (x - (1 / lam)) * (2.0 * lam / (lam - 1)) - 1
+    s_arg = jnp.where((x > 1./lam) & (x < 1.), s_arg, jnp.zeros(n+1))
+    integrand = jnp.exp(-2.0 / (1.0 - s_arg**2.0)) / x
+    value = jnp.where(((x[:-1]>1/lam) & (x[:-1] < 1)) & ((x[1:]>1/lam) & (x[1:] < 1)), integrand[:-1]+integrand[1:], jnp.zeros(n))
+
+    return jnp.sum((value) * h)
+
 
 @partial(jit, static_argnums=(0, 1, 2)) #not sure about which arguments are static here
 def k_lam_jax(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
@@ -182,7 +217,7 @@ def k_lam_jax(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
 
     J = j_max(L, lam)
 
-    normalisation = part_scaling_fn(1 / lam, 1.0, quad_iters, lam)
+    normalisation = part_scaling_fn_jax(1 / lam, 1.0, quad_iters, lam)
     k = jnp.zeros((J + 2, L))
 
     for j in range(J + 2):
@@ -193,7 +228,7 @@ def k_lam_jax(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
                 k = k.at[j, l].set(0)
             else:
                 k = k.at[j, l].set(
-                    part_scaling_fn(l / lam**j, 1.0, quad_iters, lam)
+                    part_scaling_fn_jax(l / lam**j, 1.0, quad_iters, lam)
                     / normalisation
                 )
 

@@ -233,7 +233,7 @@ def filters_directional_vectorised(
     return kappa, kappa0
 
 
-#@partial(jit, static_argnums=(0, 1, 2)) #not sure about which arguments are static here
+@partial(jit, static_argnums=(0, 1, 2)) #not sure about which arguments are static here
 def filters_axisym_jax(
     L: int, J_min: int = 0, lam: float = 2.0
 ) -> Tuple[jnp.ndarray, jnp.ndarray]:
@@ -267,13 +267,13 @@ def filters_axisym_jax(
 
     k = kernels.k_lam_jax(L, lam)
     diff = (jnp.roll(k, -1, axis=0) - k)[:-1]
-    diff = diff.at[diff < 0].set(0.)
+    diff = jnp.where(diff < 0, jnp.zeros((J+1,L)), diff)
     return jnp.sqrt(diff), jnp.sqrt(k[J_min])
 
 
 
 
-#@partial(jit, static_argnums=(0, 1, 2, 3, 4,5)) #not sure about which arguments are static here
+@partial(jit, static_argnums=(0, 1, 2, 3, 4,5)) #not sure about which arguments are static here
 def filters_directional_jax(
     L: int,
     N: int = 1,

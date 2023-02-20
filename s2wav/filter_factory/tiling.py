@@ -97,7 +97,7 @@ def spin_normalization_vectorised(el: np.ndarray, spin: int = 0) -> float:
 
 
 
-#@partial(jit, static_argnums=(1)) #not sure about which arguments are static here
+@partial(jit, static_argnums=(1)) #not sure about which arguments are static here
 def spin_normalization_jax(el: np.ndarray, spin: int = 0) -> float:
     r"""Vectorised version of :func:`~spin_normalization`.
     Args:
