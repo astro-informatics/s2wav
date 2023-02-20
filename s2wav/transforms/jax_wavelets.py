@@ -4,7 +4,6 @@ config.update("jax_enable_x64", True)
 
 import jax.numpy as jnp
 from s2wav.utils import shapes
-from s2wav.filter_factory import filters
 import s2fft
 from functools import partial
 from typing import Tuple, List
@@ -14,7 +13,7 @@ from typing import Tuple, List
 def generate_wigner_precomputes(
     L: int,
     N: int,
-    J_min: int = 1,
+    J_min: int = 0,
     lam: float = 2.0,
     sampling: str = "mw",
     nside: int = None,
@@ -69,7 +68,7 @@ def synthesis(
     f_scal: jnp.ndarray,
     L: int,
     N: int = 1,
-    J_min: int = 1,
+    J_min: int = 0,
     lam: float = 2.0,
     spin: int = 0,
     spin0: int = 0,
@@ -192,6 +191,7 @@ def analysis(
     filters: Tuple[jnp.ndarray] = None,
     spmd: bool = False,
     precomps: List[List[jnp.ndarray]] = None,
+    scattering: bool = False,
 ) -> Tuple[jnp.ndarray]:
     r"""Wavelet analysis from pixel space to wavelet space for complex signals.
 
@@ -231,6 +231,9 @@ def analysis(
         precomps (List[jnp.ndarray]): Precomputed list of recursion coefficients. At most
             of length :math:`L^2`, which is a minimal memory overhead.
 
+        scattering (bool, optional): If using for scattering transform return absolute value
+            of scattering coefficients.
+
     Returns:
         f_wav (jnp.ndarray): Array of wavelet pixel-space coefficients
             with shape :math:`[n_{J}, 2N-1, n_{\theta}, n_{\phi}]`.
@@ -246,7 +249,9 @@ def analysis(
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
 
     f_wav_lmn = shapes.construct_flmn_jax(L, N, J_min, lam, multiresolution)
-    f_wav = shapes.construct_f_jax(L, N, J_min, lam, sampling, multiresolution)
+    f_wav = shapes.construct_f_jax(
+        L, N, J_min, lam, sampling, nside, multiresolution
+    )
 
     wav_lm = jnp.einsum(
         "jln, l->jln",
@@ -265,7 +270,7 @@ def analysis(
         f_wav_lmn[j - J_min] = (
             f_wav_lmn[j - J_min]
             .at[::2, L0j:]
-            .set(
+            .add(
                 jnp.einsum(
                     "lm,ln->nlm",
                     flm[L0j:Lj, L - Lj : L - 1 + Lj],
@@ -274,6 +279,7 @@ def analysis(
                 )
             )
         )
+
         f_wav[j - J_min] = s2fft.wigner.inverse_jax(
             f_wav_lmn[j - J_min],
             Lj,
@@ -285,17 +291,17 @@ def analysis(
             spmd_iter,
             L0j,
         )
+        if scattering:
+            f_wav[j - J_min] = jnp.abs(f_wav[j - J_min])
 
     # Project all harmonic coefficients for each lm onto scaling coefficients
     phi = filters[1][:Ls] * jnp.sqrt(4 * jnp.pi / (2 * jnp.arange(Ls) + 1))
-
-    return f_wav, s2fft.inverse_jax(
-        jnp.einsum(
-            "lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi, optimize=True
-        ),
-        Ls,
-        spin,
-        nside,
-        sampling,
-        reality,
+    temp = jnp.einsum(
+        "lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi, optimize=True
     )
+    # Handle edge case
+    if Ls == 1:
+        f_scal = temp * jnp.sqrt(1 / (4 * jnp.pi))
+    else:
+        f_scal = s2fft.inverse_jax(temp, Ls, spin, nside, sampling, reality)
+    return f_wav, jnp.real(f_scal) if reality else f_scal

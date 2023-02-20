@@ -86,7 +86,8 @@ def L0_j(j: int, lam: float = 2.0) -> int:
     Returns:
         int: The minimum harmonic multipole :math:`el` which is supported by a given wavelet scale.
     """
-    return math.ceil(lam ** (j - 1))
+
+    return math.ceil(lam ** (j - 1)) if j != 0 else 0
 
 
 def LN_j(
@@ -118,6 +119,8 @@ def LN_j(
     Returns:
         int: Total number of wavelet scales :math:`n_{j}`.
     """
+    if j == 0:
+        j += 1
     Lj = wav_j_bandlimit(L, j, lam, multiresolution)
     L0j = L0_j(j, lam) if multiresolution else 0
     Nj = N
@@ -181,6 +184,7 @@ def construct_f(
     sampling: str = "mw",
     nside: int = None,
     multiresolution: bool = False,
+    scattering: bool = False,
 ) -> np.ndarray:
     """Defines a list of arrays corresponding to f_wav.
 
@@ -204,22 +208,31 @@ def construct_f(
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
 
+        scattering (bool, optional): Whether to create minimal arrays for scattering transform to
+            optimise for memory. Defaults to False.
+
     Returns:
         Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
     """
     J = j_max(L, lam)
-    f = []
-    for j in range(J_min, J + 1):
-        f.append(
-            np.zeros(
-                f_wav_j(L, j, N, lam, sampling, nside, multiresolution),
-                dtype=np.complex128,
-            )
+    if scattering:
+        f = np.zeros(
+            f_wav_j(L, J - 1, N, lam, sampling, nside, multiresolution),
+            dtype=np.complex128,
         )
+    else:
+        f = []
+        for j in range(J_min, J + 1):
+            f.append(
+                np.zeros(
+                    f_wav_j(L, j, N, lam, sampling, nside, multiresolution),
+                    dtype=np.complex128,
+                )
+            )
     return f
 
 
-@partial(jit, static_argnums=(0, 1, 2, 3, 4, 5, 6))
+@partial(jit, static_argnums=(0, 1, 2, 3, 4, 5, 6, 7))
 def construct_f_jax(
     L: int,
     N: int = 1,
@@ -228,6 +241,7 @@ def construct_f_jax(
     sampling: str = "mw",
     nside: int = None,
     multiresolution: bool = False,
+    scattering: bool = False,
 ) -> jnp.ndarray:
     """Defines a list of arrays corresponding to f_wav.
 
@@ -251,18 +265,27 @@ def construct_f_jax(
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
 
+        scattering (bool, optional): Whether to create minimal arrays for scattering transform to
+            optimise for memory. Defaults to False.
+
     Returns:
         Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
     """
     J = j_max(L, lam)
-    f = []
-    for j in range(J_min, J + 1):
-        f.append(
-            jnp.zeros(
-                f_wav_j(L, j, N, lam, sampling, nside, multiresolution),
-                dtype=jnp.complex128,
-            )
+    if scattering:
+        f = jnp.zeros(
+            f_wav_j(L, J - 1, N, lam, sampling, nside, multiresolution),
+            dtype=jnp.complex128,
         )
+    else:
+        f = []
+        for j in range(J_min, J + 1):
+            f.append(
+                jnp.zeros(
+                    f_wav_j(L, j, N, lam, sampling, nside, multiresolution),
+                    dtype=jnp.complex128,
+                )
+            )
     return f
 
 
@@ -398,6 +421,8 @@ def wav_j_bandlimit(
     Returns:
         int: Harmonic bandlimit of scaling coefficients.
     """
+    if j == 0:
+        j += 1
     if multiresolution:
         return min(math.ceil(lam ** (j + 1)), L)
     else:
@@ -410,6 +435,7 @@ def construct_flmn(
     J_min: int = 0,
     lam: float = 2.0,
     multiresolution: bool = False,
+    scattering: bool = False,
 ) -> np.ndarray:
     """Defines a list of arrays corresponding to flmn.
 
@@ -427,27 +453,37 @@ def construct_flmn(
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
 
+        scattering (bool, optional): Whether to create minimal arrays for scattering transform to
+            optimise for memory. Defaults to False.
+
     Returns:
         Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
     """
     J = j_max(L, lam)
-    flmn = []
-    for j in range(J_min, J + 1):
-        flmn.append(
-            np.zeros(
-                flmn_wav_j(L, j, N, lam, multiresolution), dtype=np.complex128
-            )
+    if scattering:
+        flmn = np.zeros(
+            flmn_wav_j(L, J - 1, N, lam, multiresolution), dtype=np.complex128
         )
+    else:
+        flmn = []
+        for j in range(J_min, J + 1):
+            flmn.append(
+                np.zeros(
+                    flmn_wav_j(L, j, N, lam, multiresolution),
+                    dtype=np.complex128,
+                )
+            )
     return flmn
 
 
-@partial(jit, static_argnums=(0, 1, 2, 3, 4))
+@partial(jit, static_argnums=(0, 1, 2, 3, 4, 5))
 def construct_flmn_jax(
     L: int,
     N: int = 1,
     J_min: int = 0,
     lam: float = 2.0,
     multiresolution: bool = False,
+    scattering: bool = False,
 ) -> jnp.ndarray:
     """Defines a list of arrays corresponding to flmn.
 
@@ -465,17 +501,26 @@ def construct_flmn_jax(
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
 
+        scattering (bool, optional): Whether to create minimal arrays for scattering transform to
+            optimise for memory. Defaults to False.
+
     Returns:
         Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
     """
     J = j_max(L, lam)
-    flmn = []
-    for j in range(J_min, J + 1):
-        flmn.append(
-            jnp.zeros(
-                flmn_wav_j(L, j, N, lam, multiresolution), dtype=jnp.complex128
-            )
+    if scattering:
+        flmn = jnp.zeros(
+            flmn_wav_j(L, J - 1, N, lam, multiresolution), dtype=jnp.complex128
         )
+    else:
+        flmn = []
+        for j in range(J_min, J + 1):
+            flmn.append(
+                jnp.zeros(
+                    flmn_wav_j(L, j, N, lam, multiresolution),
+                    dtype=jnp.complex128,
+                )
+            )
     return flmn
 
 

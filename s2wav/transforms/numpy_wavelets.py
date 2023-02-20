@@ -294,6 +294,7 @@ def analysis(
     nside: int = None,
     reality: bool = False,
     multiresolution: bool = False,
+    scattering: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
     r"""Wavelet analysis from pixel space to wavelet space for complex signals.
 
@@ -324,6 +325,9 @@ def analysis(
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
 
+        scattering (bool, optional): If using for scattering transform return absolute value
+            of scattering coefficients.
+
     Returns:
         f_wav (np.ndarray): Array of wavelet pixel-space coefficients
             with shape :math:`[n_{J}, 2N-1, n_{\theta}, n_{\phi}]`.
@@ -345,7 +349,6 @@ def analysis(
     wav_lm = np.einsum(
         "jln, l->jln", np.conj(wav_lm), 8 * np.pi**2 / (2 * np.arange(L) + 1)
     )
-
     flm = base.spherical.forward(f, L, spin, sampling, nside, reality)
 
     # Project all wigner coefficients for each lmn onto wavelet coefficients
@@ -360,6 +363,8 @@ def analysis(
         f_wav[j - J_min] = base.wigner.inverse(
             f_wav_lmn[j - J_min], Lj, Nj, L0j, sampling, reality, nside
         )
+        if scattering:
+            f_wav[j - J_min] = np.abs(f_wav[j - J_min])
 
     # Project all harmonic coefficients for each lm onto scaling coefficients
     phi = scal_l[:Ls] * np.sqrt(4 * np.pi / (2 * np.arange(Ls) + 1))

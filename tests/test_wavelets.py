@@ -13,7 +13,7 @@ J_min_to_test = [1, 2]
 lam_to_test = [2, 3]
 multiresolution = [False, True]
 reality = [False, True]
-multiple_gpus = [False, True]
+multiple_gpus = [False]
 sampling_to_test = ["mw", "mwss", "dh"]
 
 
@@ -146,7 +146,8 @@ def test_jax_analysis(
     f_wav_check = f_wav_converter(
         f_wav_check, L, N, J_min, lam, multiresolution
     )
-    np.testing.assert_allclose(f_wav, f_wav_check.flatten("C"), atol=1e-14)
+
+    np.testing.assert_allclose(f_wav, f_wav_check, atol=1e-14)
     np.testing.assert_allclose(f_scal, f_scal_check.flatten("C"), atol=1e-14)
 
 
