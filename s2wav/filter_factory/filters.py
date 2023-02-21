@@ -233,7 +233,7 @@ def filters_directional_vectorised(
     return kappa, kappa0
 
 
-@partial(jit, static_argnums=(0, 1, 2)) #not sure about which arguments are static here
+#@partial(jit, static_argnums=(0, 1, 2)) #not sure about which arguments are static here
 def filters_axisym_jax(
     L: int, J_min: int = 0, lam: float = 2.0
 ) -> Tuple[jnp.ndarray, jnp.ndarray]:
@@ -273,7 +273,7 @@ def filters_axisym_jax(
 
 
 
-@partial(jit, static_argnums=(0, 1, 2, 3, 4,5)) #not sure about which arguments are static here
+#@partial(jit, static_argnums=(0, 1, 2, 3, 4,5)) #not sure about which arguments are static here
 def filters_directional_jax(
     L: int,
     N: int = 1,
@@ -314,7 +314,7 @@ def filters_directional_jax(
     )
 
     kappa, kappa0 = filters_axisym_jax(L, J_min, lam)
-    s_elm = tiling.tiling_direction(L, N)
+    s_elm = tiling.tiling_direction_jax(L, N)
 
     kappa0 *= jnp.sqrt((2 * jnp.arange(L) + 1) / (4.0 * jnp.pi))
     kappa0 = kappa0 * spin_norms if spin0 != 0 else kappa0
@@ -331,7 +331,7 @@ def filters_directional_jax(
 
 if __name__ == "__main__":
     L = 8
-    N = 4
+    N = 3
     J_min = 0
     lam = 2
     fd = filters_directional_jax(L, N, J_min, lam)

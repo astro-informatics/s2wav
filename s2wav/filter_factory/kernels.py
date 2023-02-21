@@ -177,7 +177,7 @@ def part_scaling_fn_jax(a: float, b: float, n: int, lam: float = 2.0) -> float:
     return jnp.sum(value * h /2)
 
 
-@partial(jit, static_argnums=(0, 1, 2)) #not sure about which arguments are static here
+#@partial(jit, static_argnums=(0, 1, 2)) #not sure about which arguments are static here
 def k_lam_jax(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
     r"""Compute function :math:`k_{\lambda}` used as a wavelet generating function.
 
