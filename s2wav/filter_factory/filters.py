@@ -1,8 +1,13 @@
+from jax import jit, config
+
+config.update("jax_enable_x64", True)
+
+import jax.numpy as jnp
 import numpy as np
 from s2wav.filter_factory import tiling, kernels
 from s2wav.utils import shapes
 from typing import Tuple
-
+from functools import partial
 
 def filters_axisym(
     L: int, J_min: int = 0, lam: float = 2.0
@@ -226,3 +231,108 @@ def filters_directional_vectorised(
     kappa0[:el_min] = 0
     kappa[:, :el_min, :] = 0
     return kappa, kappa0
+
+
+@partial(jit, static_argnums=(0, 1, 2)) #not sure about which arguments are static here
+def filters_axisym_jax(
+    L: int, J_min: int = 0, lam: float = 2.0
+) -> Tuple[jnp.ndarray, jnp.ndarray]:
+    r"""JAX version of :func:`~filters_axisym_vectorised`.
+
+    Args:
+        L (int): Harmonic band-limit.
+
+        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
+
+        lam (float, optional): Wavelet parameter which determines the scale factor
+            between consecutive wavelet scales. Note that :math:`\lambda = 2` indicates
+            dyadic wavelets. Defaults to 2.
+
+    Raises:
+        ValueError: J_min is negative or greater than J.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: Unnormalised wavelet kernels :math:`\Psi^j_{\el m}`
+        with shape :math:`[(J+1)*L], and scaling kernel :math:`\Phi_{\el m}` with shape
+        :math:`[L]` in harmonic space.
+    """
+    J = shapes.j_max(L, lam)
+
+    if J_min >= J or J_min < 0:
+        raise ValueError(
+            "J_min must be non-negative and less than J= "
+            + str(J)
+            + " for given L and lam."
+        )
+
+    k = kernels.k_lam_jax(L, lam)
+    diff = (jnp.roll(k, -1, axis=0) - k)[:-1]
+    diff = jnp.where(diff < 0, jnp.zeros((J+1,L)), diff)
+    return jnp.sqrt(diff), jnp.sqrt(k[J_min])
+
+
+
+
+@partial(jit, static_argnums=(0, 1, 2, 3, 4,5)) #not sure about which arguments are static here
+def filters_directional_jax(
+    L: int,
+    N: int = 1,
+    J_min: int = 0,
+    lam: float = 2.0,
+    spin: int = 0,
+    spin0: int = 0,
+) -> Tuple[jnp.ndarray, jnp.ndarray]:
+    r"""Vectorised version of :func:`~filters_directional`.
+
+    Args:
+        L (int): Harmonic band-limit.
+
+        N (int, optional): Upper azimuthal band-limit. Defaults to 1.
+
+        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
+
+        lam (float, optional): Wavelet parameter which determines the scale factor between
+            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
+            wavelets. Defaults to 2.
+
+        spin (int, optional): Spin (integer) to perform the transform. Defaults to 0.
+
+        spin0 (int, optional): Spin number the wavelet was lowered from. Defaults to 0.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels (:math:`\Psi^j_{\el n}`, :math:`\Phi_{\el m}`)
+            psi (np.ndarray): Harmonic coefficients of directional wavelets with shape :math:`[L^2(J+1)]`.
+            phi (np.ndarray): Harmonic coefficients of scaling function with shape :math:`[L]`.
+    """
+    el_min = max(abs(spin), abs(spin0))
+
+    spin_norms = (
+        (-1) ** spin0
+        * tiling.spin_normalization_jax(np.arange(L), spin0)
+        if spin0 != 0
+        else 1
+    )
+
+    kappa, kappa0 = filters_axisym_jax(L, J_min, lam)
+    s_elm = tiling.tiling_direction(L, N)
+
+    kappa0 *= jnp.sqrt((2 * jnp.arange(L) + 1) / (4.0 * jnp.pi))
+    kappa0 = kappa0 * spin_norms if spin0 != 0 else kappa0
+
+    kappa *= jnp.sqrt((2 * jnp.arange(L) + 1) / 8.0) / np.pi
+    kappa = jnp.einsum("ij,jk->ijk", kappa, s_elm, optimize=True)
+    kappa = jnp.einsum("ijk,j->ijk", kappa, spin_norms, optimize=True) if spin0 != 0 else kappa
+
+    kappa0 = kappa0.at[:el_min].set(0)
+    kappa = kappa.at[:, :el_min, :].set(0)
+
+    return kappa, kappa0
+
+
+if __name__ == "__main__":
+    L = 8
+    N = 4
+    J_min = 0
+    lam = 2
+    fd = filters_directional_jax(L, N, J_min, lam)
+    fa = filters_axisym_jax(L, J_min, lam)

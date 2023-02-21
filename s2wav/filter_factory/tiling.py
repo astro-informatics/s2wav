@@ -1,6 +1,11 @@
+from jax import jit, config
+
+config.update("jax_enable_x64", True)
+
+import jax.numpy as jnp
 import numpy as np
 from s2wav.utils.math_functions import binomial_coefficient
-
+from functools import partial
 
 def tiling_direction(L: int, N: int = 1) -> np.ndarray:
     r"""Generates the harmonic coefficients for the directionality component of the
@@ -89,3 +94,20 @@ def spin_normalization_vectorised(el: np.ndarray, spin: int = 0) -> float:
     )
     factor = el.reshape(len(el), 1).dot(factor)
     return np.sqrt(np.prod(factor, axis=1) ** (np.sign(spin)))
+
+
+
+@partial(jit, static_argnums=(1)) #not sure about which arguments are static here
+def spin_normalization_jax(el: np.ndarray, spin: int = 0) -> float:
+    r"""Vectorised version of :func:`~spin_normalization`.
+    Args:
+        el (int): Harmonic index :math:`\el`.
+        spin (int): Spin of field over which to perform the transform. Defaults to 0.
+    Returns:
+        float: Normalization factor for spin-lowered wavelets.
+    """
+    factor = jnp.arange(-abs(spin) + 1, abs(spin) + 1).reshape(
+        1, 2 * abs(spin) + 1
+    )
+    factor = el.reshape(len(el), 1).dot(factor)
+    return jnp.sqrt(jnp.prod(factor, axis=1) ** (jnp.sign(spin)))

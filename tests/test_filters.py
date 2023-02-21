@@ -8,7 +8,6 @@ N_to_test = [4, 6, 8]
 J_min_to_test = [0]
 lam_to_test = [2, 3]
 
-
 @pytest.mark.parametrize("L", L_to_test)
 @pytest.mark.parametrize("J_min", J_min_to_test)
 @pytest.mark.parametrize("lam", lam_to_test)
@@ -93,3 +92,27 @@ def test_directional_vectorised(L: int, N: int, J_min: int, lam: int):
 
     for i in range(2):
         np.testing.assert_allclose(f[i], f_vect[i], rtol=1e-14)
+
+
+
+@pytest.mark.parametrize("L", L_to_test)
+@pytest.mark.parametrize("J_min", J_min_to_test)
+@pytest.mark.parametrize("lam", lam_to_test)
+def test_axisym_jax(L: int, J_min: int, lam: int):
+    f = filters.filters_axisym(L, J_min, lam)
+    f_jax = filters.filters_axisym_jax(L, J_min, lam)
+
+    for i in range(2):
+        np.testing.assert_allclose(f[i], f_jax[i], rtol=1e-13, atol=1e-13)
+
+
+@pytest.mark.parametrize("L", L_to_test)
+@pytest.mark.parametrize("N", N_to_test)
+@pytest.mark.parametrize("J_min", J_min_to_test)
+@pytest.mark.parametrize("lam", lam_to_test)
+def test_directional_jax(L: int, N: int, J_min: int, lam: int):
+    f = filters.filters_directional(L, N, J_min, lam)
+    f_jax = filters.filters_directional_jax(L, N, J_min, lam)
+
+    for i in range(2):
+        np.testing.assert_allclose(f[i], f_jax[i], rtol=1e-13, atol=1e-13)
