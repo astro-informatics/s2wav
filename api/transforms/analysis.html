@@ -44,8 +44,6 @@
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Synthesis Transform" href="synthesis.html" />
@@ -376,86 +374,8 @@
             
             <article class="bd-article" role="main">
               
-  <div class="section" id="module-s2wav.transforms.analysis">
-<span id="analysis-transform"></span><h1>Analysis Transform<a class="headerlink" href="#module-s2wav.transforms.analysis" title="Permalink to this headline"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="s2wav.transforms.analysis.analysis_transform_looped">
-<span class="sig-prename descclassname"><span class="pre">s2wav.transforms.analysis.</span></span><span class="sig-name descname"><span class="pre">analysis_transform_looped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J_min</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin0</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'mw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nside</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reality</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiresolution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#s2wav.transforms.analysis.analysis_transform_looped" title="Permalink to this definition"></a></dt>
-<dd><p>Wavelet analysis from pixel space to wavelet space for complex signals.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>f</strong> (<em>np.ndarray</em>) – Signal <span class="math notranslate nohighlight">\(f\)</span> on the sphere with shape <span class="math notranslate nohighlight">\([n_{\theta}, n_{\phi}]\)</span>.</p></li>
-<li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
-<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – Upper azimuthal band-limit. Defaults to 1.</p></li>
-<li><p><strong>J_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Lowest frequency wavelet scale to be used. Defaults to 0.</p></li>
-<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic wavelets. Defaults to 2.</p></li>
-<li><p><strong>spin</strong> (<em>int</em><em>, </em><em>optional</em>) – Spin (integer) of input signal. Defaults to 0.</p></li>
-<li><p><strong>spin0</strong> (<em>int</em><em>, </em><em>optional</em>) – Spin (integer) of output signal. Defaults to 0.</p></li>
-<li><p><strong>sampling</strong> (<em>str</em><em>, </em><em>optional</em>) – Spherical sampling scheme from {“mw”,”mwss”, “dh”, “healpix”}. Defaults to “mw”.</p></li>
-<li><p><strong>nside</strong> (<em>int</em><em>, </em><em>optional</em>) – HEALPix Nside resolution parameter.  Only required if sampling=”healpix”.  Defaults
-to None.</p></li>
-<li><p><strong>reality</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether <span class="math notranslate nohighlight">\(f \in \mathbb{R}\)</span>, if True exploits
-conjugate symmetry of harmonic coefficients. Defaults to False.</p></li>
-<li><p><strong>multiresolution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to store the scales at <span class="math notranslate nohighlight">\(j_{\text{max}}\)</span>
-resolution or its own resolution. Defaults to False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>Array of wavelet pixel-space coefficients</dt><dd><p>with shape <span class="math notranslate nohighlight">\([n_{J}, 2N-1, n_{\theta}, n_{\phi}]\)</span>.</p>
-</dd>
-<dt>f_scal (np.ndarray): Array of scaling pixel-space coefficients</dt><dd><p>with shape <span class="math notranslate nohighlight">\([n_{\theta}, n_{\phi}]\)</span>.</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>f_wav (np.ndarray)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="s2wav.transforms.analysis.analysis_transform_vectorised">
-<span class="sig-prename descclassname"><span class="pre">s2wav.transforms.analysis.</span></span><span class="sig-name descname"><span class="pre">analysis_transform_vectorised</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J_min</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin0</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'mw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nside</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reality</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiresolution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#s2wav.transforms.analysis.analysis_transform_vectorised" title="Permalink to this definition"></a></dt>
-<dd><p>Wavelet analysis from pixel space to wavelet space for complex signals.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>f</strong> (<em>np.ndarray</em>) – Signal <span class="math notranslate nohighlight">\(f\)</span> on the sphere with shape <span class="math notranslate nohighlight">\([n_{\theta}, n_{\phi}]\)</span>.</p></li>
-<li><p><strong>L</strong> (<em>int</em>) – Harmonic bandlimit.</p></li>
-<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – Upper azimuthal band-limit. Defaults to 1.</p></li>
-<li><p><strong>J_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Lowest frequency wavelet scale to be used. Defaults to 0.</p></li>
-<li><p><strong>lam</strong> (<em>float</em><em>, </em><em>optional</em>) – Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-Note that <span class="math notranslate nohighlight">\(\lambda = 2\)</span> indicates dyadic wavelets. Defaults to 2.</p></li>
-<li><p><strong>spin</strong> (<em>int</em><em>, </em><em>optional</em>) – Spin (integer) of input signal. Defaults to 0.</p></li>
-<li><p><strong>spin0</strong> (<em>int</em><em>, </em><em>optional</em>) – Spin (integer) of output signal. Defaults to 0.</p></li>
-<li><p><strong>sampling</strong> (<em>str</em><em>, </em><em>optional</em>) – Spherical sampling scheme from {“mw”,”mwss”, “dh”, “healpix”}. Defaults to “mw”.</p></li>
-<li><p><strong>nside</strong> (<em>int</em><em>, </em><em>optional</em>) – HEALPix Nside resolution parameter.  Only required if sampling=”healpix”.  Defaults
-to None.</p></li>
-<li><p><strong>reality</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether <span class="math notranslate nohighlight">\(f \in \mathbb{R}\)</span>, if True exploits
-conjugate symmetry of harmonic coefficients. Defaults to False.</p></li>
-<li><p><strong>multiresolution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to store the scales at <span class="math notranslate nohighlight">\(j_{\text{max}}\)</span>
-resolution or its own resolution. Defaults to False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>Array of wavelet pixel-space coefficients</dt><dd><p>with shape <span class="math notranslate nohighlight">\([n_{J}, 2N-1, n_{\theta}, n_{\phi}]\)</span>.</p>
-</dd>
-<dt>f_scal (np.ndarray): Array of scaling pixel-space coefficients</dt><dd><p>with shape <span class="math notranslate nohighlight">\([n_{\theta}, n_{\phi}]\)</span>.</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>f_wav (np.ndarray)</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <div class="section" id="analysis-transform">
+<h1>Analysis Transform<a class="headerlink" href="#analysis-transform" title="Permalink to this headline"></a></h1>
 </div>
 
 

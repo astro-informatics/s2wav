@@ -402,6 +402,24 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="s2wav.filter_factory.tiling.spin_normalization_jax">
+<span class="sig-prename descclassname"><span class="pre">s2wav.filter_factory.tiling.</span></span><span class="sig-name descname"><span class="pre">spin_normalization_jax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">el</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#s2wav.filter_factory.tiling.spin_normalization_jax" title="Permalink to this definition"></a></dt>
+<dd><p>Vectorised version of <a class="reference internal" href="#s2wav.filter_factory.tiling.spin_normalization" title="s2wav.filter_factory.tiling.spin_normalization"><code class="xref py py-func docutils literal notranslate"><span class="pre">spin_normalization()</span></code></a>.
+:param el: Harmonic index <span class="math notranslate nohighlight">\(\el\)</span>.
+:type el: int
+:param spin: Spin of field over which to perform the transform. Defaults to 0.
+:type spin: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Normalization factor for spin-lowered wavelets.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="s2wav.filter_factory.tiling.spin_normalization_vectorised">
 <span class="sig-prename descclassname"><span class="pre">s2wav.filter_factory.tiling.</span></span><span class="sig-name descname"><span class="pre">spin_normalization_vectorised</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">el</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#s2wav.filter_factory.tiling.spin_normalization_vectorised" title="Permalink to this definition"></a></dt>
 <dd><p>Vectorised version of <a class="reference internal" href="#s2wav.filter_factory.tiling.spin_normalization" title="s2wav.filter_factory.tiling.spin_normalization"><code class="xref py py-func docutils literal notranslate"><span class="pre">spin_normalization()</span></code></a>.
