@@ -135,8 +135,7 @@ def filters_directional(
                         )
                         if spin0 != 0:
                             psi[j, el, L - 1 + m] *= (
-                                tiling.spin_normalization(el, spin0)
-                                * (-1) ** spin0
+                                tiling.spin_normalization(el, spin0) * (-1) ** spin0
                             )
 
     return psi, phi
@@ -212,8 +211,7 @@ def filters_directional_vectorised(
     el_min = max(abs(spin), abs(spin0))
 
     spin_norms = (
-        (-1) ** spin0
-        * tiling.spin_normalization_vectorised(np.arange(L), spin0)
+        (-1) ** spin0 * tiling.spin_normalization_vectorised(np.arange(L), spin0)
         if spin0 != 0
         else 1
     )
@@ -233,7 +231,7 @@ def filters_directional_vectorised(
     return kappa, kappa0
 
 
-#@partial(jit, static_argnums=(0, 1, 2)) #not sure about which arguments are static here
+@partial(jit, static_argnums=(0, 1, 2))
 def filters_axisym_jax(
     L: int, J_min: int = 0, lam: float = 2.0
 ) -> Tuple[jnp.ndarray, jnp.ndarray]:
@@ -267,13 +265,11 @@ def filters_axisym_jax(
 
     k = kernels.k_lam_jax(L, lam)
     diff = (jnp.roll(k, -1, axis=0) - k)[:-1]
-    diff = jnp.where(diff < 0, jnp.zeros((J+1,L)), diff)
+    diff = jnp.where(diff < 0, jnp.zeros((J + 1, L)), diff)
     return jnp.sqrt(diff), jnp.sqrt(k[J_min])
 
 
-
-
-#@partial(jit, static_argnums=(0, 1, 2, 3, 4,5)) #not sure about which arguments are static here
+@partial(jit, static_argnums=(0, 1, 2, 3, 4, 5))
 def filters_directional_jax(
     L: int,
     N: int = 1,
@@ -282,7 +278,7 @@ def filters_directional_jax(
     spin: int = 0,
     spin0: int = 0,
 ) -> Tuple[jnp.ndarray, jnp.ndarray]:
-    r"""Vectorised version of :func:`~filters_directional`.
+    r"""JAX version of :func:`~filters_directional`.
 
     Args:
         L (int): Harmonic band-limit.
@@ -307,8 +303,7 @@ def filters_directional_jax(
     el_min = max(abs(spin), abs(spin0))
 
     spin_norms = (
-        (-1) ** spin0
-        * tiling.spin_normalization_jax(np.arange(L), spin0)
+        (-1) ** spin0 * tiling.spin_normalization_jax(np.arange(L), spin0)
         if spin0 != 0
         else 1
     )
@@ -321,18 +316,13 @@ def filters_directional_jax(
 
     kappa *= jnp.sqrt((2 * jnp.arange(L) + 1) / 8.0) / np.pi
     kappa = jnp.einsum("ij,jk->ijk", kappa, s_elm, optimize=True)
-    kappa = jnp.einsum("ijk,j->ijk", kappa, spin_norms, optimize=True) if spin0 != 0 else kappa
+    kappa = (
+        jnp.einsum("ijk,j->ijk", kappa, spin_norms, optimize=True)
+        if spin0 != 0
+        else kappa
+    )
 
     kappa0 = kappa0.at[:el_min].set(0)
     kappa = kappa.at[:, :el_min, :].set(0)
 
     return kappa, kappa0
-
-
-if __name__ == "__main__":
-    L = 8
-    N = 3
-    J_min = 0
-    lam = 2
-    fd = filters_directional_jax(L, N, J_min, lam)
-    fa = filters_axisym_jax(L, J_min, lam)
