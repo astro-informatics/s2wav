@@ -309,12 +309,13 @@ def analysis(
     return f_wav, jnp.real(f_scal) if reality else f_scal
 
 
-@partial(jit, static_argnums=(1, 2, 3, 4, 5, 6, 7, 8, 10))
+@partial(jit, static_argnums=(1, 2, 3, 4, 5, 6, 7, 8, 9, 11))
 def flm_to_analysis(
     flm: jnp.ndarray,
     L: int,
     N: int = 1,
     J_min: int = 0,
+    J_max: int = None,
     lam: float = 2.0,
     sampling: str = "mw",
     nside: int = None,
@@ -366,7 +367,8 @@ def flm_to_analysis(
         precomps = generate_wigner_precomputes(
             L, N, J_min, lam, sampling, nside, False, reality, multiresolution
         )
-    J = shapes.j_max(L, lam)
+
+    J = J_max if J_max is not None else shapes.j_max(L, lam)
 
     f_wav_lmn = shapes.construct_flmn_jax(L, N, J_min, lam, multiresolution)
     f_wav = shapes.construct_f_jax(
