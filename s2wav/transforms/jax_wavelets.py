@@ -63,6 +63,7 @@ def generate_wigner_precomputes(
     return precomps
 
 
+@partial(jit, static_argnums=(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13))
 def synthesis(
     f_wav: jnp.ndarray,
     f_scal: jnp.ndarray,
@@ -176,6 +177,7 @@ def synthesis(
     return s2fft.inverse_jax(flm, L, spin, nside, sampling, reality)
 
 
+@partial(jit, static_argnums=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12))
 def analysis(
     f: jnp.ndarray,
     L: int,
@@ -307,14 +309,13 @@ def analysis(
     return f_wav, jnp.real(f_scal) if reality else f_scal
 
 
+@partial(jit, static_argnums=(1, 2, 3, 4, 5, 6, 7, 8, 10))
 def flm_to_analysis(
     flm: jnp.ndarray,
     L: int,
     N: int = 1,
     J_min: int = 0,
     lam: float = 2.0,
-    spin: int = 0,
-    spin0: int = 0,
     sampling: str = "mw",
     nside: int = None,
     reality: bool = False,
@@ -322,7 +323,6 @@ def flm_to_analysis(
     filters: Tuple[jnp.ndarray] = None,
     spmd: bool = False,
     precomps: List[List[jnp.ndarray]] = None,
-    scattering: bool = False,
 ) -> Tuple[jnp.ndarray]:
     r"""Wavelet analysis from pixel space to wavelet space for complex signals.
 
@@ -338,10 +338,6 @@ def flm_to_analysis(
         lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
             Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
 
-        spin (int, optional): Spin (integer) of input signal. Defaults to 0.
-
-        spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
-
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required if sampling="healpix".  Defaults
@@ -353,7 +349,7 @@ def flm_to_analysis(
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
 
-        filters (Tuple[jnp.ndarray], optional): Precomputed wavelet filters. Defaults to None.
+        filters (jnp.ndarray, optional): Precomputed wavelet filters. Defaults to None.
 
         spmd (bool, optional): Whether to map compute over multiple devices. Currently this
             only maps over all available devices, and is only valid for JAX implementations.
@@ -362,22 +358,15 @@ def flm_to_analysis(
         precomps (List[jnp.ndarray]): Precomputed list of recursion coefficients. At most
             of length :math:`L^2`, which is a minimal memory overhead.
 
-        scattering (bool, optional): If using for scattering transform return absolute value
-            of scattering coefficients.
-
     Returns:
         f_wav (jnp.ndarray): Array of wavelet pixel-space coefficients
             with shape :math:`[n_{J}, 2N-1, n_{\theta}, n_{\phi}]`.
-
-        f_scal (jnp.ndarray): Array of scaling pixel-space coefficients
-            with shape :math:`[n_{\theta}, n_{\phi}]`.
     """
     if precomps == None:
         precomps = generate_wigner_precomputes(
             L, N, J_min, lam, sampling, nside, False, reality, multiresolution
         )
     J = shapes.j_max(L, lam)
-    Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
 
     f_wav_lmn = shapes.construct_flmn_jax(L, N, J_min, lam, multiresolution)
     f_wav = shapes.construct_f_jax(
@@ -386,7 +375,7 @@ def flm_to_analysis(
 
     wav_lm = jnp.einsum(
         "jln, l->jln",
-        jnp.conj(filters[0]),
+        jnp.conj(filters),
         8 * jnp.pi**2 / (2 * jnp.arange(L) + 1),
         optimize=True,
     )
@@ -420,17 +409,5 @@ def flm_to_analysis(
             spmd_iter,
             L0j,
         )
-        if scattering:
-            f_wav[j - J_min] = jnp.abs(f_wav[j - J_min])
 
-    # Project all harmonic coefficients for each lm onto scaling coefficients
-    phi = filters[1][:Ls] * jnp.sqrt(4 * jnp.pi / (2 * jnp.arange(Ls) + 1))
-    temp = jnp.einsum(
-        "lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi, optimize=True
-    )
-    # Handle edge case
-    if Ls == 1:
-        f_scal = temp * jnp.sqrt(1 / (4 * jnp.pi))
-    else:
-        f_scal = s2fft.inverse_jax(temp, Ls, spin, nside, sampling, reality)
-    return f_wav, jnp.real(f_scal) if reality else f_scal
+    return f_wav
