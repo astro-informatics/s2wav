@@ -17,6 +17,16 @@
         "doc",
         "design"
       ]
+    },
+    {
+      "login": "alicjapolanska",
+      "name": "Alicja Polanska",
+      "avatar_url": "https://avatars.githubusercontent.com/u/114654380?v=4",
+      "profile": "https://alicjaap.github.io/",
+      "contributions": [
+        "code",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
