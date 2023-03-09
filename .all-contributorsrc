@@ -12,7 +12,10 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/32554533?v=4",
       "profile": "https://cosmomatt.github.io",
       "contributions": [
-        "code"
+        "code",
+        "review",
+        "doc",
+        "design"
       ]
     }
   ],
