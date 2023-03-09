@@ -1,21 +1,14 @@
 [![image](https://img.shields.io/badge/GitHub-s2wav-blue.svg?style=flat)](https://github.com/astro-informatics/s2wav)
-
 [![image](https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml)
-
 [![image](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://astro-informatics.github.io/s2wav)
-
 [![image](https://codecov.io/gh/astro-informatics/s2wav/branch/main/graph/badge.svg?token=ZES6J4K3KZ)](https://codecov.io/gh/astro-informatics/s2wav)
-
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 [![image](http://img.shields.io/badge/arXiv-xxxx.xxxxx-orange.svg?style=flat)](https://arxiv.org/abs/xxxx.xxxxx)
-
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-# Differentiable and accelerated spherical wavelets with JAX
+<img align="left" height="85" width="98" src="./docs/assets/sax_logo.png">
 
-> \<img src=\"./docs/assets/sax_logo.png\" align=\"left\" height=\"85\"
-> width=\"98\"\>
+# Differentiable and accelerated spherical wavelets with JAX
 
 `S2WAV` is a JAX package for computing wavelet transforms on the sphere
 and rotation group. It leverages autodiff to provide differentiable
