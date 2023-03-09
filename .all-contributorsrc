@@ -27,6 +27,16 @@
         "code",
         "review"
       ]
+    },
+    {
+      "login": "JessWhitney",
+      "name": "Jessica Whitney",
+      "avatar_url": "https://avatars.githubusercontent.com/u/115358717?v=4",
+      "profile": "https://github.com/JessWhitney",
+      "contributions": [
+        "code",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
