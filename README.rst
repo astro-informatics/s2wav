@@ -68,12 +68,24 @@ To import and use ``S2WAV``  is as simple follows:
     # Map back to signal on the sphere 
     f = s2wav.synthesis(f_wav, f_scal, L, N)
 
-Contributors :hammer:
-------------------------
+Contributors ✨
+--------------
 TODO: Add core contributors photos etc here pre-release.
 
 We strongly encourage contributions from any interested developers; a simple example would be adding 
 support for more spherical sampling patterns!
+
+Thanks goes to these wonderful people (`emoji key`_):
+
+.. _emoji key: https://allcontributors.org/docs/en/emoji-key
+
+.. raw:: html
+   <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+   <table>
+     # ...
+   </table>
+
+   <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 Attribution
 --------------
