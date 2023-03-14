@@ -23,13 +23,13 @@ multi-resolution algorithms) that one may select depending on available
 resources and desired angular resolution $L$. `S2WAV` is a sister package of [`S2FFT`](https://github.com/astro-informatics/s2fft), both of which are part of the `SAX` project, which aims to provide comprehensive support for differentiable transforms on the sphere and rotation group.
 
 ## Wavelet Transform :zap: 
-`S2WAV` is an updated implementation of the scale-discretised wavelet transform on the sphere, which builds upon the papers of [Leistedt et al 2013](https://arxiv.org/abs/1211.1680) and [McEwen et al 2017](https://arxiv.org/abs/1509.06749). This wavelet transform is designed to have excellent localisation and uncorrelation properties, and has been successfully adopted for various applications e.g. scattering transforms on the sphere [McEwen et al 2022](https://arxiv.org/pdf/2102.02828.pdf). The wavelet dictionary is constructed by tiling the harmonic line
-
-<center><img src="./docs/assets/figures/wavelet_tiling.png" alt= “” width="600" height="400"></center>
-
-which can straightforwardly be performed in an efficient multiresolution manne, as in the Euclidean case. For example the directional wavelet decomposition of a topographic map of the Earth can be seen here
+`S2WAV` is an updated implementation of the scale-discretised wavelet transform on the sphere, which builds upon the papers of [Leistedt et al 2013](https://arxiv.org/abs/1211.1680) and [McEwen et al 2017](https://arxiv.org/abs/1509.06749). This wavelet transform is designed to have excellent localisation and uncorrelation properties, and has been successfully adopted for various applications e.g. scattering transforms on the sphere [McEwen et al 2022](https://arxiv.org/pdf/2102.02828.pdf). The wavelet dictionary is constructed by tiling the harmonic line with infinitely differentiable Cauchy-Schwartz functions, which can straightforwardly be performed in an efficient multiresolution manner, as in the Euclidean case. For example the directional wavelet decomposition of a topographic map of the Earth can be seen below
 
 ![image](./docs/assets/figures/wavelet_decomposition.png)
+
+<p align="center">
+  <img src="./docs/assets/figures/wavelet_decomposition.png" width="500" height="600"/>
+</p>
 
 ## Installation :computer:
 
