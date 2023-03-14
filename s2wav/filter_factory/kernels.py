@@ -131,7 +131,8 @@ def k_lam(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
                 k[j, l] = 0
             else:
                 k[j, l] = (
-                    part_scaling_fn(l / lam**j, 1.0, quad_iters, lam) / normalisation
+                    part_scaling_fn(l / lam**j, 1.0, quad_iters, lam)
+                    / normalisation
                 )
 
     return k
@@ -166,11 +167,11 @@ def part_scaling_fn_jax(a: float, b: float, n: int, lam: float = 2.0) -> float:
 
     x = jnp.linspace(a, b, num=n + 1)
     s_arg = (x - (1.0 / lam)) * (2.0 * lam / (lam - 1.0)) - 1.0
-    # s_arg = jnp.where((x > 1./lam) & (x < 1.), s_arg, jnp.zeros(n+1))
-    # integrand = jnp.exp(-2.0 / (1.0 - s_arg**2.0)) / x
-    # value = jnp.where((x[:-1]>1/lam) & (x[:-1] < 1) & (x[1:]>1/lam) & (x[1:] < 1), integrand[:-1]+integrand[1:], jnp.zeros(n))
     value = jnp.where(
-        (x[:-1] == 1.0 / lam) | (x[:-1] == 1.0) | (x[1:] == 1.0 / lam) | (x[1:] == 1.0),
+        (x[:-1] == 1.0 / lam)
+        | (x[:-1] == 1.0)
+        | (x[1:] == 1.0 / lam)
+        | (x[1:] == 1.0),
         jnp.zeros(n),
         (jnp.exp(-2.0 / (1.0 - jnp.square(s_arg))) / x)[:-1]
         + (jnp.exp(-2.0 / (1.0 - jnp.square(s_arg))) / x)[1:],
@@ -233,7 +234,8 @@ def k_lam_jax(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
                 k = k.at[j, l].set(0.0)
             else:
                 k = k.at[j, l].set(
-                    part_scaling_fn(l / lam**j, 1.0, quad_iters, lam) / normalisation
+                    part_scaling_fn(l / lam**j, 1.0, quad_iters, lam)
+                    / normalisation
                 )
 
     return k

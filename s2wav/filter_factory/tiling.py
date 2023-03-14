@@ -4,7 +4,10 @@ config.update("jax_enable_x64", True)
 
 import jax.numpy as jnp
 import numpy as np
-from s2wav.utils.math_functions import binomial_coefficient, binomial_coefficient_jax
+from s2wav.utils.math_functions import (
+    binomial_coefficient,
+    binomial_coefficient_jax,
+)
 from functools import partial
 
 
@@ -50,7 +53,8 @@ def tiling_direction(L: int, N: int = 1) -> np.ndarray:
         for m in range(-el, el + 1):
             if abs(m) < N and (N + m) % 2:
                 s_elm[el, L - 1 + m] = nu * np.sqrt(
-                    (binomial_coefficient(gamma, ((gamma - m) / 2))) / (2**gamma)
+                    (binomial_coefficient(gamma, ((gamma - m) / 2)))
+                    / (2**gamma)
                 )
             else:
                 s_elm[el, L - 1 + m] = 0.0
@@ -89,12 +93,14 @@ def spin_normalization_vectorised(el: np.ndarray, spin: int = 0) -> float:
     Returns:
         float: Normalization factor for spin-lowered wavelets.
     """
-    factor = np.arange(-abs(spin) + 1, abs(spin) + 1).reshape(1, 2 * abs(spin) + 1)
+    factor = np.arange(-abs(spin) + 1, abs(spin) + 1).reshape(
+        1, 2 * abs(spin) + 1
+    )
     factor = el.reshape(len(el), 1).dot(factor)
     return np.sqrt(np.prod(factor, axis=1) ** (np.sign(spin)))
 
 
-@partial(jit, static_argnums=(0, 1))  # not sure about which arguments are static here
+@partial(jit, static_argnums=(0, 1))
 def tiling_direction_jax(L: int, N: int = 1) -> np.ndarray:
     r"""JAX version of tiling_direction. Generates the harmonic coefficients for the directionality component of the
         tiling functions.
@@ -135,14 +141,16 @@ def tiling_direction_jax(L: int, N: int = 1) -> np.ndarray:
         )
 
         val = jnp.where(
-            (ms < N) & (ms > -N) & ((N + ms) % 2 == 1), val, jnp.zeros(2 * el + 1)
+            (ms < N) & (ms > -N) & ((N + ms) % 2 == 1),
+            val,
+            jnp.zeros(2 * el + 1),
         )
         s_elm = s_elm.at[el, L - 1 - el : L + el].set(val)
 
     return s_elm
 
 
-@partial(jit, static_argnums=(1))  # not sure about which arguments are static here
+@partial(jit, static_argnums=(1))
 def spin_normalization_jax(el: np.ndarray, spin: int = 0) -> float:
     r"""JAX version of :func:`~spin_normalization`.
     Args:
@@ -151,6 +159,8 @@ def spin_normalization_jax(el: np.ndarray, spin: int = 0) -> float:
     Returns:
         float: Normalization factor for spin-lowered wavelets.
     """
-    factor = jnp.arange(-abs(spin) + 1, abs(spin) + 1).reshape(1, 2 * abs(spin) + 1)
+    factor = jnp.arange(-abs(spin) + 1, abs(spin) + 1).reshape(
+        1, 2 * abs(spin) + 1
+    )
     factor = el.reshape(len(el), 1).dot(factor)
     return jnp.sqrt(jnp.prod(factor, axis=1) ** (jnp.sign(spin)))

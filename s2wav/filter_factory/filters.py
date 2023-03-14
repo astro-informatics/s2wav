@@ -9,6 +9,7 @@ from s2wav.utils import shapes
 from typing import Tuple
 from functools import partial
 
+
 def filters_axisym(
     L: int, J_min: int = 0, lam: float = 2.0
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -135,7 +136,8 @@ def filters_directional(
                         )
                         if spin0 != 0:
                             psi[j, el, L - 1 + m] *= (
-                                tiling.spin_normalization(el, spin0) * (-1) ** spin0
+                                tiling.spin_normalization(el, spin0)
+                                * (-1) ** spin0
                             )
 
     return psi, phi
@@ -211,7 +213,8 @@ def filters_directional_vectorised(
     el_min = max(abs(spin), abs(spin0))
 
     spin_norms = (
-        (-1) ** spin0 * tiling.spin_normalization_vectorised(np.arange(L), spin0)
+        (-1) ** spin0
+        * tiling.spin_normalization_vectorised(np.arange(L), spin0)
         if spin0 != 0
         else 1
     )
