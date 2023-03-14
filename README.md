@@ -26,7 +26,7 @@ resources and desired angular resolution $L$.
 
 The Python dependencies for the `S2WAV` package are listed in the file
 `requirements/requirements-core.txt` and will be automatically installed
-into the active python environment by [pip]{.title-ref} when running
+into the active python environment by [pip]{https://pypi.org} when running
 
 ``` bash
 pip install .        
@@ -40,7 +40,7 @@ pytest tests/         # for pytest
 ```
 
 In the near future one will be able to install `S2WAV` directly from
-[PyPi]{.title-ref} by `pip install s2wav` but this is not yet supported.
+[PyPi]{https://pypi.org} by `pip install s2wav` but this is not yet supported.
 Note that to run `JAX` on NVIDIA GPUs you will need to follow the
 [guide](https://github.com/google/jax#installation) outlined by Google.
 
