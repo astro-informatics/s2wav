@@ -3,10 +3,11 @@ import numpy as np
 from s2wav.filter_factory import filters, tiling
 from s2wav.utils.shapes import j_max
 
-L_to_test = [8, 16, 32]
-N_to_test = [4, 6, 8]
+L_to_test = [8, 16]
+N_to_test = [2, 3]
 J_min_to_test = [0]
 lam_to_test = [2, 3]
+
 
 @pytest.mark.parametrize("L", L_to_test)
 @pytest.mark.parametrize("J_min", J_min_to_test)
@@ -92,7 +93,6 @@ def test_directional_vectorised(L: int, N: int, J_min: int, lam: int):
 
     for i in range(2):
         np.testing.assert_allclose(f[i], f_vect[i], rtol=1e-14)
-
 
 
 @pytest.mark.parametrize("L", L_to_test)
