@@ -64,10 +64,10 @@ def tiling_direction(L: int, N: int = 1) -> np.ndarray:
 
 def spin_normalization(el: int, spin: int = 0) -> float:
     r"""Computes the normalization factor for spin-lowered wavelets, which is
-        :math:`\sqrt{\frac{(l+s)!}{(l-s)!}}`.
+        :math:`\sqrt{\frac{(\ell+s)!}{(\ell-s)!}}`.
 
     Args:
-        el (int): Harmonic index :math:`\el`.
+        el (int): Harmonic index :math:`\ell`.
 
         spin (int): Spin of field over which to perform the transform. Defaults to 0.
 
@@ -88,7 +88,7 @@ def spin_normalization(el: int, spin: int = 0) -> float:
 def spin_normalization_vectorised(el: np.ndarray, spin: int = 0) -> float:
     r"""Vectorised version of :func:`~spin_normalization`.
     Args:
-        el (int): Harmonic index :math:`\el`.
+        el (int): Harmonic index :math:`\ell`.
         spin (int): Spin of field over which to perform the transform. Defaults to 0.
     Returns:
         float: Normalization factor for spin-lowered wavelets.
@@ -109,7 +109,7 @@ def tiling_direction_jax(L: int, N: int = 1) -> np.ndarray:
 
     .. math::
 
-        _{s}\eta_{\el m} = \nu \vu \sqrt{\frac{1}{2^{\gamma}} \big ( \binom{\gamma}{
+        _{s}\eta_{\ell m} = \nu \vu \sqrt{\frac{1}{2^{\gamma}} \big ( \binom{\gamma}{
                 (\gamma - m)/2} \big )}
 
     which was first derived in `[1] <https://arxiv.org/pdf/1211.1680.pdf>`_.
@@ -121,7 +121,7 @@ def tiling_direction_jax(L: int, N: int = 1) -> np.ndarray:
 
     Returns:
         np.ndarray: Harmonic coefficients of directionality components
-            :math:`_{s}\eta_{\el m}`.
+            :math:`_{s}\eta_{\ell m}`.
 
     Notes:
         [1] J. McEwen et. al., "Directional spin wavelets on the sphere", arXiv preprint
@@ -154,7 +154,7 @@ def tiling_direction_jax(L: int, N: int = 1) -> np.ndarray:
 def spin_normalization_jax(el: np.ndarray, spin: int = 0) -> float:
     r"""JAX version of :func:`~spin_normalization`.
     Args:
-        el (int): Harmonic index :math:`\el`.
+        el (int): Harmonic index :math:`\ell`.
         spin (int): Spin of field over which to perform the transform. Defaults to 0.
     Returns:
         float: Normalization factor for spin-lowered wavelets.

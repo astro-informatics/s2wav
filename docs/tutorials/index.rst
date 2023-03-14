@@ -6,8 +6,8 @@ Notebooks
 A series of tutorial notebooks which go through the absolute base level application of 
 ``S2WAV`` apis. Post alpha release we will add examples for more involved applications, 
 in the time being feel free to contact contributors for advice! At a high-level the 
-``S2WAV`` package is structured such that the 2 primary transforms, the Wigner and 
-spherical harmonic transforms, can easily be accessed.
+``S2WAV`` package is structured such that the 2 primary transforms, the analysis and 
+synthesis directional wavelet transforms, can easily be accessed.
 
 Usage |:rocket:|
 -----------------
@@ -25,10 +25,6 @@ To import and use ``S2WAV``  is as simple follows:
 
 Benchmarking |:hourglass_flowing_sand:|
 -------------------------------------
-We benchmarked the spherical harmonic and Wigner transforms implemented in ``S2WAV``
-against the C implementations in the `S2LET <https://github.com/astro-informatics/s2let>`_
-pacakge. 
-
 TODO: Add table here when results available 
 
 .. toctree::
