@@ -5,4 +5,4 @@ pyyaml==6.0
 scipy
 
 # Switch to pypi install when available
-s2fft @ git+https://github.com/astro-informatics/s2fft.git@housekeeping/remove_ssht_dependency#egg=s2fft
+s2fft @ git+https://github.com/astro-informatics/s2fft.git@main#egg=s2fft
