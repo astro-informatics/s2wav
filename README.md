@@ -22,9 +22,9 @@ a variety of different optimisations (e.g. precompute or not,
 multi-resolution algorithms) that one may select depending on available
 resources and desired angular resolution $L$.
 
-> **_NOTE:_** <span style="color:#59afe1"> `S2WAV` is a sister package of `S2FFT`, both 
-> of which are part of the `SAX` project, which aims to provide comprehensive support for 
-> differentiable transforms on the sphere and rotation group.</span>
+> **_NOTE:_** `S2WAV` is a sister package of `S2FFT`, both of which are part of the `SAX` 
+> project, which aims to provide comprehensive support for differentiable transforms on 
+> the sphere and rotation group.
 
 ## Installation :computer:
 
@@ -64,8 +64,9 @@ f = s2wav.synthesis(f_wav, f_scal, L, N)
 
 ## Contributors ✨
 We strongly encourage contributions from any interested developers; a
-simple example would be adding support for more spherical sampling
-patterns!
+simple example would be adding support for new wavelet filters e.g. spherical needlets 
+[Chan et al 2016](https://arxiv.org/abs/1511.05578) or spherical ridgelets 
+[McEwen & Price 2020](https://arxiv.org/pdf/1510.01595.pdf)!
 
 Thanks goes to these wonderful people ([emoji
 key](https://allcontributors.org/docs/en/emoji-key)):
