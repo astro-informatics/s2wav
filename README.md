@@ -28,7 +28,7 @@ resources and desired angular resolution $L$. `S2WAV` is a sister package of [`S
 ![image](./docs/assets/figures/wavelet_decomposition.png)
 
 <p align="center">
-  <img src="./docs/assets/figures/wavelet_decomposition.png" width="500" height="600"/>
+  <img src="./docs/assets/figures/wavelet_decomposition.png" width="500"/>
 </p>
 
 ## Installation :computer:
