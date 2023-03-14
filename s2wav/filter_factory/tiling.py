@@ -4,8 +4,12 @@ config.update("jax_enable_x64", True)
 
 import jax.numpy as jnp
 import numpy as np
-from s2wav.utils.math_functions import binomial_coefficient
+from s2wav.utils.math_functions import (
+    binomial_coefficient,
+    binomial_coefficient_jax,
+)
 from functools import partial
+
 
 def tiling_direction(L: int, N: int = 1) -> np.ndarray:
     r"""Generates the harmonic coefficients for the directionality component of the
@@ -96,10 +100,59 @@ def spin_normalization_vectorised(el: np.ndarray, spin: int = 0) -> float:
     return np.sqrt(np.prod(factor, axis=1) ** (np.sign(spin)))
 
 
+@partial(jit, static_argnums=(0, 1))
+def tiling_direction_jax(L: int, N: int = 1) -> np.ndarray:
+    r"""JAX version of tiling_direction. Generates the harmonic coefficients for the directionality component of the
+        tiling functions.
 
-@partial(jit, static_argnums=(1)) #not sure about which arguments are static here
+    Formally, this function implements the follow equation
+
+    .. math::
+
+        _{s}\eta_{\el m} = \nu \vu \sqrt{\frac{1}{2^{\gamma}} \big ( \binom{\gamma}{
+                (\gamma - m)/2} \big )}
+
+    which was first derived in `[1] <https://arxiv.org/pdf/1211.1680.pdf>`_.
+
+    Args:
+        L (int): Harmonic band-limit.
+
+        N (int, optional): Upper orientational band-limit. Defaults to 1.
+
+    Returns:
+        np.ndarray: Harmonic coefficients of directionality components
+            :math:`_{s}\eta_{\el m}`.
+
+    Notes:
+        [1] J. McEwen et. al., "Directional spin wavelets on the sphere", arXiv preprint
+            arXiv:1509.06749 (2015).
+    """
+
+    nu = (N % 2 - 1) ** 2 * 1j + (N % 2)
+
+    s_elm = jnp.zeros((L, 2 * L - 1), dtype=np.complex128)
+
+    for el in range(1, L):
+        gamma = min(N - 1, el - 1 + (N + el) % 2)
+
+        ms = jnp.arange(-el, el + 1)
+        val = nu * jnp.sqrt(
+            (binomial_coefficient_jax(gamma, ((gamma - ms) / 2))) / (2**gamma)
+        )
+
+        val = jnp.where(
+            (ms < N) & (ms > -N) & ((N + ms) % 2 == 1),
+            val,
+            jnp.zeros(2 * el + 1),
+        )
+        s_elm = s_elm.at[el, L - 1 - el : L + el].set(val)
+
+    return s_elm
+
+
+@partial(jit, static_argnums=(1))
 def spin_normalization_jax(el: np.ndarray, spin: int = 0) -> float:
-    r"""Vectorised version of :func:`~spin_normalization`.
+    r"""JAX version of :func:`~spin_normalization`.
     Args:
         el (int): Harmonic index :math:`\el`.
         spin (int): Spin of field over which to perform the transform. Defaults to 0.
