@@ -25,7 +25,7 @@ resources and desired angular resolution $L$. `S2WAV` is a sister package of [`S
 ## Wavelet Transform :zap: 
 `S2WAV` is an updated implementation of the scale-discretised wavelet transform on the sphere, which builds upon the papers of [Leistedt et al 2013](https://arxiv.org/abs/1211.1680) and [McEwen et al 2017](https://arxiv.org/abs/1509.06749). This wavelet transform is designed to have excellent localisation and uncorrelation properties, and has been successfully adopted for various applications e.g. scattering transforms on the sphere [McEwen et al 2022](https://arxiv.org/pdf/2102.02828.pdf). The wavelet dictionary is constructed by tiling the harmonic line as follows
 
-<img src="./docs/assets/figures/wavelet_tiling.png" alt= “” width="200" height="200">
+<img src="./docs/assets/figures/wavelet_tiling.png" alt= “” width="600" height="400">
 
 which can straightforwardly be performed in an efficient multiresolution manne, as in the Euclidean case. For example the directional wavelet decomposition of a topographic map of the Earth can be seen here
 
