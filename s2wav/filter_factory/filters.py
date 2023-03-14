@@ -13,21 +13,21 @@ from functools import partial
 def filters_axisym(
     L: int, J_min: int = 0, lam: float = 2.0
 ) -> Tuple[np.ndarray, np.ndarray]:
-    r"""Computes wavelet kernels :math:`\Psi^j_{\el m}` and scaling kernel :math:`\Phi_{\el m}` in harmonic space.
+    r"""Computes wavelet kernels :math:`\Psi^j_{\ell m}` and scaling kernel :math:`\Phi_{\ell m}` in harmonic space.
 
     Specifically, these kernels are derived in `[1] <https://arxiv.org/pdf/1211.1680.pdf>`_, where the wavelet kernels are defined (15) for scale :math:`j` to be
 
     .. math::
 
-        \Psi^j_{\el m} \equiv \sqrt{\frac{2\el+1}{4\pi}} \kappa_{\lambda}(\frac{\el}{\lambda^j})\delta_{m0},
+        \Psi^j_{\ell m} \equiv \sqrt{\frac{2\ell+1}{4\pi}} \kappa_{\lambda}(\frac{\ell}{\lambda^j})\delta_{m0},
 
     where :math:`\kappa_{\lambda} = \sqrt{k_{\lambda}(t/\lambda) - k_{\lambda}(t)}` for :math:`k_{\lambda}` given in :func:`~k_lam`. Similarly, the scaling kernel is defined (16) as
 
     .. math::
 
-        \Phi_{\el m} \equiv \sqrt{\frac{2\el+1}{4\pi}} \nu_{\lambda} (\frac{\el}{\lambda^{J_0}})\delta_{m0},
+        \Phi_{\ell m} \equiv \sqrt{\frac{2\ell+1}{4\pi}} \nu_{\lambda} (\frac{\ell}{\lambda^{J_0}})\delta_{m0},
 
-    where :math:`\nu_{\lambda} = \sqrt{k_{\lambda}(t)}` for :math:`k_{\lambda}` given in :func:`~k_lam`. Notice that :math:`\delta_{m0}` enforces that these kernels are axisymmetric, i.e. coefficients for :math:`m \not = \el` are zero. In this implementation the normalisation constant has been omitted as it is nulled in subsequent functions.
+    where :math:`\nu_{\lambda} = \sqrt{k_{\lambda}(t)}` for :math:`k_{\lambda}` given in :func:`~k_lam`. Notice that :math:`\delta_{m0}` enforces that these kernels are axisymmetric, i.e. coefficients for :math:`m \not = \ell` are zero. In this implementation the normalisation constant has been omitted as it is nulled in subsequent functions.
 
     Args:
         L (int): Harmonic band-limit.
@@ -41,7 +41,7 @@ def filters_axisym(
         ValueError: J_min is negative or greater than J.
 
     Returns:
-        Tuple[np.ndarray, np.ndarray]: Unnormalised wavelet kernels :math:`\Psi^j_{\el m}` with shape :math:`[(J+1)*L], and scaling kernel :math:`\Phi_{\el m}` with shape :math:`[L]` in harmonic space.
+        Tuple[np.ndarray, np.ndarray]: Unnormalised wavelet kernels :math:`\Psi^j_{\ell m}` with shape :math:`[(J+1)L]`, and scaling kernel :math:`\Phi_{\el m}` with shape :math:`[L]` in harmonic space.
 
     Note:
         [1] B. Leidstedt et. al., "S2LET: A code to perform fast wavelet analysis on the sphere", A&A, vol. 558, p. A128, 2013.
@@ -102,8 +102,9 @@ def filters_directional(
         spin0 (int, optional): Spin number the wavelet was lowered from. Defaults to 0.
 
     Returns:
-        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels (:math:`\Psi^j_{\el n}`, :math:`\Phi_{\el m}`)
+        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels (:math:`\Psi^j_{\ell n}`, :math:`\Phi_{\ell m}`)
             psi (np.ndarray): Harmonic coefficients of directional wavelets with shape :math:`[L^2(J+1)]`.
+
             phi (np.ndarray): Harmonic coefficients of scaling function with shape :math:`[L]`.
 
     Notes:
@@ -161,8 +162,8 @@ def filters_axisym_vectorised(
         ValueError: J_min is negative or greater than J.
 
     Returns:
-        Tuple[np.ndarray, np.ndarray]: Unnormalised wavelet kernels :math:`\Psi^j_{\el m}`
-        with shape :math:`[(J+1)*L], and scaling kernel :math:`\Phi_{\el m}` with shape
+        Tuple[np.ndarray, np.ndarray]: Unnormalised wavelet kernels :math:`\Psi^j_{\ell m}`
+        with shape :math:`[(J+1)L], and scaling kernel :math:`\Phi_{\ell m}` with shape
         :math:`[L]` in harmonic space.
     """
     J = shapes.j_max(L, lam)
@@ -206,8 +207,9 @@ def filters_directional_vectorised(
         spin0 (int, optional): Spin number the wavelet was lowered from. Defaults to 0.
 
     Returns:
-        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels (:math:`\Psi^j_{\el n}`, :math:`\Phi_{\el m}`)
+        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels (:math:`\Psi^j_{\ell n}`, :math:`\Phi_{\ell m}`)
             psi (np.ndarray): Harmonic coefficients of directional wavelets with shape :math:`[L^2(J+1)]`.
+
             phi (np.ndarray): Harmonic coefficients of scaling function with shape :math:`[L]`.
     """
     el_min = max(abs(spin), abs(spin0))
@@ -253,8 +255,8 @@ def filters_axisym_jax(
         ValueError: J_min is negative or greater than J.
 
     Returns:
-        Tuple[np.ndarray, np.ndarray]: Unnormalised wavelet kernels :math:`\Psi^j_{\el m}`
-        with shape :math:`[(J+1)*L], and scaling kernel :math:`\Phi_{\el m}` with shape
+        Tuple[np.ndarray, np.ndarray]: Unnormalised wavelet kernels :math:`\Psi^j_{\ell m}`
+        with shape :math:`[(J+1)L], and scaling kernel :math:`\Phi_{\ell m}` with shape
         :math:`[L]` in harmonic space.
     """
     J = shapes.j_max(L, lam)
@@ -299,8 +301,9 @@ def filters_directional_jax(
         spin0 (int, optional): Spin number the wavelet was lowered from. Defaults to 0.
 
     Returns:
-        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels (:math:`\Psi^j_{\el n}`, :math:`\Phi_{\el m}`)
+        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels (:math:`\Psi^j_{\ell n}`, :math:`\Phi_{\ell m}`)
             psi (np.ndarray): Harmonic coefficients of directional wavelets with shape :math:`[L^2(J+1)]`.
+
             phi (np.ndarray): Harmonic coefficients of scaling function with shape :math:`[L]`.
     """
     el_min = max(abs(spin), abs(spin0))

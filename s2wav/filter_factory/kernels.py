@@ -110,7 +110,7 @@ def k_lam(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
 
     Returns:
         (np.ndarray): Value of :math:`k_{\lambda}` computed for values between
-            :math:`\frac{1}{\lambda}` and 1, parametrised by :math:`\el` as required to
+            :math:`\frac{1}{\lambda}` and 1, parametrised by :math:`\ell` as required to
             compute the axisymmetric filters in :func:`~tiling_axisym`.
 
     Note:
@@ -213,7 +213,7 @@ def k_lam_jax(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
 
     Returns:
         (np.ndarray): Value of :math:`k_{\lambda}` computed for values between
-            :math:`\frac{1}{\lambda}` and 1, parametrised by :math:`\el` as required to
+            :math:`\frac{1}{\lambda}` and 1, parametrised by :math:`\ell` as required to
             compute the axisymmetric filters in :func:`~tiling_axisym`.
 
     Note:

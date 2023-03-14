@@ -162,7 +162,7 @@ def f_wav_j(
             resolution or its own resolution. Defaults to False.
 
     Returns:
-        Tuple[int, int, int]: Wavelet coefficients shape :math:`[n_{\theta}, n_{\phi}, n_{N}]`.
+        Tuple[int, int, int]: Wavelet coefficients shape :math:`[n_{N}, n_{\theta}, n_{\phi}]`.
 
     Note:
         Each wavelet filter has compact support between a lower and upper harmonic degree.
@@ -307,7 +307,7 @@ def construct_flm(
             resolution or its own resolution. Defaults to False.
 
     Returns:
-        Tuple[int, int]: Scaling coefficients shape :math:`[L, 2*L-1]`.
+        Tuple[int, int]: Scaling coefficients shape :math:`[L, 2L-1]`.
     """
     L_s = scal_bandlimit(L, J_min, lam, multiresolution)
     return np.zeros((L_s, 2 * L_s - 1), dtype=np.complex128)
@@ -332,7 +332,7 @@ def construct_flm_jax(
             resolution or its own resolution. Defaults to False.
 
     Returns:
-        Tuple[int, int]: Scaling coefficients shape :math:`[L, 2*L-1]`.
+        Tuple[int, int]: Scaling coefficients shape :math:`[L, 2L-1]`.
     """
     L_s = scal_bandlimit(L, J_min, lam, multiresolution)
     return jnp.zeros((L_s, 2 * L_s - 1), dtype=jnp.complex128)
@@ -388,7 +388,7 @@ def flmn_wav_j(
             resolution or its own resolution. Defaults to False.
 
     Returns:
-        Tuple[int, int, int]: Wavelet coefficients shape :math:`[L, 2L-1, n_{N}]`.
+        Tuple[int, int, int]: Wavelet coefficients shape :math:`[n_{N}, L, 2L-1]`.
 
     Note:
         Each wavelet filter has compact support between a lower and upper harmonic degree.

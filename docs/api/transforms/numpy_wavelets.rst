@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-Sampling Functions
+Transforms (numpy)
 **************************
-.. automodule:: s2wav.utils.samples
+.. automodule:: s2wav.transforms.numpy_wavelets
    :members: 
