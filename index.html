@@ -358,12 +358,40 @@ on the sphere and rotation group (for both real and complex signals), with suppo
 adjoints where needed, and comes with a variety of different optimisations (e.g. precompute
 or not, multi-resolution algorithms) that one may select depending on available resources
 and desired angular resolution <span class="math notranslate nohighlight">\(L\)</span>.</p>
-<div class="section" id="contributors-hammer">
-<h2>Contributors 🔨<a class="headerlink" href="#contributors-hammer" title="Permalink to this headline"></a></h2>
-<p>TODO: Add core contributors photos etc here pre-release.</p>
-<p>We strongly encourage contributions from any interested developers; a simple example would be adding
-support for more spherical sampling patterns!</p>
+<div class="section" id="wavelet-transform-zap">
+<h2>Wavelet Transform ⚡<a class="headerlink" href="#wavelet-transform-zap" title="Permalink to this headline"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">S2WAV</span></code> is an updated implementation of the scale-discretised wavelet transform on the
+sphere, which builds upon the papers of
+<a class="reference external" href="https://arxiv.org/abs/1211.1680">Leistedt et al 2013</a> and <a class="reference external" href="https://arxiv.org/abs/1509.06749">McEwen et al 2017</a>.
+This wavelet transform is designed to have excellent localisation and uncorrelation
+properties, and has been successfully adopted for various applications e.g.
+scattering transforms on the sphere <a class="reference external" href="https://arxiv.org/pdf/2102.02828.pdf">McEwen et al 2022</a>.
+The wavelet dictionary is constructed by tiling the harmonic line with infinitely
+differentiable Cauchy-Schwartz functions, which can straightforwardly be performed
+in an efficient multiresolution manner, as in the Euclidean case. For example the
+directional wavelet decomposition of a topographic map of the Earth can be seen
+below</p>
+<a class="reference internal image-reference" href="_images/wavelet_decomposition.png"><img alt="_images/wavelet_decomposition.png" class="align-center" src="_images/wavelet_decomposition.png" style="width: 700px;" /></a>
 </div>
+<div class="section" id="contributors">
+<h2>Contributors ✨<a class="headerlink" href="#contributors" title="Permalink to this headline"></a></h2>
+<p>We strongly encourage contributions from any interested developers; a
+simple example would be adding support for new wavelet filters e.g. spherical needlets
+<a class="reference external" href="https://arxiv.org/abs/1511.05578">Chan et al 2016</a> or spherical ridgelets
+<a class="reference external" href="https://arxiv.org/pdf/1510.01595.pdf">McEwen &amp; Price 2020</a>! Thanks goes to these
+wonderful people (<a class="reference external" href="https://allcontributors.org/docs/en/emoji-key">emojikey</a>):</p>
+<embed>
+   <table>
+      <tbody>
+         <tr>
+            <td align="center" valign="top" width="14.28%"><a href="https://cosmomatt.github.io"><img src="https://avatars.githubusercontent.com/u/32554533?v=4?s=100" width="100px;" alt="Matt Price"/><br /><sub><b>Matt Price</b></sub></a><br /><a href="https://github.com/astro-informatics/s2wav/commits?author=CosmoMatt" title="Code">💻</a> <a href="https://github.com/astro-informatics/s2wav/pulls?q=is%3Apr+reviewed-by%3ACosmoMatt" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/astro-informatics/s2wav/commits?author=CosmoMatt" title="Documentation">📖</a> <a href="#design-CosmoMatt" title="Design">🎨</a></td>
+            <td align="center" valign="top" width="14.28%"><a href="http://www.jasonmcewen.org"><img src="https://avatars.githubusercontent.com/u/3181701?v=4?s=100" width="100px;" alt="Jason McEwen "/><br /><sub><b>Jason McEwen </b></sub></a><br /><a href="https://github.com/astro-informatics/s2wav/pulls?q=is%3Apr+reviewed-by%3Ajasonmcewen" title="Reviewed Pull Requests">👀</a> <a href="#design-jasonmcewen" title="Design">🎨</a></td>
+            <td align="center" valign="top" width="14.28%"><a href="https://alicjaap.github.io/"><img src="https://avatars.githubusercontent.com/u/114654380?v=4?s=100" width="100px;" alt="Alicja Polanska"/><br /><sub><b>Alicja Polanska</b></sub></a><br /><a href="https://github.com/astro-informatics/s2wav/commits?author=alicjapolanska" title="Code">💻</a> <a href="https://github.com/astro-informatics/s2wav/pulls?q=is%3Apr+reviewed-by%3Aalicjapolanska" title="Reviewed Pull Requests">👀</a></td>
+            <td align="center" valign="top" width="14.28%"><a href="https://github.com/JessWhitney"><img src="https://avatars.githubusercontent.com/u/115358717?v=4?s=100" width="100px;" alt="Jessica Whitney"/><br /><sub><b>Jessica Whitney</b></sub></a><br /><a href="https://github.com/astro-informatics/s2wav/commits?author=JessWhitney" title="Code">💻</a> <a href="https://github.com/astro-informatics/s2wav/pulls?q=is%3Apr+reviewed-by%3AJessWhitney" title="Reviewed Pull Requests">👀</a></td>
+         </tr>
+      </tbody>
+   </table>
+</embed></div>
 <div class="section" id="attribution-books">
 <h2>Attribution 📚<a class="headerlink" href="#attribution-books" title="Permalink to this headline"></a></h2>
 <p>A BibTeX entry for <code class="docutils literal notranslate"><span class="pre">S2WAV</span></code> is:</p>
@@ -422,8 +450,13 @@ the LICENSE file.</p>
 <nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#contributors-hammer">
-   Contributors 🔨
+  <a class="reference internal nav-link" href="#wavelet-transform-zap">
+   Wavelet Transform ⚡
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#contributors">
+   Contributors ✨
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">

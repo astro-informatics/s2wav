@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-Analysis Transform
+Transforms (JAX)
 **************************
-.. automodule:: s2wav.transforms.analysis
+.. automodule:: s2wav.transforms.jax_wavelets
    :members: 

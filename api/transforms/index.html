@@ -46,7 +46,7 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Analysis Transform" href="analysis.html" />
+    <link rel="next" title="Transforms (numpy)" href="numpy_wavelets.html" />
     <link rel="prev" title="API" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="None">
@@ -327,8 +327,8 @@
     <p aria-level="2" class="caption" role="heading"><span class="caption-text">Namespaces</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Wavelet Transforms</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="analysis.html">Analysis Transform</a></li>
-<li class="toctree-l2"><a class="reference internal" href="synthesis.html">Synthesis Transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_wavelets.html">Transforms (numpy)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jax_wavelets.html">Transforms (JAX)</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../filter_factory/index.html">Filter Factory</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -339,7 +339,6 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../utility/index.html">Utility Functions</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../utility/math_functions.html">Maths Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utility/samples.html">Sampling Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utility/shapes.html">Array Shape Functions</a></li>
 </ul>
 </li>
@@ -377,7 +376,7 @@
   <div class="section" id="wavelet-transforms">
 <h1>Wavelet Transforms<a class="headerlink" href="#wavelet-transforms" title="Permalink to this headline"></a></h1>
 <table class="colwidths-given table" id="id1">
-<caption><span class="caption-text">Wavelet transforms.</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Wavelet transforms</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -388,17 +387,29 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis_transform_looped()</span></code></p></td>
-<td><p>Loopy implementation of mapping from pixel to wavelet space.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis_transform_vectorised()</span></code></p></td>
-<td><p>Vectorised implementation of mapping from pixel to wavelet space.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis_transform_looped()</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="numpy_wavelets.html#s2wav.transforms.numpy_wavelets.synthesis_looped" title="s2wav.transforms.numpy_wavelets.synthesis_looped"><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis_looped()</span></code></a></p></td>
 <td><p>Loopy implementation of mapping from wavelet to pixel space.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis_transform_vectorised()</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="numpy_wavelets.html#s2wav.transforms.numpy_wavelets.synthesis" title="s2wav.transforms.numpy_wavelets.synthesis"><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis()</span></code></a></p></td>
 <td><p>Vectorised implementation of mapping from wavelet to pixel space.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="numpy_wavelets.html#s2wav.transforms.numpy_wavelets.analysis_looped" title="s2wav.transforms.numpy_wavelets.analysis_looped"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis_looped()</span></code></a></p></td>
+<td><p>Loopy implementation of mapping from pixel to wavelet space.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="numpy_wavelets.html#s2wav.transforms.numpy_wavelets.analysis" title="s2wav.transforms.numpy_wavelets.analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis()</span></code></a></p></td>
+<td><p>Vectorised implementation of mapping from pixel to wavelet space.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="jax_wavelets.html#s2wav.transforms.jax_wavelets.synthesis" title="s2wav.transforms.jax_wavelets.synthesis"><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis()</span></code></a></p></td>
+<td><p>JAX implementation of mapping from wavelet to pixel space.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="jax_wavelets.html#s2wav.transforms.jax_wavelets.analysis" title="s2wav.transforms.jax_wavelets.analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis()</span></code></a></p></td>
+<td><p>JAX implementation of mapping from pixel to wavelet space.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="jax_wavelets.html#s2wav.transforms.jax_wavelets.flm_to_analysis" title="s2wav.transforms.jax_wavelets.flm_to_analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">flm_to_analysis()</span></code></a></p></td>
+<td><p>JAX implementation of mapping from harmonic to wavelet space.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="jax_wavelets.html#s2wav.transforms.jax_wavelets.generate_wigner_precomputes" title="s2wav.transforms.jax_wavelets.generate_wigner_precomputes"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_wigner_precomputes()</span></code></a></p></td>
+<td><p>JAX function to generate precompute arrays for underlying Wigner transforms.</p></td>
 </tr>
 </tbody>
 </table>
@@ -421,10 +432,10 @@
           <p class="prev-next-title">API</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="analysis.html" title="next page">
+  <a class='right-next' id="next-link" href="numpy_wavelets.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Analysis Transform</p>
+      <p class="prev-next-title">Transforms (numpy)</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
