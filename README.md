@@ -1,8 +1,8 @@
 [![image](https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml)
-[![image](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://astro-informatics.github.io/s2wav)
 [![image](https://codecov.io/gh/astro-informatics/s2wav/branch/main/graph/badge.svg?token=ZES6J4K3KZ)](https://codecov.io/gh/astro-informatics/s2wav)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![image](http://img.shields.io/badge/arXiv-xxxx.xxxxx-orange.svg?style=flat)](https://arxiv.org/abs/xxxx.xxxxx)
+[![image](http://img.shields.io/badge/arXiv-xxxx.xxxxx-orange.svg?style=flat)](https://arxiv.org/abs/xxxx.xxxxx) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-) <!-- ALL-CONTRIBUTORS-BADGE:END --> 
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/15E64EAQ7TIp2a3cCoXtnNgf7Ud9MYjVq?usp=sharing)
 
@@ -21,6 +21,10 @@ complex signals), with support for adjoints where needed, and comes with
 a variety of different optimisations (e.g. precompute or not,
 multi-resolution algorithms) that one may select depending on available
 resources and desired angular resolution $L$.
+
+> **_NOTE:_** <span style="color:#59afe1"> `S2WAV` is a sister package of `S2FFT`, both 
+> of which are part of the `SAX` project, which aims to provide comprehensive support for 
+> differentiable transforms on the sphere and rotation group.</span>
 
 ## Installation :computer:
 
@@ -59,12 +63,12 @@ f = s2wav.synthesis(f_wav, f_scal, L, N)
 ```
 
 ## Contributors ✨
-
-TODO: Add core contributors photos etc here pre-release.
-
 We strongly encourage contributions from any interested developers; a
 simple example would be adding support for more spherical sampling
 patterns!
+
+Thanks goes to these wonderful people ([emoji
+key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
