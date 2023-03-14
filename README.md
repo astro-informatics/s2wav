@@ -20,11 +20,16 @@ wavelet transforms on the sphere and rotation group (for both real and
 complex signals), with support for adjoints where needed, and comes with
 a variety of different optimisations (e.g. precompute or not,
 multi-resolution algorithms) that one may select depending on available
-resources and desired angular resolution $L$.
+resources and desired angular resolution $L$. `S2WAV` is a sister package of [`S2FFT`](https://github.com/astro-informatics/s2fft), both of which are part of the `SAX` project, which aims to provide comprehensive support for differentiable transforms on the sphere and rotation group.
 
-> **_NOTE:_** `S2WAV` is a sister package of `S2FFT`, both of which are part of the `SAX` 
-> project, which aims to provide comprehensive support for differentiable transforms on 
-> the sphere and rotation group.
+## Wavelet Transform :zap: 
+`S2WAV` is an updated implementation of the scale-discretised wavelet transform on the sphere, which builds upon the papers of [Leistedt et al 2013](https://arxiv.org/abs/1211.1680) and [McEwen et al 2017](https://arxiv.org/abs/1509.06749). This wavelet transform is designed to have excellent localisation and uncorrelation properties, and has been successfully adopted for various applications e.g. scattering transforms on the sphere [McEwen et al 2022](https://arxiv.org/pdf/2102.02828.pdf). The wavelet dictionary is constructed by tiling the harmonic line as follows
+
+![image](./docs/assets/figures/wavelet_tiling.png)
+
+which can straightforwardly be performed in an efficient multiresolution manne, as in the Euclidean case. For example the directional wavelet decomposition of a topographic map of the Earth can be seen here
+
+![image](./docs/assets/figures/wavelet_decomposition.png)
 
 ## Installation :computer:
 
@@ -40,7 +45,7 @@ from the root directory of the repository. Unit tests can then be
 executed to ensure the installation was successful by running
 
 ``` bash
-pytest tests/         # for pytest
+pytest tests/
 ```
 
 In the near future one will be able to install `S2WAV` directly from
@@ -61,14 +66,13 @@ f_wav, f_scal = s2wav.analysis(f, L, N)
 # Map back to signal on the sphere 
 f = s2wav.synthesis(f_wav, f_scal, L, N)
 ```
+however we strongly recommend that the multiresolution argument is set to true, as this will accelerate the transform by a factor of the total number of wavelet scales, which can be around an order of magnitude.
 
 ## Contributors ✨
 We strongly encourage contributions from any interested developers; a
 simple example would be adding support for new wavelet filters e.g. spherical needlets 
 [Chan et al 2016](https://arxiv.org/abs/1511.05578) or spherical ridgelets 
-[McEwen & Price 2020](https://arxiv.org/pdf/1510.01595.pdf)!
-
-Thanks goes to these wonderful people ([emoji
+[McEwen & Price 2020](https://arxiv.org/pdf/1510.01595.pdf)! Thanks goes to these wonderful people ([emoji
 key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
