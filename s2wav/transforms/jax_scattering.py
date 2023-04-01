@@ -1,4 +1,5 @@
-from jax import config
+from jax import config, jit
+from functools import partial
 
 config.update("jax_enable_x64", True)
 
@@ -25,65 +26,7 @@ def scatter(
     spmd: bool = False,
     precomps: List[List[jnp.ndarray]] = None,
 ) -> List[jnp.ndarray]:
-    r"""Computes the scattering transform for descending by one nodes alone.
 
-    Following equations outlined in section 3.2 of [1], recursively compute wavelet
-    transform each time passed through the activation function (in this case the absolute
-    value, 'modulus' operator) and store the scaling coefficients.
-
-    Args:
-        f (np.ndarray): Signal :math:`f` on the sphere with shape :math:`[n_{\theta}, n_{\phi}]`.
-
-        L (int): Harmonic bandlimit.
-
-        N (int, optional): Upper azimuthal band-limit. Defaults to 1.
-
-        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
-
-        lam (float, optional): Wavelet parameter which determines the scale factor
-            between consecutive wavelet scales. Note that :math:`\lambda = 2` indicates
-            dyadic wavelets. Defaults to 2.
-
-        nlayers (int, optional): Total number of scattering layers. Defaults to None, in
-            which case all paths which descend by 1 are included.
-
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh",
-            "healpix"}. Defaults to "mw".
-
-        nside (int, optional): HEALPix Nside resolution parameter.  Only required if
-            sampling="healpix".  Defaults to None.
-
-        reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
-            conjugate symmetry of harmonic coefficients. Defaults to False.
-
-        filters (Tuple[jnp.ndarray], optional): Precomputed wavelet filters. Defaults to None.
-
-        multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
-            resolution or its own resolution. Defaults to False.
-
-        spmd (bool, optional): Whether to map compute over multiple devices. Currently this
-            only maps over all available devices, and is only valid for JAX implementations.
-            Defaults to False.
-
-        precomps (List[jnp.ndarray]): Precomputed list of recursion coefficients. At most
-            of length :math:`L^2`, which is a minimal memory overhead.
-
-
-    Raises:
-        ValueError: Number of layers is larger than the number of available wavelet scales.
-
-        NotImplementedError: Filters not provided, and functionality to compute these in
-            JAX is not yet implemented.
-
-    Returns:
-        List[np.ndarray]: List of scattering coefficients. Dimensionality of each scattering
-            coefficien will depend on the selection of hyperparameters. In the most
-            typical case (J_min = 0), each scattering coefficient is a single scalar value.
-
-    Notes:
-        [1] McEwen et al, Scattering networks on the sphere for scalable and
-            rotationally equivariant spherical CNNs, ICLR 2022.
-    """
     if precomps == None:
         precomps = wavelets.generate_wigner_precomputes(
             L, N, J_min, lam, sampling, nside, False, reality, multiresolution
@@ -94,12 +37,6 @@ def scatter(
 
     if nlayers is None:
         nlayers = J - J_min
-    if nlayers > J - J_min:
-        raise ValueError(
-            f"Number of scattering layers {nlayers} is larger than the number of available wavelet scales {J-J_min}."
-        )
-    if filters == None:
-        raise ValueError("Automatic filter computation not yet implemented!")
 
     # Weight filters a priori
     wav_lm = jnp.einsum(
@@ -173,53 +110,7 @@ def _analysis_scattering(
     filters: Tuple[jnp.ndarray] = None,
     precomps: List[List[jnp.ndarray]] = None,
 ) -> Tuple[jnp.ndarray, jnp.ndarray]:
-    r"""Wavelet analysis from pixel space to wavelet space for complex signals.
 
-    Args:
-        f (np.ndarray): Signal :math:`f` on the sphere with shape :math:`[n_{\theta}, n_{\phi}]`.
-
-        L (int): Harmonic bandlimit.
-
-        j (int): Wavelet scale.
-
-        N (int, optional): Upper azimuthal band-limit. Defaults to 1.
-
-        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
-
-        lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
-            Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
-
-        spin (int, optional): Spin (integer) of input signal. Defaults to 0.
-
-        spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
-
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}. Defaults to "mw".
-
-        nside (int, optional): HEALPix Nside resolution parameter.  Only required if sampling="healpix".  Defaults
-            to None.
-
-        reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
-            conjugate symmetry of harmonic coefficients. Defaults to False.
-
-        multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
-            resolution or its own resolution. Defaults to False.
-
-        filters (Tuple[jnp.ndarray], optional): Precomputed wavelet filters. Defaults to None.
-
-        spmd (bool, optional): Whether to map compute over multiple devices. Currently this
-            only maps over all available devices, and is only valid for JAX implementations.
-            Defaults to False.
-
-        precomps (List[jnp.ndarray]): Precomputed list of recursion coefficients. At most
-            of length :math:`L^2`, which is a minimal memory overhead.
-
-    Returns:
-        f_wav (np.ndarray): Array of wavelet pixel-space coefficients
-            with shape :math:`[n_{J}, 2N-1, n_{\theta}, n_{\phi}]`.
-
-        f_scal (np.ndarray): Array of scaling pixel-space coefficients
-            with shape :math:`[n_{\theta}, n_{\phi}]`.
-    """
     L = shapes.wav_j_bandlimit(Lin, j, lam, multiresolution)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = s2fft.forward_jax(f, L, spin, nside, sampling, reality)
@@ -272,3 +163,98 @@ def _analysis_scattering(
     )
 
     return jnp.abs(f_wav), jnp.real(f_scal) if reality else f_scal
+
+
+# ---------------------------------------------------------------
+# Apr 1 2023
+# ---------------------------------------------------------------
+
+
+@partial(jit, static_argnums=(1, 2, 3))
+def scatter_new(
+    flm: jnp.ndarray,
+    L: int,
+    N: int,
+    reality: bool = False,
+    filters: Tuple[jnp.ndarray] = None,
+    precomps: List[List[jnp.ndarray]] = None,
+) -> List[jnp.ndarray]:
+
+    if precomps == None:
+        precomps = wavelets.generate_wigner_precomputes(
+            L, N, 0, 2, "mw", None, False, reality, True
+        )
+
+    J = shapes.j_max(L, 2)
+
+    W, S = wavelets.flm_to_analysis_full(
+        flm,
+        L,
+        N,
+        reality=reality,
+        multiresolution=True,
+        filters=filters,
+        precomps=precomps,
+    )
+
+    scattering_coefficients = []
+    scattering_coefficients.append(S)
+    Njjprime = []
+    for j in range(J + 1):
+        Lj = shapes.wav_j_bandlimit(L, j, 2.0, True)
+        Njjprime_for_j = []
+        M_lm = jnp.zeros((2 * N - 1, Lj, 2 * Lj - 1), dtype=jnp.complex128)
+
+        def harmonic_step_for_j(n, args):
+            M_lm = args
+            M_lm = M_lm.at[n].add(
+                s2fft.forward_jax(
+                    jnp.abs(W[j][n]),
+                    Lj,
+                    0,
+                    reality=reality,
+                )
+            )
+            return M_lm
+
+        M_lm = lax.fori_loop(0, 2 * N - 1, harmonic_step_for_j, M_lm)
+
+        for n in range(2 * N - 1):
+            val, S = wavelets.flm_to_analysis_full(
+                M_lm[n],
+                Lj,
+                N,
+                J_max=j - 1,
+                reality=reality,
+                multiresolution=True,
+                filters=(
+                    filters[0][: j + 1, :Lj, L - Lj : L - 1 + Lj],
+                    filters[1],
+                ),
+                precomps=precomps[:j],
+            )
+            scattering_coefficients.append(S)
+            Njjprime_for_j.append(val)
+        Njjprime.append(Njjprime_for_j)
+
+    # Reorder and flatten Njjprime, convert to JAX arrays for C01/C11
+    Njjprime_flat = []
+    for j1 in range(J):
+        Njjprime_flat_for_j2 = []
+        for j2 in range(j1 + 1, J + 1):
+            for n2 in range(2 * N - 1):
+                for n1 in range(2 * N - 1):
+                    Njjprime_flat_for_j2.append(Njjprime[j2][n2][j1][n1])
+        Njjprime_flat.append(jnp.array(Njjprime_flat_for_j2))
+
+    # Now should be indexed by scale up to J and we can perform 2nd layer
+    for j in range(J):
+        Lj = shapes.wav_j_bandlimit(L, j, 2.0, True)
+        quads = s2fft.utils.quadrature_jax.quad_weights(Lj)
+        S = jnp.einsum(
+            "itp,t->i", jnp.abs(Njjprime_flat[j]), quads, optimize=True
+        )
+
+        scattering_coefficients.append(S)
+
+    return jnp.concatenate(scattering_coefficients, axis=None)
