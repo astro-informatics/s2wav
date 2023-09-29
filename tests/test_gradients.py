@@ -126,9 +126,7 @@ def test_jax_analysis_gradients(
         )
         loss = jnp.sum(jnp.abs(f_scal - f_scal_target) ** 2)
         for j in range(J - J_min):
-            loss += jnp.sum(
-                jnp.abs(f_wav[j - J_min] - f_wav_target[j - J_min]) ** 2
-            )
+            loss += jnp.sum(jnp.abs(f_wav[j - J_min] - f_wav_target[j - J_min]) ** 2)
         return loss
 
     check_grads(func, (f,), order=1, modes=("rev"))

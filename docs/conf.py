@@ -21,9 +21,7 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 
 project = "S2WAV"
-copyright = (
-    "2023, Matthew Price, Jason McEwen, Jessica Whitney, Alicja Polanska"
-)
+copyright = "2023, Matthew Price, Jason McEwen, Jessica Whitney, Alicja Polanska"
 author = "Matthew Price, Jason McEwen, Jessica Whitney, Alicja Polanska"
 
 # The short X.Y version

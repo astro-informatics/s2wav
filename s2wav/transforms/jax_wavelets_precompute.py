@@ -1,16 +1,15 @@
-from jax import jit, config
-
-config.update("jax_enable_x64", True)
-
+from jax import jit
 import jax.numpy as jnp
 from s2wav.utils import shapes
 from functools import partial
 from typing import Tuple, List
-from s2fft.precompute_transforms.construct import wigner_kernel, spin_spherical_kernel
+from s2fft.precompute_transforms.construct import (
+    wigner_kernel_jax,
+    spin_spherical_kernel_jax,
+)
 from s2fft.precompute_transforms import wigner, spherical
 
 
-@partial(jit, static_argnums=(0, 1, 2, 3, 4, 5, 6, 7, 8))
 def generate_precomputes(
     L: int,
     N: int,
@@ -21,6 +20,7 @@ def generate_precomputes(
     forward: bool = False,
     reality: bool = False,
     multiresolution: bool = False,
+    nospherical: bool = False,
 ) -> List[jnp.ndarray]:
     r"""Generates a list of precompute arrays associated with the underlying Wigner
     transforms.
@@ -49,6 +49,9 @@ def generate_precomputes(
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
 
+        nospherical (bool, optional): Whether to only compute Wigner precomputes.
+            Defaults to False.
+
     Returns:
         List[jnp.ndarray]: Precomputed recursion arrays for underlying Wigner transforms.
     """
@@ -56,13 +59,18 @@ def generate_precomputes(
     J = shapes.j_max(L, lam)
     for j in range(J_min, J + 1):
         Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
-        precomps.append(
-            wigner_kernel(Lj, Nj, reality, sampling, nside, forward)
-        )
+        precomps.append(wigner_kernel_jax(Lj, Nj, reality, sampling, nside, forward))
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
-    precompute_scaling = spin_spherical_kernel(Ls, 0, reality, sampling, nside, forward)
-    precompute_full = spin_spherical_kernel(L, 0, reality, sampling, nside, not forward)
+    if nospherical:
+        return [], [], precomps
+    precompute_scaling = spin_spherical_kernel_jax(
+        Ls, 0, reality, sampling, nside, forward
+    )
+    precompute_full = spin_spherical_kernel_jax(
+        L, 0, reality, sampling, nside, not forward
+    )
     return precompute_full, precompute_scaling, precomps
+
 
 @partial(jit, static_argnums=(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13))
 def synthesis(
@@ -141,14 +149,18 @@ def synthesis(
     J = shapes.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = jnp.zeros((L, 2 * L - 1), dtype=jnp.complex128)
-    f_scal_lm = spherical.forward_transform_jax(f_scal, precomps[1], Ls, sampling, reality, spin, nside)
+    f_scal_lm = spherical.forward_transform_jax(
+        f_scal, precomps[1], Ls, sampling, reality, spin, nside
+    )
 
     # Sum the all wavelet wigner coefficients for each lmn
     # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
         Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
         spmd_iter = spmd if N == Nj else False
-        temp = wigner.forward_transform_jax(f_wav[j - J_min], precomps[2][j-J_min], Lj, Nj, sampling, reality, nside)
+        temp = wigner.forward_transform_jax(
+            f_wav[j - J_min], precomps[2][j - J_min], Lj, Nj, sampling, reality, nside
+        )
         flm = flm.at[L0j:Lj, L - Lj : L - 1 + Lj].add(
             jnp.einsum(
                 "ln,nlm->lm",
@@ -163,7 +175,10 @@ def synthesis(
     flm = flm.at[:Ls, L - Ls : L - 1 + Ls].add(
         jnp.einsum("lm,l->lm", f_scal_lm, phi, optimize=True)
     )
-    return spherical.inverse_transform_jax(flm, precomps[0], L, sampling, reality, spin, nside)
+    return spherical.inverse_transform_jax(
+        flm, precomps[0], L, sampling, reality, spin, nside
+    )
+
 
 @partial(jit, static_argnums=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12))
 def analysis(
@@ -234,9 +249,7 @@ def analysis(
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
 
     f_wav_lmn = shapes.construct_flmn_jax(L, N, J_min, lam, multiresolution)
-    f_wav = shapes.construct_f_jax(
-        L, N, J_min, lam, sampling, nside, multiresolution
-    )
+    f_wav = shapes.construct_f_jax(L, N, J_min, lam, sampling, nside, multiresolution)
 
     wav_lm = jnp.einsum(
         "jln, l->jln",
@@ -245,7 +258,9 @@ def analysis(
         optimize=True,
     )
 
-    flm = spherical.forward_transform_jax(f, precomps[0], L, sampling, reality, spin, nside)
+    flm = spherical.forward_transform_jax(
+        f, precomps[0], L, sampling, reality, spin, nside
+    )
     # Project all wigner coefficients for each lmn onto wavelet coefficients
     # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
@@ -264,19 +279,28 @@ def analysis(
             )
         )
 
-        f_wav[j-J_min] = wigner.inverse_transform_jax(f_wav_lmn[j - J_min], precomps[2][j - J_min], Lj, Nj, sampling, reality, nside)
+        f_wav[j - J_min] = wigner.inverse_transform_jax(
+            f_wav_lmn[j - J_min],
+            precomps[2][j - J_min],
+            Lj,
+            Nj,
+            sampling,
+            reality,
+            nside,
+        )
 
     # Project all harmonic coefficients for each lm onto scaling coefficients
     phi = filters[1][:Ls] * jnp.sqrt(4 * jnp.pi / (2 * jnp.arange(Ls) + 1))
-    temp = jnp.einsum(
-        "lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi, optimize=True
-    )
+    temp = jnp.einsum("lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi, optimize=True)
     # Handle edge case
     if Ls == 1:
         f_scal = temp * jnp.sqrt(1 / (4 * jnp.pi))
     else:
-        f_scal = spherical.inverse_transform_jax(temp, precomps[1], Ls, sampling, reality, spin, nside)
+        f_scal = spherical.inverse_transform_jax(
+            temp, precomps[1], Ls, sampling, reality, spin, nside
+        )
     return f_wav, f_scal
+
 
 @partial(jit, static_argnums=(1, 2, 3, 4, 5, 6, 7, 8, 9, 11))
 def flm_to_analysis(
@@ -343,16 +367,13 @@ def flm_to_analysis(
         raise ValueError("Must provide precomputed kernels for this transform!")
 
     J = J_max if J_max is not None else shapes.j_max(L, lam)
-    Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
 
     f_wav_lmn = shapes.construct_flmn_jax(L, N, J_min, lam, multiresolution)
-    f_wav = shapes.construct_f_jax(
-        L, N, J_min, lam, sampling, nside, multiresolution
-    )
+    f_wav = shapes.construct_f_jax(L, N, J_min, lam, sampling, nside, multiresolution)
 
     wav_lm = jnp.einsum(
         "jln, l->jln",
-        jnp.conj(filters[0]),
+        jnp.conj(filters),
         8 * jnp.pi**2 / (2 * jnp.arange(L) + 1),
         optimize=True,
     )
@@ -374,6 +395,14 @@ def flm_to_analysis(
             )
         )
 
-        f_wav[j-J_min] = wigner.inverse_transform_jax(f_wav_lmn[j - J_min], precomps[2][j - J_min], Lj, Nj, sampling, reality, nside)
+        f_wav[j - J_min] = wigner.inverse_transform_jax(
+            f_wav_lmn[j - J_min],
+            precomps[2][j - J_min],
+            Lj,
+            Nj,
+            sampling,
+            reality,
+            nside,
+        )
 
     return f_wav

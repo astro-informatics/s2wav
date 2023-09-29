@@ -150,9 +150,7 @@ def test_analysis_looped(
     f_wav_check, f_scal_check = numpy_wavelets.analysis_looped(
         f, L, N, J_min, lam, reality=reality, multiresolution=multiresolution
     )
-    f_wav_check = f_wav_converter(
-        f_wav_check, L, N, J_min, lam, multiresolution
-    )
+    f_wav_check = f_wav_converter(f_wav_check, L, N, J_min, lam, multiresolution)
     np.testing.assert_allclose(f_wav, f_wav_check, atol=1e-14)
     np.testing.assert_allclose(f_scal, f_scal_check.flatten("C"), atol=1e-14)
 
@@ -193,9 +191,7 @@ def test_analysis_vectorised(
         f, L, N, J_min, lam, multiresolution=multiresolution, reality=reality
     )
 
-    f_wav_check = f_wav_converter(
-        f_wav_check, L, N, J_min, lam, multiresolution
-    )
+    f_wav_check = f_wav_converter(f_wav_check, L, N, J_min, lam, multiresolution)
     np.testing.assert_allclose(f_wav, f_wav_check.flatten("C"), atol=1e-14)
     np.testing.assert_allclose(f_scal, f_scal_check.flatten("C"), atol=1e-14)
 
@@ -224,9 +220,7 @@ def test_looped_round_trip(
     nside = int(L / 2)
 
     flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
-    f = base.spherical.inverse(
-        flm, L, reality=reality, sampling=sampling, nside=nside
-    )
+    f = base.spherical.inverse(flm, L, reality=reality, sampling=sampling, nside=nside)
 
     f_wav, f_scal = numpy_wavelets.analysis_looped(
         f,

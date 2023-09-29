@@ -53,8 +53,7 @@ def tiling_direction(L: int, N: int = 1) -> np.ndarray:
         for m in range(-el, el + 1):
             if abs(m) < N and (N + m) % 2:
                 s_elm[el, L - 1 + m] = nu * np.sqrt(
-                    (binomial_coefficient(gamma, ((gamma - m) / 2)))
-                    / (2**gamma)
+                    (binomial_coefficient(gamma, ((gamma - m) / 2))) / (2**gamma)
                 )
             else:
                 s_elm[el, L - 1 + m] = 0.0
@@ -93,9 +92,7 @@ def spin_normalization_vectorised(el: np.ndarray, spin: int = 0) -> float:
     Returns:
         float: Normalization factor for spin-lowered wavelets.
     """
-    factor = np.arange(-abs(spin) + 1, abs(spin) + 1).reshape(
-        1, 2 * abs(spin) + 1
-    )
+    factor = np.arange(-abs(spin) + 1, abs(spin) + 1).reshape(1, 2 * abs(spin) + 1)
     factor = el.reshape(len(el), 1).dot(factor)
     return np.sqrt(np.prod(factor, axis=1) ** (np.sign(spin)))
 
@@ -159,8 +156,6 @@ def spin_normalization_jax(el: np.ndarray, spin: int = 0) -> float:
     Returns:
         float: Normalization factor for spin-lowered wavelets.
     """
-    factor = jnp.arange(-abs(spin) + 1, abs(spin) + 1).reshape(
-        1, 2 * abs(spin) + 1
-    )
+    factor = jnp.arange(-abs(spin) + 1, abs(spin) + 1).reshape(1, 2 * abs(spin) + 1)
     factor = el.reshape(len(el), 1).dot(factor)
     return jnp.sqrt(jnp.prod(factor, axis=1) ** (jnp.sign(spin)))

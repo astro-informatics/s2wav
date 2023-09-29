@@ -52,9 +52,7 @@ def generate_f_wav_scal(
                     flmn[j - J_min][Nj - 1 + n, el, Lj - 1 + m] = (
                         rng.uniform() + 1j * rng.uniform()
                     )
-        f_wav.append(
-            base.wigner.inverse(flmn[j - J_min], Lj, Nj, 0, sampling, reality)
-        )
+        f_wav.append(base.wigner.inverse(flmn[j - J_min], Lj, Nj, 0, sampling, reality))
 
     L_s = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = np.zeros((L_s, 2 * L_s - 1), dtype=np.complex128)

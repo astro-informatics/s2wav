@@ -6,9 +6,7 @@ this_directory = Path(__file__).parent
 
 long_description = (this_directory / ".pip_readme.rst").read_text()
 requirements = (
-    (this_directory / "requirements" / "requirements-core.txt")
-    .read_text()
-    .split("\n")
+    (this_directory / "requirements" / "requirements-core.txt").read_text().split("\n")
 )
 
 

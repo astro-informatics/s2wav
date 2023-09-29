@@ -247,9 +247,7 @@ def analysis(
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
 
     f_wav_lmn = shapes.construct_flmn_jax(L, N, J_min, lam, multiresolution)
-    f_wav = shapes.construct_f_jax(
-        L, N, J_min, lam, sampling, nside, multiresolution
-    )
+    f_wav = shapes.construct_f_jax(L, N, J_min, lam, sampling, nside, multiresolution)
 
     wav_lm = jnp.einsum(
         "jln, l->jln",
@@ -292,9 +290,7 @@ def analysis(
 
     # Project all harmonic coefficients for each lm onto scaling coefficients
     phi = filters[1][:Ls] * jnp.sqrt(4 * jnp.pi / (2 * jnp.arange(Ls) + 1))
-    temp = jnp.einsum(
-        "lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi, optimize=True
-    )
+    temp = jnp.einsum("lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi, optimize=True)
     # Handle edge case
     if Ls == 1:
         f_scal = temp * jnp.sqrt(1 / (4 * jnp.pi))
@@ -365,9 +361,7 @@ def flm_to_analysis(
     J = J_max if J_max is not None else shapes.j_max(L, lam)
 
     f_wav_lmn = shapes.construct_flmn_jax(L, N, J_min, lam, multiresolution)
-    f_wav = shapes.construct_f_jax(
-        L, N, J_min, lam, sampling, nside, multiresolution
-    )
+    f_wav = shapes.construct_f_jax(L, N, J_min, lam, sampling, nside, multiresolution)
 
     wav_lm = jnp.einsum(
         "jln, l->jln",

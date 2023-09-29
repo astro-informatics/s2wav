@@ -37,8 +37,5 @@ def binomial_coefficient_jax(n: int, k: int) -> int:
         (int): Number of possible subsets.
     """
     return jnp.floor(
-        0.5
-        + jnp.exp(
-            jax_gammaln(n + 1) - jax_gammaln(k + 1) - jax_gammaln(n - k + 1)
-        )
+        0.5 + jnp.exp(jax_gammaln(n + 1) - jax_gammaln(k + 1) - jax_gammaln(n - k + 1))
     )

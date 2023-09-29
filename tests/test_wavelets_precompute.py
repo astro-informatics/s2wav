@@ -16,6 +16,7 @@ reality = [False, True]
 multiple_gpus = [False]
 sampling_to_test = ["mw", "mwss", "dh"]
 
+
 @pytest.mark.parametrize("L", L_to_test)
 @pytest.mark.parametrize("N", N_to_test)
 @pytest.mark.parametrize("J_min", J_min_to_test)
@@ -142,10 +143,7 @@ def test_jax_analysis(
         spmd=spmd,
     )
 
-    f_wav_check = f_wav_converter(
-        f_wav_check, L, N, J_min, lam, multiresolution
-    )
+    f_wav_check = f_wav_converter(f_wav_check, L, N, J_min, lam, multiresolution)
 
     np.testing.assert_allclose(f_wav, f_wav_check, atol=1e-14)
     np.testing.assert_allclose(f_scal, f_scal_check.flatten("C"), atol=1e-14)
-

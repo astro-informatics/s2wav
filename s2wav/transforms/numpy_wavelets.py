@@ -55,9 +55,7 @@ def synthesis_looped(
     J = shapes.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
-    f_scal_lm = base.spherical.forward(
-        f_scal, Ls, spin, sampling, nside, reality
-    )
+    f_scal_lm = base.spherical.forward(f_scal, Ls, spin, sampling, nside, reality)
 
     # Generate the directional wavelet kernels
     wav_lm, scal_l = filters.filters_directional(L, N, J_min, lam, spin, spin0)
@@ -141,9 +139,7 @@ def synthesis(
     J = shapes.j_max(L, lam)
     Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
-    f_scal_lm = base.spherical.forward(
-        f_scal, Ls, spin, sampling, nside, reality
-    )
+    f_scal_lm = base.spherical.forward(f_scal, Ls, spin, sampling, nside, reality)
 
     # Generate the directional wavelet kernels
     wav_lm, scal_l = filters.filters_directional_vectorised(
@@ -235,19 +231,15 @@ def analysis_looped(
                 psi = np.conj(wav_lm[j, el, L - 1 + n])
                 psi *= 8 * np.pi**2 / (2 * el + 1)
 
-                f_wav_lmn[j - J_min][Nj - 1 + n, el, Lj - 1] = (
-                    flm[el, L - 1 + 0] * psi
-                )
+                f_wav_lmn[j - J_min][Nj - 1 + n, el, Lj - 1] = flm[el, L - 1 + 0] * psi
                 for m in range(1, el + 1):
                     f_wav_lmn[j - J_min][Nj - 1 + n, el, Lj - 1 + m] = (
                         flm[el, L - 1 + m] * psi
                     )
                     if reality:
-                        f_wav_lmn[j - J_min][Nj - 1 - n, el, Lj - 1 - m] = (
-                            -1
-                        ) ** (m + n) * np.conj(
-                            f_wav_lmn[j - J_min][Nj - 1 + n, el, Lj - 1 + m]
-                        )
+                        f_wav_lmn[j - J_min][Nj - 1 - n, el, Lj - 1 - m] = (-1) ** (
+                            m + n
+                        ) * np.conj(f_wav_lmn[j - J_min][Nj - 1 + n, el, Lj - 1 + m])
                     else:
                         f_wav_lmn[j - J_min][Nj - 1 + n, el, Lj - 1 - m] = (
                             flm[el, L - 1 - m] * psi
@@ -267,18 +259,14 @@ def analysis_looped(
             else:
                 f_scal_lm[el, Ls - 1 - m] = flm[el, L - 1 - m] * phi
 
-    f_wav = shapes.construct_f(
-        L, N, J_min, lam, sampling, nside, multiresolution
-    )
+    f_wav = shapes.construct_f(L, N, J_min, lam, sampling, nside, multiresolution)
     for j in range(J_min, J + 1):
         Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
         f_wav[j - J_min] = base.wigner.inverse(
             f_wav_lmn[j - J_min], Lj, Nj, L0j, sampling, reality, nside
         )
 
-    f_scal = base.spherical.inverse(
-        f_scal_lm, Ls, spin, sampling, nside, reality, 0
-    )
+    f_scal = base.spherical.inverse(f_scal_lm, Ls, spin, sampling, nside, reality, 0)
     return f_wav, f_scal
 
 
@@ -370,6 +358,4 @@ def analysis(
     phi = scal_l[:Ls] * np.sqrt(4 * np.pi / (2 * np.arange(Ls) + 1))
     f_scal_lm = np.einsum("lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi)
 
-    return f_wav, base.spherical.inverse(
-        f_scal_lm, Ls, spin, sampling, nside, reality
-    )
+    return f_wav, base.spherical.inverse(f_scal_lm, Ls, spin, sampling, nside, reality)
