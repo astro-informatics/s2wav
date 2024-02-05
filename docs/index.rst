@@ -61,12 +61,12 @@ A BibTeX entry for ``S2WAV`` is:
 
 .. code-block:: 
 
-     @article{price:s2wav, 
-        AUTHOR = {Author names},
-         TITLE = {"TBA"},
-        EPRINT = {arXiv:0000.00000},
-          YEAR = {2023}
-     }
+    @article{price:s2wav, 
+        author      = "Matthew A. Price and Alicja Polanska and Jessica Whitney and Jason D. McEwen",
+        title       = "Differentiable and accelerated directional wavelet transform on the sphere and ball",
+        year        = "2024",
+        eprint      = "arXiv:2402.01282"        
+    }
 
 License |:memo:|
 -----------------

@@ -1,7 +1,7 @@
 [![image](https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml)
 [![image](https://codecov.io/gh/astro-informatics/s2wav/branch/main/graph/badge.svg?token=ZES6J4K3KZ)](https://codecov.io/gh/astro-informatics/s2wav)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![image](http://img.shields.io/badge/arXiv-xxxx.xxxxx-orange.svg?style=flat)](https://arxiv.org/abs/xxxx.xxxxx) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![image](http://img.shields.io/badge/arXiv-2402.01282-orange.svg?style=flat)](https://arxiv.org/abs/2402.01282) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-) <!-- ALL-CONTRIBUTORS-BADGE:END --> 
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/15E64EAQ7TIp2a3cCoXtnNgf7Ud9MYjVq?usp=sharing)
@@ -98,16 +98,16 @@ A BibTeX entry for `S2WAV` is:
 
 ``` 
 @article{price:s2wav, 
-   AUTHOR = {Author names},
-    TITLE = {"TBA"},
-   EPRINT = {arXiv:0000.00000},
-     YEAR = {2023}
+   author = {Matthew A. Price and Alicja Polanska and Jessica Whitney and Jason D. McEwen},
+    title = {"Differentiable and accelerated directional wavelet transform on the sphere and ball"},
+   eprint = {arXiv:2402.01282},
+     year = {2024}
 }
 ```
 
 ## License :memo:
 
-Copyright 2023 Matthew Price, Jessica Whtiney, Alicja Polanska, Jason
+Copyright 2024 Matthew Price, Jessica Whtiney, Alicja Polanska, Jason
 McEwen and contributors.
 
 `S2WAV` is free software made available under the MIT License. For
