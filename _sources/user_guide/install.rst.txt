@@ -1,25 +1,23 @@
+:html_theme.sidebar_secondary.remove:
+
 .. _install:
 
 Installation
-============
-Link to `PyPi <https://pypi.org>`_ and provide link for source install.
+=========================
+There are two primary ways to install ``S2WAV``. One can either build the project from 
+the most recent GitHub source, which comes with the added benefit of being able to 
+locally execute the unit testing. Alternately, one may simply install the package directly 
+from PyPi, an online python package manager.
 
 Quick install (PyPi)
 --------------------
-Install ``S2WAV`` from PyPi with a single command
+The simplest way to pick up ``S2WAV`` is to install it directly from PyPi by running 
 
 .. code-block:: bash
+    
+    pip install s2wav 
 
-    pip install s2wav
-
-Check that the package has installed by running 
-
-.. code-block:: bash 
-
-	pip list 
-
-and locate ``S2WAV``.
-
+after which ``S2WAV`` may be imported and run as outlined in the associated notebooks and collab tutorials.
 
 Install from source (GitHub)
 ----------------------------
@@ -28,26 +26,42 @@ When installing from source we recommend working within an existing conda enviro
 
 .. code-block:: bash
 
-    conda create -n s2wav_env python>=3.8
-    conda activate s2wav_env
+    conda create -n "env_name" python>=3.9
+    conda activate "env_name"
 
-Once within a fresh environment ``S2WAV`` may be installed by cloning the GitHub repository
+Once within a fresh environment ``S2WAV`` may be installed by cloning the GitHub repository 
+and pip installing locally
 
 .. code-block:: bash
 
     git clone https://github.com/astro-informatics/s2wav
     cd s2wav
+    pip install .
 
-and running the install script, within the root directory, with one command 
+from the root directory of the repository. Unit tests can then be executed to ensure the 
+installation was successful by running 
 
-.. code-block:: bash
+.. code-block:: bash 
 
-    bash build_s2wav.sh
+    pytest tests/ 
 
-To check the install has worked correctly run the unit tests with 
+Installing JAX for NVIDIA GPUs
+------------------------------
+We include both ``jax`` and ``jaxlib`` as dependencies in ``requirements/requirements-core.txt`` 
+however to get things running on GPUs can be a bit more involved. We strongly recommend 
+this installation `guide <https://github.com/google/jax#installation>`_ provided by 
+Google. To summarise you will first need to install NVIDIA drivers for 
+`CUDA <https://developer.nvidia.com/cuda-downloads>`_ and `CuDNN <https://developer.nvidia.com/CUDNN>`_, 
+following which a pre-built CUDA-compatible wheels shoulld be installed by running 
 
-.. code-block:: bash
+.. code-block:: bash 
 
-	pytest --black tests/ 
+    pip install --upgrade pip 
 
-.. note:: For installing from source a conda environment is required by the installation bash script, which is recommended, due to a pandoc dependency.
+    # Wheels only built for linux
+    pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+
+    # Wheels built for many machine architectures 
+    pip install "jax[cuda11_cudnn86]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+
+where the versions of CUDA and CuDNN should match those you have installed on the machine.
