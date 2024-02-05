@@ -22,11 +22,10 @@ properties, and has been successfully adopted for various applications e.g.
 scattering transforms on the sphere `McEwen et al 2022 <https://arxiv.org/pdf/2102.02828.pdf>`_. 
 The wavelet dictionary is constructed by tiling the harmonic line with infinitely 
 differentiable Cauchy-Schwartz functions, which can straightforwardly be performed 
-in an efficient multiresolution manner, as in the Euclidean case. For example the 
-directional wavelet decomposition of a topographic map of the Earth can be seen 
-below
+in an efficient multiresolution manner, as in the Euclidean case. This is what the directional 
+wavelet filters look like in pixel space.
 
-.. image:: ./assets/figures/wavelet_decomposition.png
+.. image:: ./assets/figures/spherical_wavelets.png
    :width: 700
    :align: center
 
