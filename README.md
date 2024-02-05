@@ -8,7 +8,7 @@
 
 <img align="left" height="85" width="98" src="./docs/assets/sax_logo.png">
 
-# Differentiable and accelerated spherical wavelets with JAX
+# Differentiable and accelerated wavelet transform on the sphere
 
 `S2WAV` is a JAX package for computing wavelet transforms on the sphere
 and rotation group. It leverages autodiff to provide differentiable
