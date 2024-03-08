@@ -1,14 +1,12 @@
-from jax import jit, config
-
-config.update("jax_enable_x64", True)
-
+from jax import jit
 import jax.numpy as jnp
 import numpy as np
 import math
 from functools import partial
 from typing import Tuple
 from s2fft.sampling import s2_samples, so3_samples
-
+from scipy.special import loggamma
+from jax.scipy.special import gammaln as jax_gammaln
 
 def f_scal(
     L: int,
@@ -589,3 +587,34 @@ def wavelet_shape_check(
         assert f_w[j - J_min].shape == f_wav_j(
             L, j, N, lam, sampling, nside, multiresolution
         )
+
+def binomial_coefficient(n: int, k: int) -> int:
+    r"""Computes the binomial coefficient :math:`\binom{n}{k}`.
+
+    Args:
+        n (int): Number of elements to choose from.
+
+        k (int): Number of elements to pick.
+
+    Returns:
+        (int): Number of possible subsets.
+    """
+    return np.floor(
+        0.5 + np.exp(loggamma(n + 1) - loggamma(k + 1) - loggamma(n - k + 1))
+    )
+
+
+def binomial_coefficient_jax(n: int, k: int) -> int:
+    r"""Computes the binomial coefficient :math:`\binom{n}{k}`.
+
+    Args:
+        n (int): Number of elements to choose from.
+
+        k (int): Number of elements to pick.
+
+    Returns:
+        (int): Number of possible subsets.
+    """
+    return jnp.floor(
+        0.5 + jnp.exp(jax_gammaln(n + 1) - jax_gammaln(k + 1) - jax_gammaln(n - k + 1))
+    )

@@ -1,8 +1,7 @@
 import numpy as np
 from typing import Tuple
-from s2wav.utils import shapes
-from s2wav.filter_factory import filters
 from s2fft import base_transforms as base
+from s2wav import samples, filters
 
 
 def synthesis_looped(
@@ -49,11 +48,11 @@ def synthesis_looped(
         [2] J. McEwen et. al., "Directional spin wavelets on the sphere", arXiv preprint arXiv:1509.06749 (2015).
     """
 
-    shapes.wavelet_shape_check(
+    samples.wavelet_shape_check(
         f_wav, f_scal, L, N, J_min, lam, sampling, nside, multiresolution
     )
-    J = shapes.j_max(L, lam)
-    Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
+    J = samples.j_max(L, lam)
+    Ls = samples.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
     f_scal_lm = base.spherical.forward(f_scal, Ls, spin, sampling, nside, reality)
 
@@ -63,7 +62,7 @@ def synthesis_looped(
     # Sum the all wavelet wigner coefficients for each lmn
     # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
-        Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
+        Lj, Nj, L0j = samples.LN_j(L, j, N, lam, multiresolution)
         temp = base.wigner.forward(
             f_wav[j - J_min], Lj, Nj, L0j, sampling, reality, nside
         )
@@ -132,12 +131,12 @@ def synthesis(
         [2] J. McEwen et. al., "Directional spin wavelets on the sphere", arXiv preprint arXiv:1509.06749 (2015).
     """
 
-    shapes.wavelet_shape_check(
+    samples.wavelet_shape_check(
         f_wav, f_scal, L, N, J_min, lam, sampling, nside, multiresolution
     )
 
-    J = shapes.j_max(L, lam)
-    Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
+    J = samples.j_max(L, lam)
+    Ls = samples.scal_bandlimit(L, J_min, lam, multiresolution)
     flm = np.zeros((L, 2 * L - 1), dtype=np.complex128)
     f_scal_lm = base.spherical.forward(f_scal, Ls, spin, sampling, nside, reality)
 
@@ -149,7 +148,7 @@ def synthesis(
     # Sum the all wavelet wigner coefficients for each lmn
     # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
-        Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
+        Lj, Nj, L0j = samples.LN_j(L, j, N, lam, multiresolution)
         temp = base.wigner.forward(
             f_wav[j - J_min], Lj, Nj, L0j, sampling, reality, nside
         )
@@ -215,17 +214,17 @@ def analysis_looped(
         f_scal (np.ndarray): Array of scaling pixel-space coefficients
             with shape :math:`[n_{\theta}, n_{\phi}]`.
     """
-    J = shapes.j_max(L, lam)
-    Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
+    J = samples.j_max(L, lam)
+    Ls = samples.scal_bandlimit(L, J_min, lam, multiresolution)
 
-    f_scal_lm = shapes.construct_flm(L, J_min, lam, multiresolution)
-    f_wav_lmn = shapes.construct_flmn(L, N, J_min, lam, multiresolution)
+    f_scal_lm = samples.construct_flm(L, J_min, lam, multiresolution)
+    f_wav_lmn = samples.construct_flmn(L, N, J_min, lam, multiresolution)
     wav_lm, scal_l = filters.filters_directional(L, N, J_min, lam, spin, spin0)
 
     flm = base.spherical.forward(f, L, spin, sampling, nside, reality)
 
     for j in range(J_min, J + 1):
-        Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
+        Lj, Nj, L0j = samples.LN_j(L, j, N, lam, multiresolution)
         for n in range(-Nj + 1, Nj, 2):
             for el in range(max(abs(spin), abs(n), L0j), Lj):
                 psi = np.conj(wav_lm[j, el, L - 1 + n])
@@ -259,9 +258,9 @@ def analysis_looped(
             else:
                 f_scal_lm[el, Ls - 1 - m] = flm[el, L - 1 - m] * phi
 
-    f_wav = shapes.construct_f(L, N, J_min, lam, sampling, nside, multiresolution)
+    f_wav = samples.construct_f(L, N, J_min, lam, sampling, nside, multiresolution)
     for j in range(J_min, J + 1):
-        Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
+        Lj, Nj, L0j = samples.LN_j(L, j, N, lam, multiresolution)
         f_wav[j - J_min] = base.wigner.inverse(
             f_wav_lmn[j - J_min], Lj, Nj, L0j, sampling, reality, nside
         )
@@ -323,12 +322,12 @@ def analysis(
         f_scal (np.ndarray): Array of scaling pixel-space coefficients
             with shape :math:`[n_{\theta}, n_{\phi}]`.
     """
-    J = shapes.j_max(L, lam)
-    Ls = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
+    J = samples.j_max(L, lam)
+    Ls = samples.scal_bandlimit(L, J_min, lam, multiresolution)
 
-    f_scal_lm = shapes.construct_flm(L, J_min, lam, multiresolution)
-    f_wav_lmn = shapes.construct_flmn(L, N, J_min, lam, multiresolution)
-    f_wav = shapes.construct_f(L, N, J_min, lam, sampling, multiresolution)
+    f_scal_lm = samples.construct_flm(L, J_min, lam, multiresolution)
+    f_wav_lmn = samples.construct_flmn(L, N, J_min, lam, multiresolution)
+    f_wav = samples.construct_f(L, N, J_min, lam, sampling, multiresolution)
 
     # Generate the directional wavelet kernels
     wav_lm, scal_l = filters.filters_directional_vectorised(
@@ -342,7 +341,7 @@ def analysis(
     # Project all wigner coefficients for each lmn onto wavelet coefficients
     # Note that almost the entire compute is concentrated at the highest J
     for j in range(J_min, J + 1):
-        Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
+        Lj, Nj, L0j = samples.LN_j(L, j, N, lam, multiresolution)
         f_wav_lmn[j - J_min][::2, L0j:] = np.einsum(
             "lm,ln->nlm",
             flm[L0j:Lj, L - Lj : L - 1 + Lj],

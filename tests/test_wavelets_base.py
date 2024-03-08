@@ -1,11 +1,9 @@
 import pytest
 import numpy as np
 import pys2let as s2let
-
-from s2wav.transforms import numpy_wavelets
-from s2wav.utils import shapes
-from s2fft import base_transforms as base
-
+from s2fft import base_transforms as sht_base
+from s2wav.transforms import base as wav_base
+from s2wav import samples
 
 L_to_test = [8]
 N_to_test = [2, 3]
@@ -31,7 +29,7 @@ def test_synthesis_looped(
     multiresolution: bool,
     reality: bool,
 ):
-    J = shapes.j_max(L, lam)
+    J = samples.j_max(L, lam)
     if J_min >= J:
         pytest.skip("J_min larger than J which isn't a valid test case.")
 
@@ -55,7 +53,7 @@ def test_synthesis_looped(
         upsample=not multiresolution,
     )
 
-    f_check = numpy_wavelets.synthesis_looped(
+    f_check = wav_base.synthesis_looped(
         f_wav, f_scal, L, N, J_min, lam, multiresolution=multiresolution
     )
 
@@ -77,7 +75,7 @@ def test_synthesis_vectorised(
     multiresolution: bool,
     reality: bool,
 ):
-    J = shapes.j_max(L, lam)
+    J = samples.j_max(L, lam)
     if J_min >= J:
         pytest.skip("J_min larger than J which isn't a valid test case.")
 
@@ -101,7 +99,7 @@ def test_synthesis_vectorised(
         upsample=not multiresolution,
     )
 
-    f_check = numpy_wavelets.synthesis(
+    f_check = wav_base.synthesis(
         f_wav,
         f_scal,
         L,
@@ -131,12 +129,12 @@ def test_analysis_looped(
     multiresolution: bool,
     reality: bool,
 ):
-    J = shapes.j_max(L, lam)
+    J = samples.j_max(L, lam)
     if J_min >= J:
         pytest.skip("J_min larger than J which isn't a valid test case.")
 
     flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
-    f = base.spherical.inverse(flm, L, reality=reality)
+    f = sht_base.spherical.inverse(flm, L, reality=reality)
 
     f_wav, f_scal = s2let.analysis_px2wav(
         f.flatten("C").astype(np.complex128),
@@ -147,7 +145,7 @@ def test_analysis_looped(
         spin=0,
         upsample=not multiresolution,
     )
-    f_wav_check, f_scal_check = numpy_wavelets.analysis_looped(
+    f_wav_check, f_scal_check = wav_base.analysis_looped(
         f, L, N, J_min, lam, reality=reality, multiresolution=multiresolution
     )
     f_wav_check = f_wav_converter(f_wav_check, L, N, J_min, lam, multiresolution)
@@ -171,12 +169,12 @@ def test_analysis_vectorised(
     multiresolution: bool,
     reality: bool,
 ):
-    J = shapes.j_max(L, lam)
+    J = samples.j_max(L, lam)
     if J_min >= J:
         pytest.skip("J_min larger than J which isn't a valid test case.")
 
     flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
-    f = base.spherical.inverse(flm, L, reality=reality)
+    f = sht_base.spherical.inverse(flm, L, reality=reality)
 
     f_wav, f_scal = s2let.analysis_px2wav(
         f.flatten("C").astype(np.complex128),
@@ -187,7 +185,7 @@ def test_analysis_vectorised(
         spin=0,
         upsample=not multiresolution,
     )
-    f_wav_check, f_scal_check = numpy_wavelets.analysis(
+    f_wav_check, f_scal_check = wav_base.analysis(
         f, L, N, J_min, lam, multiresolution=multiresolution, reality=reality
     )
 
@@ -213,16 +211,16 @@ def test_looped_round_trip(
     reality: bool,
     sampling: str,
 ):
-    J = shapes.j_max(L, lam)
+    J = samples.j_max(L, lam)
     if J_min >= J:
         pytest.skip("J_min larger than J which isn't a valid test case.")
 
     nside = int(L / 2)
 
     flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
-    f = base.spherical.inverse(flm, L, reality=reality, sampling=sampling, nside=nside)
+    f = sht_base.spherical.inverse(flm, L, reality=reality, sampling=sampling, nside=nside)
 
-    f_wav, f_scal = numpy_wavelets.analysis_looped(
+    f_wav, f_scal = wav_base.analysis_looped(
         f,
         L,
         N,
@@ -234,7 +232,7 @@ def test_looped_round_trip(
         nside=nside,
     )
 
-    f_check = numpy_wavelets.synthesis_looped(
+    f_check = wav_base.synthesis_looped(
         f_wav,
         f_scal,
         L,
@@ -266,14 +264,14 @@ def test_vectorised_round_trip(
     reality: bool,
     sampling: str,
 ):
-    J = shapes.j_max(L, lam)
+    J = samples.j_max(L, lam)
     if J_min >= J:
         pytest.skip("J_min larger than J which isn't a valid test case.")
 
     flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
-    f = base.spherical.inverse(flm, L, reality=reality, sampling=sampling)
+    f = sht_base.spherical.inverse(flm, L, reality=reality, sampling=sampling)
 
-    f_wav, f_scal = numpy_wavelets.analysis(
+    f_wav, f_scal = wav_base.analysis(
         f,
         L,
         N,
@@ -284,7 +282,7 @@ def test_vectorised_round_trip(
         sampling=sampling,
     )
 
-    f_check = numpy_wavelets.synthesis(
+    f_check = wav_base.synthesis(
         f_wav,
         f_scal,
         L,
