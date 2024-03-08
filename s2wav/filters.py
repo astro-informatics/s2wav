@@ -1,5 +1,6 @@
 from jax import jit
 import jax.numpy as jnp
+import torch
 import numpy as np
 from typing import Tuple
 from functools import partial
@@ -9,26 +10,26 @@ from s2wav import samples
 def filters_axisym(
     L: int, J_min: int = 0, lam: float = 2.0
 ) -> Tuple[np.ndarray, np.ndarray]:
-    r"""Computes wavelet kernels :math:`\Psi^j_{\ell m}` and scaling kernel 
+    r"""Computes wavelet kernels :math:`\Psi^j_{\ell m}` and scaling kernel
         :math:`\Phi_{\ell m}` in harmonic space.
 
-    Specifically, these kernels are derived in `[1] <https://arxiv.org/pdf/1211.1680.pdf>`_, 
+    Specifically, these kernels are derived in `[1] <https://arxiv.org/pdf/1211.1680.pdf>`_,
     where the wavelet kernels are defined (15) for scale :math:`j` to be
 
     .. math::
 
         \Psi^j_{\ell m} \equiv \sqrt{\frac{2\ell+1}{4\pi}} \kappa_{\lambda}(\frac{\ell}{\lambda^j})\delta_{m0},
 
-    where :math:`\kappa_{\lambda} = \sqrt{k_{\lambda}(t/\lambda) - k_{\lambda}(t)}` for :math:`k_{\lambda}` 
+    where :math:`\kappa_{\lambda} = \sqrt{k_{\lambda}(t/\lambda) - k_{\lambda}(t)}` for :math:`k_{\lambda}`
     given in :func:`~k_lam`. Similarly, the scaling kernel is defined (16) as
 
     .. math::
 
         \Phi_{\ell m} \equiv \sqrt{\frac{2\ell+1}{4\pi}} \nu_{\lambda} (\frac{\ell}{\lambda^{J_0}})\delta_{m0},
 
-    where :math:`\nu_{\lambda} = \sqrt{k_{\lambda}(t)}` for :math:`k_{\lambda}` given in :func:`~k_lam`. 
-    Notice that :math:`\delta_{m0}` enforces that these kernels are axisymmetric, i.e. coefficients 
-    for :math:`m \not = \ell` are zero. In this implementation the normalisation constant has been 
+    where :math:`\nu_{\lambda} = \sqrt{k_{\lambda}(t)}` for :math:`k_{\lambda}` given in :func:`~k_lam`.
+    Notice that :math:`\delta_{m0}` enforces that these kernels are axisymmetric, i.e. coefficients
+    for :math:`m \not = \ell` are zero. In this implementation the normalisation constant has been
     omitted as it is nulled in subsequent functions.
 
     Args:
@@ -36,16 +37,16 @@ def filters_axisym(
 
         J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
 
-        lam (float, optional): Wavelet parameter which determines the scale factor between 
-            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic 
+        lam (float, optional): Wavelet parameter which determines the scale factor between
+            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
     Raises:
         ValueError: J_min is negative or greater than J.
 
     Returns:
-        Tuple[np.ndarray, np.ndarray]: Unnormalised wavelet kernels :math:`\Psi^j_{\ell m}` 
-        with shape :math:`[(J+1)L]`, and scaling kernel :math:`\Phi_{\el m}` with shape 
+        Tuple[np.ndarray, np.ndarray]: Unnormalised wavelet kernels :math:`\Psi^j_{\ell m}`
+        with shape :math:`[(J+1)L]`, and scaling kernel :math:`\Phi_{\el m}` with shape
         :math:`[L]` in harmonic space.
 
     Note:
@@ -87,10 +88,11 @@ def filters_directional(
     lam: float = 2.0,
     spin: int = 0,
     spin0: int = 0,
+    using_torch: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
     r"""Generates the harmonic coefficients for the directional tiling wavelets.
 
-    This implementation is based on equation 36 in the wavelet computation paper 
+    This implementation is based on equation 36 in the wavelet computation paper
     `[1] <https://arxiv.org/pdf/1509.06749.pdf>`_.
 
     Args:
@@ -100,16 +102,18 @@ def filters_directional(
 
         J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
 
-        lam (float, optional): Wavelet parameter which determines the scale factor between 
-            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic 
+        lam (float, optional): Wavelet parameter which determines the scale factor between
+            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
         spin (int, optional): Spin (integer) to perform the transform. Defaults to 0.
 
         spin0 (int, optional): Spin number the wavelet was lowered from. Defaults to 0.
 
+        using_torch (bool, optional): Desired frontend functionality. Defaults to False.
+
     Returns:
-        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels 
+        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels
             (:math:`\Psi^j_{\ell n}`, :math:`\Phi_{\ell m}`)
 
     Notes:
@@ -144,6 +148,9 @@ def filters_directional(
                             psi[j, el, L - 1 + m] *= (
                                 spin_normalization(el, spin0) * (-1) ** spin0
                             )
+    if using_torch:
+        psi = torch.from_numpy(psi)
+        phi = torch.from_numpy(phi)
 
     return psi, phi
 
@@ -192,6 +199,7 @@ def filters_directional_vectorised(
     lam: float = 2.0,
     spin: int = 0,
     spin0: int = 0,
+    using_torch: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
     r"""Vectorised version of :func:`~filters_directional`.
 
@@ -210,8 +218,10 @@ def filters_directional_vectorised(
 
         spin0 (int, optional): Spin number the wavelet was lowered from. Defaults to 0.
 
+        using_torch (bool, optional): Desired frontend functionality. Defaults to False.
+
     Returns:
-        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels 
+        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels
             (:math:`\Psi^j_{\ell n}`, :math:`\Phi_{\ell m}`).
     """
     el_min = max(abs(spin), abs(spin0))
@@ -234,6 +244,11 @@ def filters_directional_vectorised(
 
     kappa0[:el_min] = 0
     kappa[:, :el_min, :] = 0
+
+    if using_torch:
+        kappa0 = torch.from_numpy(kappa0)
+        kappa = torch.from_numpy(kappa)
+
     return kappa, kappa0
 
 
@@ -302,15 +317,13 @@ def filters_directional_jax(
         spin0 (int, optional): Spin number the wavelet was lowered from. Defaults to 0.
 
     Returns:
-        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels 
+        Tuple[np.ndarray, np.ndarray]: Tuple of wavelet and scaling kernels
             (:math:`\Psi^j_{\ell n}`, :math:`\Phi_{\ell m}`).
     """
     el_min = max(abs(spin), abs(spin0))
 
     spin_norms = (
-        (-1) ** spin0 * spin_normalization_jax(np.arange(L), spin0)
-        if spin0 != 0
-        else 1
+        (-1) ** spin0 * spin_normalization_jax(np.arange(L), spin0) if spin0 != 0 else 1
     )
 
     kappa, kappa0 = filters_axisym_jax(L, J_min, lam)
@@ -331,6 +344,7 @@ def filters_directional_jax(
     kappa = kappa.at[:, :el_min, :].set(0)
 
     return kappa, kappa0
+
 
 def tiling_integrand(t: float, lam: float = 2.0) -> float:
     r"""Tiling integrand for scale-discretised wavelets `[1] <https://arxiv.org/pdf/1211.1680.pdf>`_.
@@ -463,7 +477,7 @@ def k_lam(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
 
 @partial(jit, static_argnums=(2, 3))  # not sure
 def part_scaling_fn_jax(a: float, b: float, n: int, lam: float = 2.0) -> float:
-    r"""JAX version of part_scaling_fn. Computes integral used to calculate smoothly 
+    r"""JAX version of part_scaling_fn. Computes integral used to calculate smoothly
         decreasing function :math:`k_{\lambda}`.
 
     Intermediate step used to compute the wavelet and scaling function generating
@@ -503,7 +517,7 @@ def part_scaling_fn_jax(a: float, b: float, n: int, lam: float = 2.0) -> float:
 
 @partial(jit, static_argnums=(0, 1, 2))
 def k_lam_jax(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
-    r"""JAX version of k_lam. Compute function :math:`k_{\lambda}` used as a wavelet 
+    r"""JAX version of k_lam. Compute function :math:`k_{\lambda}` used as a wavelet
         generating function.
 
     Specifically, this function is derived in [1] and is given by
@@ -561,6 +575,7 @@ def k_lam_jax(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
 
     return k
 
+
 def tiling_direction(L: int, N: int = 1) -> np.ndarray:
     r"""Generates the harmonic coefficients for the directionality component of the
         tiling functions.
@@ -603,7 +618,8 @@ def tiling_direction(L: int, N: int = 1) -> np.ndarray:
         for m in range(-el, el + 1):
             if abs(m) < N and (N + m) % 2:
                 s_elm[el, L - 1 + m] = nu * np.sqrt(
-                    (samples.binomial_coefficient(gamma, ((gamma - m) / 2))) / (2**gamma)
+                    (samples.binomial_coefficient(gamma, ((gamma - m) / 2)))
+                    / (2**gamma)
                 )
             else:
                 s_elm[el, L - 1 + m] = 0.0
@@ -649,7 +665,7 @@ def spin_normalization_vectorised(el: np.ndarray, spin: int = 0) -> float:
 
 @partial(jit, static_argnums=(0, 1))
 def tiling_direction_jax(L: int, N: int = 1) -> np.ndarray:
-    r"""JAX version of tiling_direction. Generates the harmonic coefficients for the 
+    r"""JAX version of tiling_direction. Generates the harmonic coefficients for the
         directionality component of the tiling functions.
 
     Formally, this function implements the follow equation

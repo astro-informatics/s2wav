@@ -16,7 +16,7 @@ def synthesis_looped(
     sampling: str = "mw",
     nside: int = None,
     reality: bool = False,
-    multiresolution: bool = False,
+    multiresolution: bool = True,
 ) -> np.ndarray:
     r"""Computes the synthesis directional wavelet transform [1,2].
     Specifically, this transform synthesises the signal :math:`_{s}f(\omega) \in \mathbb{S}^2` by summing the contributions from wavelet and scaling coefficients in harmonic space, see equation 27 from `[2] <https://arxiv.org/pdf/1509.06749.pdf>`_.
@@ -38,7 +38,7 @@ def synthesis_looped(
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
             conjugate symmetry of harmonic coefficients. Defaults to False.
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
-            resolution or its own resolution. Defaults to False.
+            resolution or its own resolution. Defaults to True.
     Raises:
         AssertionError: Shape of wavelet/scaling coefficients incorrect.
     Returns:
@@ -99,7 +99,7 @@ def synthesis(
     sampling: str = "mw",
     nside: int = None,
     reality: bool = False,
-    multiresolution: bool = False,
+    multiresolution: bool = True,
 ) -> np.ndarray:
     r"""Computes the synthesis directional wavelet transform [1,2].
     Specifically, this transform synthesises the signal :math:`_{s}f(\omega) \in \mathbb{S}^2` by summing the contributions from wavelet and scaling coefficients in harmonic space, see equation 27 from `[2] <https://arxiv.org/pdf/1509.06749.pdf>`_.
@@ -121,7 +121,7 @@ def synthesis(
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
             conjugate symmetry of harmonic coefficients. Defaults to False.
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
-            resolution or its own resolution. Defaults to False.
+            resolution or its own resolution. Defaults to True.
     Raises:
         AssertionError: Shape of wavelet/scaling coefficients incorrect.
     Returns:
@@ -176,36 +176,26 @@ def analysis_looped(
     sampling: str = "mw",
     nside: int = None,
     reality: bool = False,
-    multiresolution: bool = False,
+    multiresolution: bool = True,
 ) -> Tuple[np.ndarray, np.ndarray]:
     r"""Wavelet analysis from pixel space to wavelet space for complex signals.
 
     Args:
         f (np.ndarray): Signal :math:`f` on the sphere with shape :math:`[n_{\theta}, n_{\phi}]`.
-
         L (int): Harmonic bandlimit.
-
         N (int, optional): Upper azimuthal band-limit. Defaults to 1.
-
         J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
-
         lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
             Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
-
         spin (int, optional): Spin (integer) of input signal. Defaults to 0.
-
         spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
-
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}. Defaults to "mw".
-
         nside (int, optional): HEALPix Nside resolution parameter.  Only required if sampling="healpix".  Defaults
             to None.
-
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
             conjugate symmetry of harmonic coefficients. Defaults to False.
-
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
-            resolution or its own resolution. Defaults to False.
+            resolution or its own resolution. Defaults to True.
 
     Returns:
         f_wav (np.ndarray): Array of wavelet pixel-space coefficients
@@ -280,38 +270,27 @@ def analysis(
     sampling: str = "mw",
     nside: int = None,
     reality: bool = False,
-    multiresolution: bool = False,
+    multiresolution: bool = True,
     scattering: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
     r"""Wavelet analysis from pixel space to wavelet space for complex signals.
 
     Args:
         f (np.ndarray): Signal :math:`f` on the sphere with shape :math:`[n_{\theta}, n_{\phi}]`.
-
         L (int): Harmonic bandlimit.
-
         N (int, optional): Upper azimuthal band-limit. Defaults to 1.
-
         J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
-
         lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
             Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
-
         spin (int, optional): Spin (integer) of input signal. Defaults to 0.
-
         spin0 (int, optional): Spin (integer) of output signal. Defaults to 0.
-
         sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}. Defaults to "mw".
-
         nside (int, optional): HEALPix Nside resolution parameter.  Only required if sampling="healpix".  Defaults
             to None.
-
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
             conjugate symmetry of harmonic coefficients. Defaults to False.
-
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
-            resolution or its own resolution. Defaults to False.
-
+            resolution or its own resolution. Defaults to True.
         scattering (bool, optional): If using for scattering transform return absolute value
             of scattering coefficients.
 

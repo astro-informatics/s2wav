@@ -2,6 +2,7 @@
 from functools import partial
 from typing import Tuple
 import numpy as np
+import torch
 import pytest
 import s2fft
 from s2fft import base_transforms as base
@@ -38,9 +39,12 @@ def generate_f_wav_scal(
     lam: float,
     sampling: str = "mw",
     reality: bool = False,
+    using_torch: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     J = samples.j_max(L, lam)
     flmn = samples.construct_flmn(L, N, J_min, lam, True)
+    f_wav_s2let = np.zeros(n_wav(L, N, J_min, lam, True), dtype=np.complex128)
+    offset = 0
 
     f_wav = []
     for j in range(J_min, J + 1):
@@ -52,7 +56,17 @@ def generate_f_wav_scal(
                     flmn[j - J_min][Nj - 1 + n, el, Lj - 1 + m] = (
                         rng.uniform() + 1j * rng.uniform()
                     )
-        f_wav.append(base.wigner.inverse(flmn[j - J_min], Lj, Nj, 0, sampling, reality))
+        temp = base.wigner.inverse(flmn[j - J_min], Lj, Nj, 0, sampling, reality)
+
+        # Pys2let data entries
+        entries = temp.flatten("C")
+        f_wav_s2let[offset : offset + len(entries)] = entries
+        offset += len(entries)
+
+        # S2wav data entries
+        if using_torch:
+            temp = torch.from_numpy(temp)
+        f_wav.append(temp)
 
     L_s = samples.scal_bandlimit(L, J_min, lam, True)
     flm = np.zeros((L_s, 2 * L_s - 1), dtype=np.complex128)
@@ -64,8 +78,8 @@ def generate_f_wav_scal(
 
     return (
         f_wav,
-        f_scal,
-        s2wav_to_s2let(f_wav, L, N, J_min, lam, True),
+        torch.from_numpy(f_scal) if using_torch else f_scal,
+        f_wav_s2let,
         f_scal.flatten("C"),
     )
 
@@ -76,16 +90,18 @@ def s2wav_to_s2let(
     N: int = 1,
     J_min: int = 0,
     lam: float = 2.0,
-    multiresolution: bool = False,
-) -> int:
+    using_torch: bool = False,
+) -> np.ndarray:
 
     J = samples.j_max(L, lam)
-    f_wav_s2let = np.zeros(
-        n_wav(L, N, J_min, lam, multiresolution), dtype=np.complex128
-    )
+    f_wav_s2let = np.zeros(n_wav(L, N, J_min, lam, True), dtype=np.complex128)
     offset = 0
     for j in range(J_min, J + 1):
-        entries = f_wav[j - J_min].flatten("C")
+        entries = (
+            f_wav[j - J_min].numpy().flatten("C")
+            if using_torch
+            else f_wav[j - J_min].flatten("C")
+        )
         f_wav_s2let[offset : offset + len(entries)] = entries
         offset += len(entries)
     return f_wav_s2let

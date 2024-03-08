@@ -1,11 +1,14 @@
+import torch
+import numpy as np
 import jax.numpy as jnp
-from typing import  List
+from typing import List
 import s2fft
 from s2fft.precompute_transforms.construct import (
     wigner_kernel_jax,
     spin_spherical_kernel_jax,
 )
 from s2wav import samples
+
 
 def generate_full_precomputes(
     L: int,
@@ -17,6 +20,7 @@ def generate_full_precomputes(
     forward: bool = False,
     reality: bool = False,
     nospherical: bool = False,
+    using_torch: bool = False,
 ) -> List[jnp.ndarray]:
     r"""Generates a list of precompute arrays associated with the underlying Wigner
     transforms.
@@ -45,6 +49,8 @@ def generate_full_precomputes(
         nospherical (bool, optional): Whether to only compute Wigner precomputes.
             Defaults to False.
 
+        using_torch (bool, optional): Desired frontend functionality. Defaults to False.
+
     Returns:
         List[jnp.ndarray]: Precomputed recursion arrays for underlying Wigner transforms.
     """
@@ -52,7 +58,10 @@ def generate_full_precomputes(
     J = samples.j_max(L, lam)
     for j in range(J_min, J):
         Lj, Nj, L0j = samples.LN_j(L, j, N, lam, True)
-        precomps.append(wigner_kernel_jax(Lj, Nj, reality, sampling, nside, forward))
+        kernel = wigner_kernel_jax(Lj, Nj, reality, sampling, nside, forward)
+        precomps.append(
+            torch.from_numpy(np.array(kernel))
+        ) if using_torch else precomps.append(kernel)
     Ls = samples.scal_bandlimit(L, J_min, lam, True)
     if nospherical:
         return [], [], precomps
@@ -62,7 +71,13 @@ def generate_full_precomputes(
     precompute_full = spin_spherical_kernel_jax(
         L, 0, reality, sampling, nside, not forward
     )
+
+    if using_torch:
+        precompute_full = torch.from_numpy(np.array(precompute_full))
+        precompute_scaling = torch.from_numpy(np.array(precompute_scaling))
+
     return precompute_full, precompute_scaling, precomps
+
 
 def generate_wigner_precomputes(
     L: int,
@@ -72,7 +87,8 @@ def generate_wigner_precomputes(
     sampling: str = "mw",
     nside: int = None,
     forward: bool = False,
-    reality: bool = False
+    reality: bool = False,
+    using_torch: bool = False,
 ) -> List[jnp.ndarray]:
     r"""Generates a list of precompute arrays associated with the underlying Wigner
     transforms.
@@ -98,6 +114,8 @@ def generate_wigner_precomputes(
         reality (bool, optional): Whether :math:`f \in \mathbb{R}`, if True exploits
             conjugate symmetry of harmonic coefficients. Defaults to False.
 
+        using_torch (bool, optional): Desired frontend functionality. Defaults to False.
+
     Returns:
         List[jnp.ndarray]: Precomputed recursion arrays for underlying Wigner transforms.
     """
@@ -105,9 +123,10 @@ def generate_wigner_precomputes(
     J = samples.j_max(L, lam)
     for j in range(J_min, J + 1):
         Lj, Nj, L0j = samples.LN_j(L, j, N, lam, True)
-        precomps.append(
-            s2fft.generate_precomputes_wigner_jax(
-                Lj, Nj, sampling, nside, forward, reality, L0j
-            )
+        kernel = s2fft.generate_precomputes_wigner_jax(
+            Lj, Nj, sampling, nside, forward, reality, L0j
         )
+        precomps.append(
+            torch.from_numpy(np.array(kernel))
+        ) if using_torch else precomps.append(kernel)
     return precomps
