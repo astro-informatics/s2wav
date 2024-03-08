@@ -9,7 +9,6 @@ L_to_test = [8]
 N_to_test = [3]
 J_min_to_test = [2]
 reality = [False, True]
-sampling_to_test = ["mw", "mwss", "dh"]
 recursive_transform = [False, True]
 
 

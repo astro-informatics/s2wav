@@ -10,7 +10,7 @@ N_to_test = [2, 3]
 J_min_to_test = [2]
 lam_to_test = [2, 3]
 reality = [False, True]
-sampling_to_test = ["mw", "mwss", "dh"]
+sampling_to_test = ["mw", "mwss", "dh", "gl"]
 
 
 @pytest.mark.parametrize("L", L_to_test)

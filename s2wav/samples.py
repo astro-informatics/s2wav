@@ -29,8 +29,8 @@ def f_scal(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
-            Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from
+            {"mw","mwss", "dh", "gl", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required
             if sampling="healpix".  Defaults to None.
@@ -62,7 +62,7 @@ def n_wav_scales(L: int, N: int = 1, J_min: int = 0, lam: float = 2.0) -> int:
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
+        sampling (str, optional): Spherical sampling scheme from {"mw", "mwss", "dh", "gl", "healpix"}.
             Defaults to "mw".
 
     Returns:
@@ -110,7 +110,7 @@ def LN_j(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
+        sampling (str, optional): Spherical sampling scheme from {"mw", "mwss", "dh", "gl", "healpix"}.
             Defaults to "mw".
 
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
@@ -152,8 +152,8 @@ def f_wav_j(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
-            Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from
+            {"mw", "mwss", "dh", "gl", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required
             if sampling="healpix".  Defaults to None.
@@ -199,8 +199,8 @@ def construct_f(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
-            Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from
+            {"mw", "mwss", "dh", "gl", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required if
             sampling="healpix".  Defaults to None.
@@ -256,8 +256,8 @@ def construct_f_jax(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
-            Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from
+            {"mw", "mwss", "dh", "gl", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required if
             sampling="healpix".  Defaults to None.
@@ -312,8 +312,8 @@ def construct_f_torch(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
-            Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from
+            {"mw", "mwss", "dh", "gl", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required if
             sampling="healpix".  Defaults to None.
@@ -675,8 +675,8 @@ def wavelet_shape_check(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
-            Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from
+            {"mw", "mwss", "dh", "gl", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required
             if sampling="healpix".  Defaults to None.
