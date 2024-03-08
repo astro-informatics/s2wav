@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-Transforms (numpy)
+JAX Transforms (Recursive)
 **************************
-.. automodule:: s2wav.transforms.numpy_wavelets
+.. automodule:: s2wav.transforms.rec_wav_jax
    :members: 

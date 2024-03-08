@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-Tiling Functions
+Numpy Transforms
 **************************
-.. automodule:: s2wav.filter_factory.tiling
+.. automodule:: s2wav.transforms.base
    :members: 

@@ -3,5 +3,5 @@
 **************************
 Array Shape Functions
 **************************
-.. automodule:: s2wav.utils.shapes
+.. automodule:: s2wav.samples
    :members: 
