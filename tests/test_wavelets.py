@@ -23,7 +23,7 @@ using_torch_frontend = [False, True]
 @pytest.mark.parametrize("reality", reality)
 @pytest.mark.parametrize("recursive", recursive_transform)
 @pytest.mark.parametrize("using_torch", using_torch_frontend)
-def test_jax_synthesis(
+def test_synthesis(
     wavelet_generator,
     L: int,
     N: int,
@@ -100,7 +100,7 @@ def test_jax_synthesis(
 @pytest.mark.parametrize("reality", reality)
 @pytest.mark.parametrize("recursive", recursive_transform)
 @pytest.mark.parametrize("using_torch", using_torch_frontend)
-def test_jax_analysis(
+def test_analysis(
     flm_generator,
     f_wav_converter,
     L: int,
@@ -170,7 +170,7 @@ def test_jax_analysis(
 @pytest.mark.parametrize("lam", lam_to_test)
 @pytest.mark.parametrize("reality", reality)
 @pytest.mark.parametrize("sampling", sampling_to_test)
-def test_jax_round_trip(
+def test_round_trip(
     flm_generator, L: int, N: int, J_min: int, lam: int, reality: bool, sampling: str
 ):
     J = samples.j_max(L, lam)

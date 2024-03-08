@@ -198,9 +198,12 @@ def analysis(
         4 * torch.pi / (2 * torch.arange(Ls, dtype=torch.float64) + 1)
     )
     temp = torch.einsum("lm,l->lm", flm[:Ls, L - Ls : L - 1 + Ls], phi)
+
     # Handle edge case
     if Ls == 1:
-        f_scal = temp * torch.sqrt(1 / (4 * torch.pi))
+        f_scal = temp * torch.sqrt(
+            torch.tensor(1 / (4 * torch.pi), dtype=torch.float64)
+        )
     else:
         f_scal = spherical.inverse_transform_torch(
             temp, precomps[1], Ls, sampling, reality, spin, nside
