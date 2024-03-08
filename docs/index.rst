@@ -1,16 +1,20 @@
 Differentiable and accelerated spherical wavelets
 ===================================================
 
-``S2WAV`` is a JAX package for computing wavelet transforms on the sphere and rotation 
-group.  It leverages autodiff to provide differentiable transforms, which are also 
-deployable on modern hardware accelerators (e.g. GPUs and TPUs), and can be mapped 
-across multiple accelerators.
+`S2WAV` is a python package for computing wavelet transforms on the sphere
+and rotation group, both in JAX and PyTorch. It leverages autodiff to provide differentiable
+transforms, which are also deployable on modern hardware accelerators
+(e.g. GPUs and TPUs), and can be mapped across multiple accelerators.
 
-More specifically, ``S2WAV`` provides support for scale-discretised wavelet transforms 
-on the sphere and rotation group (for both real and complex signals), with support for 
-adjoints where needed, and comes with a variety of different optimisations (e.g. precompute 
-or not, multi-resolution algorithms) that one may select depending on available resources 
-and desired angular resolution :math:`L`.
+More specifically, `S2WAV` provides support for scale-discretised
+wavelet transforms on the sphere and rotation group (for both real and
+complex signals), with support for adjoints where needed, and comes with
+a variety of different optimisations (e.g. precompute or not,
+multi-resolution algorithms) that one may select depending on available
+resources and desired angular resolution $L$. `S2WAV` is a sister package of 
+<S2FFT `https://github.com/astro-informatics/s2fft>`_, both of which are part of the `SAX` 
+project, which aims to provide comprehensive support for differentiable transforms on the 
+sphere and rotation group.
 
 Wavelet Transform |:zap:|
 --------------------------
