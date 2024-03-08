@@ -1,13 +1,13 @@
-from jax import jit, config
-
-config.update("jax_enable_x64", True)
-
+from jax import jit
 import jax.numpy as jnp
 import numpy as np
+import torch
 import math
 from functools import partial
 from typing import Tuple
 from s2fft.sampling import s2_samples, so3_samples
+from scipy.special import loggamma
+from jax.scipy.special import gammaln as jax_gammaln
 
 
 def f_scal(
@@ -29,8 +29,8 @@ def f_scal(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
-            Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from
+            {"mw","mwss", "dh", "gl", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required
             if sampling="healpix".  Defaults to None.
@@ -62,7 +62,7 @@ def n_wav_scales(L: int, N: int = 1, J_min: int = 0, lam: float = 2.0) -> int:
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
+        sampling (str, optional): Spherical sampling scheme from {"mw", "mwss", "dh", "gl", "healpix"}.
             Defaults to "mw".
 
     Returns:
@@ -110,7 +110,7 @@ def LN_j(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
+        sampling (str, optional): Spherical sampling scheme from {"mw", "mwss", "dh", "gl", "healpix"}.
             Defaults to "mw".
 
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
@@ -152,8 +152,8 @@ def f_wav_j(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
-            Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from
+            {"mw", "mwss", "dh", "gl", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required
             if sampling="healpix".  Defaults to None.
@@ -199,8 +199,8 @@ def construct_f(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
-            Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from
+            {"mw", "mwss", "dh", "gl", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required if
             sampling="healpix".  Defaults to None.
@@ -212,7 +212,7 @@ def construct_f(
             optimise for memory. Defaults to False.
 
     Returns:
-        Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
+        np.ndarray: Empty array (or list of empty arrays) in which to write data.
     """
     J = j_max(L, lam)
     if scattering:
@@ -256,8 +256,8 @@ def construct_f_jax(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
-            Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from
+            {"mw", "mwss", "dh", "gl", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required if
             sampling="healpix".  Defaults to None.
@@ -269,7 +269,7 @@ def construct_f_jax(
             optimise for memory. Defaults to False.
 
     Returns:
-        Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
+        jnp.ndarray: Empty array (or list of empty arrays) in which to write data.
     """
     J = j_max(L, lam)
     if scattering:
@@ -284,6 +284,62 @@ def construct_f_jax(
                 jnp.zeros(
                     f_wav_j(L, j, N, lam, sampling, nside, multiresolution),
                     dtype=jnp.complex128,
+                )
+            )
+    return f
+
+
+def construct_f_torch(
+    L: int,
+    N: int = 1,
+    J_min: int = 0,
+    lam: float = 2.0,
+    sampling: str = "mw",
+    nside: int = None,
+    multiresolution: bool = False,
+    scattering: bool = False,
+) -> torch.tensor:
+    """Defines a list of tensors corresponding to f_wav.
+
+    Args:
+        L (int): Harmonic bandlimit.
+
+        N (int, optional): Upper orientational band-limit. Defaults to 1.
+
+        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
+
+        lam (float, optional): Wavelet parameter which determines the scale factor between
+            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
+            wavelets. Defaults to 2.
+
+        sampling (str, optional): Spherical sampling scheme from
+            {"mw", "mwss", "dh", "gl", "healpix"}. Defaults to "mw".
+
+        nside (int, optional): HEALPix Nside resolution parameter.  Only required if
+            sampling="healpix".  Defaults to None.
+
+        multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
+            resolution or its own resolution. Defaults to False.
+
+        scattering (bool, optional): Whether to create minimal arrays for scattering transform to
+            optimise for memory. Defaults to False.
+
+    Returns:
+        torch.tensor: Empty tensor (or list of empty tensors) in which to write data.
+    """
+    J = j_max(L, lam)
+    if scattering:
+        f = torch.zeros(
+            f_wav_j(L, J - 1, N, lam, sampling, nside, multiresolution),
+            dtype=torch.complex128,
+        )
+    else:
+        f = []
+        for j in range(J_min, J + 1):
+            f.append(
+                torch.zeros(
+                    f_wav_j(L, j, N, lam, sampling, nside, multiresolution),
+                    dtype=torch.complex128,
                 )
             )
     return f
@@ -457,7 +513,7 @@ def construct_flmn(
             optimise for memory. Defaults to False.
 
     Returns:
-        Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
+        np.ndarray: Empty array (or list of empty arrays) in which to write data.
     """
     J = j_max(L, lam)
     if scattering:
@@ -505,7 +561,7 @@ def construct_flmn_jax(
             optimise for memory. Defaults to False.
 
     Returns:
-        Tuple[int, int, int, int]: Wavelet coefficients shape :math:`[n_{J}, L, 2L-1, n_{N}]`.
+        jnp.ndarray: Empty array (or list of empty arrays) in which to write data.
     """
     J = j_max(L, lam)
     if scattering:
@@ -519,6 +575,53 @@ def construct_flmn_jax(
                 jnp.zeros(
                     flmn_wav_j(L, j, N, lam, multiresolution),
                     dtype=jnp.complex128,
+                )
+            )
+    return flmn
+
+
+def construct_flmn_torch(
+    L: int,
+    N: int = 1,
+    J_min: int = 0,
+    lam: float = 2.0,
+    multiresolution: bool = False,
+    scattering: bool = False,
+) -> torch.tensor:
+    """Defines a list of tensors corresponding to flmn.
+
+    Args:
+        L (int): Harmonic bandlimit.
+
+        N (int, optional): Upper orientational band-limit. Defaults to 1.
+
+        J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
+
+        lam (float, optional): Wavelet parameter which determines the scale factor between
+            consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
+            wavelets. Defaults to 2.
+
+        multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
+            resolution or its own resolution. Defaults to False.
+
+        scattering (bool, optional): Whether to create minimal arrays for scattering transform to
+            optimise for memory. Defaults to False.
+
+    Returns:
+        torch.tensor: Empty tensor (or list of empty tensors) in which to write data.
+    """
+    J = j_max(L, lam)
+    if scattering:
+        flmn = torch.zeros(
+            flmn_wav_j(L, J - 1, N, lam, multiresolution), dtype=torch.complex128
+        )
+    else:
+        flmn = []
+        for j in range(J_min, J + 1):
+            flmn.append(
+                torch.zeros(
+                    flmn_wav_j(L, j, N, lam, multiresolution),
+                    dtype=torch.complex128,
                 )
             )
     return flmn
@@ -572,8 +675,8 @@ def wavelet_shape_check(
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from {"mw","mwss", "dh", "healpix"}.
-            Defaults to "mw".
+        sampling (str, optional): Spherical sampling scheme from
+            {"mw", "mwss", "dh", "gl", "healpix"}. Defaults to "mw".
 
         nside (int, optional): HEALPix Nside resolution parameter.  Only required
             if sampling="healpix".  Defaults to None.
@@ -589,3 +692,35 @@ def wavelet_shape_check(
         assert f_w[j - J_min].shape == f_wav_j(
             L, j, N, lam, sampling, nside, multiresolution
         )
+
+
+def binomial_coefficient(n: int, k: int) -> int:
+    r"""Computes the binomial coefficient :math:`\binom{n}{k}`.
+
+    Args:
+        n (int): Number of elements to choose from.
+
+        k (int): Number of elements to pick.
+
+    Returns:
+        (int): Number of possible subsets.
+    """
+    return np.floor(
+        0.5 + np.exp(loggamma(n + 1) - loggamma(k + 1) - loggamma(n - k + 1))
+    )
+
+
+def binomial_coefficient_jax(n: int, k: int) -> int:
+    r"""Computes the binomial coefficient :math:`\binom{n}{k}`.
+
+    Args:
+        n (int): Number of elements to choose from.
+
+        k (int): Number of elements to pick.
+
+    Returns:
+        (int): Number of possible subsets.
+    """
+    return jnp.floor(
+        0.5 + jnp.exp(jax_gammaln(n + 1) - jax_gammaln(k + 1) - jax_gammaln(n - k + 1))
+    )

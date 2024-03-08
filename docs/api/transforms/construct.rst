@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-Wavelet Kernels
+Matrice Precomputes
 **************************
-.. automodule:: s2wav.filter_factory.kernels
+.. automodule:: s2wav.transforms.construct
    :members: 

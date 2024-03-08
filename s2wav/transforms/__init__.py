@@ -1,3 +1,3 @@
-from . import numpy_wavelets
-from . import jax_wavelets
-from . import jax_wavelets_precompute
+from . import base
+from . import construct
+from . import rec_wav_jax, pre_wav_jax

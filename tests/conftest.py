@@ -2,7 +2,12 @@
 from functools import partial
 from typing import Tuple
 import numpy as np
+import torch
 import pytest
+import s2fft
+from s2fft import base_transforms as base
+from s2fft.sampling import so3_samples
+from s2wav import samples
 
 DEFAULT_SEED = 8966433580120847635
 
@@ -34,17 +39,16 @@ def generate_f_wav_scal(
     lam: float,
     sampling: str = "mw",
     reality: bool = False,
-    multiresolution: bool = False,
+    using_torch: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    from s2wav.utils import shapes
-    from s2fft import base_transforms as base
-
-    J = shapes.j_max(L, lam)
-    flmn = shapes.construct_flmn(L, N, J_min, lam, multiresolution)
+    J = samples.j_max(L, lam)
+    flmn = samples.construct_flmn(L, N, J_min, lam, True)
+    f_wav_s2let = np.zeros(n_wav(L, N, J_min, lam, True), dtype=np.complex128)
+    offset = 0
 
     f_wav = []
     for j in range(J_min, J + 1):
-        Lj, Nj, L0j = shapes.LN_j(L, j, N, lam, multiresolution)
+        Lj, Nj, L0j = samples.LN_j(L, j, N, lam, True)
 
         for n in range(-Nj + 1, Nj, 2):
             for el in range(max(abs(n), L0j), Lj):
@@ -52,9 +56,19 @@ def generate_f_wav_scal(
                     flmn[j - J_min][Nj - 1 + n, el, Lj - 1 + m] = (
                         rng.uniform() + 1j * rng.uniform()
                     )
-        f_wav.append(base.wigner.inverse(flmn[j - J_min], Lj, Nj, 0, sampling, reality))
+        temp = base.wigner.inverse(flmn[j - J_min], Lj, Nj, 0, sampling, reality)
 
-    L_s = shapes.scal_bandlimit(L, J_min, lam, multiresolution)
+        # Pys2let data entries
+        entries = temp.flatten("C")
+        f_wav_s2let[offset : offset + len(entries)] = entries
+        offset += len(entries)
+
+        # S2wav data entries
+        if using_torch:
+            temp = torch.from_numpy(temp)
+        f_wav.append(temp)
+
+    L_s = samples.scal_bandlimit(L, J_min, lam, True)
     flm = np.zeros((L_s, 2 * L_s - 1), dtype=np.complex128)
     for el in range(L_s):
         for m in range(-el, el + 1):
@@ -64,8 +78,8 @@ def generate_f_wav_scal(
 
     return (
         f_wav,
-        f_scal,
-        s2wav_to_s2let(f_wav, L, N, J_min, lam, multiresolution),
+        torch.from_numpy(f_scal) if using_torch else f_scal,
+        f_wav_s2let,
         f_scal.flatten("C"),
     )
 
@@ -76,17 +90,18 @@ def s2wav_to_s2let(
     N: int = 1,
     J_min: int = 0,
     lam: float = 2.0,
-    multiresolution: bool = False,
-) -> int:
-    from s2wav.utils.shapes import j_max
+    using_torch: bool = False,
+) -> np.ndarray:
 
-    J = j_max(L, lam)
-    f_wav_s2let = np.zeros(
-        n_wav(L, N, J_min, lam, multiresolution), dtype=np.complex128
-    )
+    J = samples.j_max(L, lam)
+    f_wav_s2let = np.zeros(n_wav(L, N, J_min, lam, True), dtype=np.complex128)
     offset = 0
     for j in range(J_min, J + 1):
-        entries = f_wav[j - J_min].flatten("C")
+        entries = (
+            f_wav[j - J_min].numpy().flatten("C")
+            if using_torch
+            else f_wav[j - J_min].flatten("C")
+        )
         f_wav_s2let[offset : offset + len(entries)] = entries
         offset += len(entries)
     return f_wav_s2let
@@ -100,13 +115,11 @@ def n_wav(
     multiresolution: bool = False,
     sampling: str = "mw",
 ) -> int:
-    from s2wav.utils import shapes
-    from s2fft.sampling import so3_samples
 
-    J = shapes.j_max(L, lam)
+    J = samples.j_max(L, lam)
     count = 0
     for j in range(J_min, J + 1):
-        Lj = shapes.wav_j_bandlimit(L, j, lam, multiresolution)
+        Lj = samples.wav_j_bandlimit(L, j, lam, multiresolution)
         count += np.prod(list(so3_samples.f_shape(Lj, N, sampling)))
 
     return count
@@ -135,6 +148,4 @@ def wavelet_generator(rng):
 def flm_generator(rng):
     # Import s2fft (and indirectly numpy) locally to avoid
     # `RuntimeWarning: numpy.ndarray size changed` when importing at module level
-    import s2fft
-
     return partial(s2fft.utils.signal_generator.generate_flm, rng)

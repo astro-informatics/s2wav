@@ -23,14 +23,11 @@ To import and use ``S2WAV``  is as simple follows:
     # Map back to signal on the sphere 
     f = s2wav.synthesis(f_wav, f_scal, L, N)
 
-Benchmarking |:hourglass_flowing_sand:|
--------------------------------------
-TODO: Add table here when results available 
-
 .. toctree::
    :hidden:
    :maxdepth: 3
    :caption: Jupyter Notebooks
 
-   transforms/wavelet_transforms.nblink
-   precompute_transforms/wavelet_transforms_precompute.nblink
+   numpy_transform/numpy_transforms.nblink
+   jax_transform/jax_transforms.nblink
+   torch_transform/torch_transforms.nblink

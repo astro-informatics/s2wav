@@ -10,8 +10,8 @@
 
 # Differentiable and accelerated wavelet transform on the sphere
 
-`S2WAV` is a JAX package for computing wavelet transforms on the sphere
-and rotation group. It leverages autodiff to provide differentiable
+`S2WAV` is a python package for computing wavelet transforms on the sphere
+and rotation group, both in JAX and PyTorch. It leverages autodiff to provide differentiable
 transforms, which are also deployable on modern hardware accelerators
 (e.g. GPUs and TPUs), and can be mapped across multiple accelerators.
 
@@ -20,10 +20,20 @@ wavelet transforms on the sphere and rotation group (for both real and
 complex signals), with support for adjoints where needed, and comes with
 a variety of different optimisations (e.g. precompute or not,
 multi-resolution algorithms) that one may select depending on available
-resources and desired angular resolution $L$. `S2WAV` is a sister package of [`S2FFT`](https://github.com/astro-informatics/s2fft), both of which are part of the `SAX` project, which aims to provide comprehensive support for differentiable transforms on the sphere and rotation group.
+resources and desired angular resolution $L$. `S2WAV` is a sister package of 
+[`S2FFT`](https://github.com/astro-informatics/s2fft), both of which are part of the `SAX` 
+project, which aims to provide comprehensive support for differentiable transforms on the 
+sphere and rotation group.
 
 ## Wavelet Transform :zap: 
-`S2WAV` is an updated implementation of the scale-discretised wavelet transform on the sphere, which builds upon the papers of [Leistedt et al 2013](https://arxiv.org/abs/1211.1680) and [McEwen et al 2017](https://arxiv.org/abs/1509.06749). This wavelet transform is designed to have excellent localisation and uncorrelation properties, and has been successfully adopted for various applications e.g. scattering transforms on the sphere [McEwen et al 2022](https://arxiv.org/pdf/2102.02828.pdf). The wavelet dictionary is constructed by tiling the harmonic line with infinitely differentiable Cauchy-Schwartz functions, which can straightforwardly be performed in an efficient multiresolution manner, as in the Euclidean case. This is what the directional wavelet filters look like in pixel space.
+`S2WAV` is an updated implementation of the scale-discretised wavelet transform on the 
+sphere, which builds upon the papers of [Leistedt et al 2013](https://arxiv.org/abs/1211.1680) 
+and [McEwen et al 2017](https://arxiv.org/abs/1509.06749). This wavelet transform is designed to 
+have excellent localisation and uncorrelation properties, and has been successfully adopted for 
+various applications e.g. scattering transforms on the sphere [McEwen et al 2022](https://arxiv.org/pdf/2102.02828.pdf). 
+The wavelet dictionary is constructed by tiling the harmonic line with infinitely differentiable 
+Cauchy-Schwartz functions, which can straightforwardly be performed in an efficient multiresolution 
+manner, as in the Euclidean case. This is what the directional wavelet filters look like in pixel space.
 
 <p align="center">
   <img src="./docs/assets/figures/spherical_wavelets.png" width="700"/>
@@ -64,7 +74,8 @@ f_wav, f_scal = s2wav.analysis(f, L, N)
 # Map back to signal on the sphere 
 f = s2wav.synthesis(f_wav, f_scal, L, N)
 ```
-however we strongly recommend that the multiresolution argument is set to true, as this will accelerate the transform by a factor of the total number of wavelet scales, which can be around an order of magnitude.
+> [!NOTE]  
+> However we strongly recommend that the multiresolution argument is set to true, as this will accelerate the transform by a factor of the total number of wavelet scales, which can be around an order of magnitude.
 
 ## Contributors ✨
 We strongly encourage contributions from any interested developers; a
@@ -104,6 +115,21 @@ A BibTeX entry for `S2WAV` is:
      year = {2024}
 }
 ```
+
+we also request that you cite the following paper 
+
+``` 
+@article{price:s2fft, 
+   author      = "Matthew A. Price and Jason D. McEwen",
+   title       = "Differentiable and accelerated spherical harmonic and Wigner transforms",
+   journal     = "Journal of Computational Physics, submitted",
+   year        = "2023",
+   eprint      = "arXiv:2311.14670"        
+}
+```
+
+in which the core underlying algorithms for the spherical harmonic and Wigner transforms 
+are developed.
 
 ## License :memo:
 
