@@ -1,3 +1,6 @@
+import jax
+
+jax.config.update("jax_enable_x64", True)
 import pytest
 import numpy as np
 from s2wav import filters, samples
@@ -95,6 +98,18 @@ def test_directional_vectorised(L: int, N: int, J_min: int, lam: int):
 
 
 @pytest.mark.parametrize("L", L_to_test)
+@pytest.mark.parametrize("N", N_to_test)
+@pytest.mark.parametrize("J_min", J_min_to_test)
+@pytest.mark.parametrize("lam", lam_to_test)
+def test_directional_torch(L: int, N: int, J_min: int, lam: int):
+    f = filters.filters_directional(L, N, J_min, lam)
+    f_vect = filters.filters_directional_vectorised(L, N, J_min, lam, using_torch=True)
+
+    for i in range(2):
+        np.testing.assert_allclose(f[i], f_vect[i], rtol=1e-14)
+
+
+@pytest.mark.parametrize("L", L_to_test)
 @pytest.mark.parametrize("J_min", J_min_to_test)
 @pytest.mark.parametrize("lam", lam_to_test)
 def test_axisym_jax(L: int, J_min: int, lam: int):
@@ -115,3 +130,15 @@ def test_directional_jax(L: int, N: int, J_min: int, lam: int):
 
     for i in range(2):
         np.testing.assert_allclose(f[i], f_jax[i], rtol=1e-13, atol=1e-13)
+
+
+def test_filter_exceptions():
+    L = 8
+    with pytest.raises(ValueError) as e:
+        filters.filters_axisym(L, 10)
+
+    with pytest.raises(ValueError) as e:
+        filters.filters_axisym_vectorised(L, 10)
+
+    with pytest.raises(ValueError) as e:
+        filters.filters_axisym_jax(L, 10)

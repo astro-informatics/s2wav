@@ -1,3 +1,6 @@
+import jax
+
+jax.config.update("jax_enable_x64", True)
 import pytest
 import jax.numpy as jnp
 from jax.test_util import check_grads

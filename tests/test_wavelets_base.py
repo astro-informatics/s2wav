@@ -1,3 +1,6 @@
+import jax
+
+jax.config.update("jax_enable_x64", True)
 import pytest
 import numpy as np
 import pys2let as s2let

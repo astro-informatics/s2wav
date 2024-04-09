@@ -132,7 +132,7 @@ def filters_directional(
         if kappa0[el] != 0:
             phi[el] = np.sqrt((2 * el + 1) / (4.0 * np.pi)) * kappa0[el]
             if spin0 != 0:
-                phi[el] *= spin_normalization(el, spin0) * (-1) ** spin0
+                phi[el] *= _spin_normalization(el, spin0) * (-1) ** spin0
 
     for j in range(J_min, J + 1):
         for el in range(el_min, L):
@@ -146,7 +146,7 @@ def filters_directional(
                         )
                         if spin0 != 0:
                             psi[j, el, L - 1 + m] *= (
-                                spin_normalization(el, spin0) * (-1) ** spin0
+                                _spin_normalization(el, spin0) * (-1) ** spin0
                             )
     if using_torch:
         psi = torch.from_numpy(psi)
@@ -227,7 +227,7 @@ def filters_directional_vectorised(
     el_min = max(abs(spin), abs(spin0))
 
     spin_norms = (
-        (-1) ** spin0 * spin_normalization_vectorised(np.arange(L), spin0)
+        (-1) ** spin0 * _spin_normalization_vectorised(np.arange(L), spin0)
         if spin0 != 0
         else 1
     )
@@ -323,7 +323,9 @@ def filters_directional_jax(
     el_min = max(abs(spin), abs(spin0))
 
     spin_norms = (
-        (-1) ** spin0 * spin_normalization_jax(np.arange(L), spin0) if spin0 != 0 else 1
+        (-1) ** spin0 * _spin_normalization_jax(np.arange(L), spin0)
+        if spin0 != 0
+        else 1
     )
 
     kappa, kappa0 = filters_axisym_jax(L, J_min, lam)
@@ -476,7 +478,7 @@ def k_lam(L: int, lam: float = 2.0, quad_iters: int = 300) -> float:
 
 
 @partial(jit, static_argnums=(2, 3))  # not sure
-def part_scaling_fn_jax(a: float, b: float, n: int, lam: float = 2.0) -> float:
+def _part_scaling_fn_jax(a: float, b: float, n: int, lam: float = 2.0) -> float:
     r"""JAX version of part_scaling_fn. Computes integral used to calculate smoothly
         decreasing function :math:`k_{\lambda}`.
 
@@ -627,7 +629,7 @@ def tiling_direction(L: int, N: int = 1) -> np.ndarray:
     return s_elm
 
 
-def spin_normalization(el: int, spin: int = 0) -> float:
+def _spin_normalization(el: int, spin: int = 0) -> float:
     r"""Computes the normalization factor for spin-lowered wavelets, which is
         :math:`\sqrt{\frac{(\ell+s)!}{(\ell-s)!}}`.
 
@@ -650,8 +652,8 @@ def spin_normalization(el: int, spin: int = 0) -> float:
         return np.sqrt(1.0 / factor)
 
 
-def spin_normalization_vectorised(el: np.ndarray, spin: int = 0) -> float:
-    r"""Vectorised version of :func:`~spin_normalization`.
+def _spin_normalization_vectorised(el: np.ndarray, spin: int = 0) -> float:
+    r"""Vectorised version of :func:`~_spin_normalization`.
     Args:
         el (int): Harmonic index :math:`\ell`.
         spin (int): Spin of field over which to perform the transform. Defaults to 0.
@@ -714,8 +716,8 @@ def tiling_direction_jax(L: int, N: int = 1) -> np.ndarray:
 
 
 @partial(jit, static_argnums=(1))
-def spin_normalization_jax(el: np.ndarray, spin: int = 0) -> float:
-    r"""JAX version of :func:`~spin_normalization`.
+def _spin_normalization_jax(el: np.ndarray, spin: int = 0) -> float:
+    r"""JAX version of :func:`~_spin_normalization`.
     Args:
         el (int): Harmonic index :math:`\ell`.
         spin (int): Spin of field over which to perform the transform. Defaults to 0.
