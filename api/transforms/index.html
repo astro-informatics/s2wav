@@ -52,7 +52,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/transforms/index';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Transforms (numpy)" href="numpy_wavelets.html" />
+    <link rel="next" title="Numpy Transforms" href="base.html" />
     <link rel="prev" title="API" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -108,7 +108,7 @@
 
 
   <div class="bd-header-announcement container-fluid bd-header-announcement">
-    <div class="bd-header-announcement__content">s2wav is currently in an open alpha, please provide feedback on GitHub</div>
+    <div class="bd-header-announcement__content">s2wav is currently in an open beta, please provide feedback on GitHub</div>
   </div>
 
   
@@ -401,19 +401,19 @@ document.write(`
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Namespaces</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Wavelet Transforms</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="numpy_wavelets.html">Transforms (numpy)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jax_wavelets.html">Transforms (JAX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">Numpy Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="construct.html">Matrice Precomputes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavelet.html">JAX Transforms (Recursive)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavelet_precompute.html">JAX Transforms (Precompute)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavelet_precompute_torch.html">PyTorch Transforms (Precompute)</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../filter_factory/index.html">Filter Factory</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../filter_factory/filters.html">Filter Generator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../filter_factory/tiling.html">Tiling Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../filter_factory/kernels.html">Wavelet Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../filter_factory/filters.html">Filter functions</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../utility/index.html">Utility Functions</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../utility/math_functions.html">Maths Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utility/shapes.html">Array Shape Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utility/samples.html">Array Shape Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -476,7 +476,7 @@ document.write(`
   <section id="wavelet-transforms">
 <h1>Wavelet Transforms<a class="headerlink" href="#wavelet-transforms" title="Link to this heading">#</a></h1>
 <table class="table" id="id1">
-<caption><span class="caption-text">Wavelet transforms</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Numpy transforms</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 50.0%" />
 <col style="width: 50.0%" />
@@ -487,29 +487,92 @@ document.write(`
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="numpy_wavelets.html#s2wav.transforms.numpy_wavelets.synthesis_looped" title="s2wav.transforms.numpy_wavelets.synthesis_looped"><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis_looped()</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="base.html#s2wav.transforms.base.synthesis_looped" title="s2wav.transforms.base.synthesis_looped"><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis_looped()</span></code></a></p></td>
 <td><p>Loopy implementation of mapping from wavelet to pixel space.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="numpy_wavelets.html#s2wav.transforms.numpy_wavelets.synthesis" title="s2wav.transforms.numpy_wavelets.synthesis"><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis()</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="base.html#s2wav.transforms.base.synthesis" title="s2wav.transforms.base.synthesis"><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis()</span></code></a></p></td>
 <td><p>Vectorised implementation of mapping from wavelet to pixel space.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="numpy_wavelets.html#s2wav.transforms.numpy_wavelets.analysis_looped" title="s2wav.transforms.numpy_wavelets.analysis_looped"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis_looped()</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="base.html#s2wav.transforms.base.analysis_looped" title="s2wav.transforms.base.analysis_looped"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis_looped()</span></code></a></p></td>
 <td><p>Loopy implementation of mapping from pixel to wavelet space.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="numpy_wavelets.html#s2wav.transforms.numpy_wavelets.analysis" title="s2wav.transforms.numpy_wavelets.analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis()</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="base.html#s2wav.transforms.base.analysis" title="s2wav.transforms.base.analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis()</span></code></a></p></td>
 <td><p>Vectorised implementation of mapping from pixel to wavelet space.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="jax_wavelets.html#s2wav.transforms.jax_wavelets.synthesis" title="s2wav.transforms.jax_wavelets.synthesis"><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis()</span></code></a></p></td>
-<td><p>JAX implementation of mapping from wavelet to pixel space.</p></td>
+</tbody>
+</table>
+<table class="table" id="id2">
+<caption><span class="caption-text">JAX transforms</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Function Name</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="jax_wavelets.html#s2wav.transforms.jax_wavelets.analysis" title="s2wav.transforms.jax_wavelets.analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis()</span></code></a></p></td>
-<td><p>JAX implementation of mapping from pixel to wavelet space.</p></td>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="wavelet.html#s2wav.transforms.wavelet.synthesis" title="s2wav.transforms.wavelet.synthesis"><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis()</span></code></a></p></td>
+<td><p>JAX implementation of mapping from wavelet to pixel space (Recursive).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="jax_wavelets.html#s2wav.transforms.jax_wavelets.flm_to_analysis" title="s2wav.transforms.jax_wavelets.flm_to_analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">flm_to_analysis()</span></code></a></p></td>
-<td><p>JAX implementation of mapping from harmonic to wavelet space.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="wavelet.html#s2wav.transforms.wavelet.analysis" title="s2wav.transforms.wavelet.analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis()</span></code></a></p></td>
+<td><p>JAX implementation of mapping from pixel to wavelet space (Recursive).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="jax_wavelets.html#s2wav.transforms.jax_wavelets.generate_wigner_precomputes" title="s2wav.transforms.jax_wavelets.generate_wigner_precomputes"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_wigner_precomputes()</span></code></a></p></td>
-<td><p>JAX function to generate precompute arrays for underlying Wigner transforms.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="wavelet.html#s2wav.transforms.wavelet.flm_to_analysis" title="s2wav.transforms.wavelet.flm_to_analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">flm_to_analysis()</span></code></a></p></td>
+<td><p>JAX implementation of mapping from harmonic to wavelet coefficients only (Recursive).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="wavelet_precompute.html#s2wav.transforms.wavelet_precompute.synthesis" title="s2wav.transforms.wavelet_precompute.synthesis"><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis()</span></code></a></p></td>
+<td><p>JAX implementation of mapping from wavelet to pixel space (fully precompute).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="wavelet_precompute.html#s2wav.transforms.wavelet_precompute.analysis" title="s2wav.transforms.wavelet_precompute.analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis()</span></code></a></p></td>
+<td><p>JAX implementation of mapping from pixel to wavelet space (fully precompute).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="wavelet_precompute.html#s2wav.transforms.wavelet_precompute.flm_to_analysis" title="s2wav.transforms.wavelet_precompute.flm_to_analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">flm_to_analysis()</span></code></a></p></td>
+<td><p>JAX implementation of mapping from harmonic to wavelet coefficients only (fully precompute).</p></td>
+</tr>
+</tbody>
+</table>
+<table class="table" id="id3">
+<caption><span class="caption-text">PyTorch transforms</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Function Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="wavelet_precompute_torch.html#s2wav.transforms.wavelet_precompute_torch.synthesis" title="s2wav.transforms.wavelet_precompute_torch.synthesis"><code class="xref py py-func docutils literal notranslate"><span class="pre">synthesis()</span></code></a></p></td>
+<td><p>PyTorch implementation of mapping from wavelet to pixel space (fully precompute).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="wavelet_precompute_torch.html#s2wav.transforms.wavelet_precompute_torch.analysis" title="s2wav.transforms.wavelet_precompute_torch.analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis()</span></code></a></p></td>
+<td><p>PyTorch implementation of mapping from pixel to wavelet space (fully precompute).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="wavelet_precompute_torch.html#s2wav.transforms.wavelet_precompute_torch.flm_to_analysis" title="s2wav.transforms.wavelet_precompute_torch.flm_to_analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">flm_to_analysis()</span></code></a></p></td>
+<td><p>PyTorch implementation of mapping from harmonic to wavelet coefficients only (fully precompute).</p></td>
+</tr>
+</tbody>
+</table>
+<table class="table" id="id4">
+<caption><span class="caption-text">Matrices precomputations</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Function Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="construct.html#s2wav.transforms.construct.generate_wigner_precomputes" title="s2wav.transforms.construct.generate_wigner_precomputes"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_wigner_precomputes()</span></code></a></p></td>
+<td><p>JAX/PyTorch function to generate precompute arrays for underlying Wigner transforms.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="construct.html#s2wav.transforms.construct.generate_full_precomputes" title="s2wav.transforms.construct.generate_full_precomputes"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_full_precomputes()</span></code></a></p></td>
+<td><p>JAX/PyTorch function to generate precompute arrays for fully precompute transforms.</p></td>
 </tr>
 </tbody>
 </table>
@@ -537,11 +600,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="numpy_wavelets.html"
+       href="base.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Transforms (numpy)</p>
+        <p class="prev-next-title">Numpy Transforms</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

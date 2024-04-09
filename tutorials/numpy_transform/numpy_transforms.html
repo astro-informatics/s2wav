@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Tiling Functions &#8212; S2WAV 0.0.1 documentation</title>
+    <title>Wavelet transform (Numpy) &#8212; S2WAV 0.0.1 documentation</title>
   
   
   
@@ -30,6 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=9be2284e" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom_tabs.css?v=82e1095b" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/fontawesome.min.css" />
@@ -51,11 +52,11 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/filter_factory/tiling';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/numpy_transform/numpy_transforms';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Wavelet Kernels" href="kernels.html" />
-    <link rel="prev" title="Filter Generator" href="filters.html" />
+    <link rel="next" title="Wavelet transform (JAX)" href="../jax_transform/jax_transforms.html" />
+    <link rel="prev" title="Notebooks" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -110,7 +111,7 @@
 
 
   <div class="bd-header-announcement container-fluid bd-header-announcement">
-    <div class="bd-header-announcement__content">s2wav is currently in an open alpha, please provide feedback on GitHub</div>
+    <div class="bd-header-announcement__content">s2wav is currently in an open beta, please provide feedback on GitHub</div>
   </div>
 
   
@@ -161,15 +162,15 @@
                     </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../tutorials/index.html">
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
                         Notebooks
                       </a>
                     </li>
                 
 
-                    <li class="nav-item current active">
-                      <a class="nav-link nav-internal" href="../index.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
                         API
                       </a>
                     </li>
@@ -278,6 +279,10 @@ document.write(`
   
 
   
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
 </div>
 
     </header>
@@ -308,15 +313,15 @@ document.write(`
                     </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../tutorials/index.html">
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
                         Notebooks
                       </a>
                     </li>
                 
 
-                    <li class="nav-item current active">
-                      <a class="nav-link nav-internal" href="../index.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
                         API
                       </a>
                     </li>
@@ -400,24 +405,12 @@ document.write(`
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Namespaces</span></p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Jupyter Notebooks</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../transforms/index.html">Wavelet Transforms</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../transforms/numpy_wavelets.html">Transforms (numpy)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../transforms/jax_wavelets.html">Transforms (JAX)</a></li>
-</ul>
-</li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Filter Factory</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="filters.html">Filter Generator</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Tiling Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kernels.html">Wavelet Kernels</a></li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../utility/index.html">Utility Functions</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../utility/math_functions.html">Maths Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utility/shapes.html">Array Shape Functions</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Wavelet transform (Numpy)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jax_transform/jax_transforms.html">Wavelet transform (JAX)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jax_ssht_transform/jax_transforms.html">Wavelet transform (JAX-SSHT)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../torch_transform/torch_transforms.html">Wavelet transform (PyTorch)</a></li>
 </ul>
 </div>
 </nav></div>
@@ -456,12 +449,9 @@ document.write(`
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">API</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Notebooks</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Filter Factory</a></li>
-    
-    <li class="breadcrumb-item active" aria-current="page">Tiling Functions</li>
+    <li class="breadcrumb-item active" aria-current="page">Wavelet...</li>
   </ul>
 </nav>
 </div>
@@ -478,141 +468,80 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-s2wav.filter_factory.tiling">
-<span id="tiling-functions"></span><h1>Tiling Functions<a class="headerlink" href="#module-s2wav.filter_factory.tiling" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="s2wav.filter_factory.tiling.spin_normalization">
-<span class="sig-prename descclassname"><span class="pre">s2wav.filter_factory.tiling.</span></span><span class="sig-name descname"><span class="pre">spin_normalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">el</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#s2wav.filter_factory.tiling.spin_normalization" title="Link to this definition">#</a></dt>
-<dd><dl class="simple">
-<dt>Computes the normalization factor for spin-lowered wavelets, which is</dt><dd><p><span class="math notranslate nohighlight">\(\sqrt{\frac{(\ell+s)!}{(\ell-s)!}}\)</span>.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>el</strong> (<em>int</em>) – Harmonic index <span class="math notranslate nohighlight">\(\ell\)</span>.</p></li>
-<li><p><strong>spin</strong> (<em>int</em>) – Spin of field over which to perform the transform. Defaults to 0.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Normalization factor for spin-lowered wavelets.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
+  <section id="Wavelet-transform-(Numpy)">
+<h1>Wavelet transform (Numpy)<a class="headerlink" href="#Wavelet-transform-(Numpy)" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://colab.research.google.com/github/astro-informatics/s2wav/blob/main/notebooks/numpy_transform.ipynb"><img alt="colab image" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install s2wav</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>s2wav<span class="w"> </span><span class="p">&amp;</span>&gt;<span class="w"> </span>/dev/null
+</pre></div>
+</div>
+</div>
+<p>Lets start by importing some packages which we’ll be using in this notebook</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">s2wav</span>       <span class="c1"># Wavelet transforms on the sphere and rotation group</span>
+<span class="kn">import</span> <span class="nn">s2fft</span>       <span class="c1"># Spherical harmonic and Wigner transforms</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+<p>Now we’ll define the constraints of the problem and generated some random data just for this example</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="mi">16</span>            <span class="c1"># Spherical harmonic bandlimit</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">3</span>             <span class="c1"># Azimuthal (directional) bandlimit</span>
+<span class="n">sampling</span> <span class="o">=</span> <span class="s2">&quot;mw&quot;</span>   <span class="c1"># Sampling scheme</span>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="s2wav.filter_factory.tiling.spin_normalization_jax">
-<span class="sig-prename descclassname"><span class="pre">s2wav.filter_factory.tiling.</span></span><span class="sig-name descname"><span class="pre">spin_normalization_jax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">el</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#s2wav.filter_factory.tiling.spin_normalization_jax" title="Link to this definition">#</a></dt>
-<dd><p>JAX version of <a class="reference internal" href="#s2wav.filter_factory.tiling.spin_normalization" title="s2wav.filter_factory.tiling.spin_normalization"><code class="xref py py-func docutils literal notranslate"><span class="pre">spin_normalization()</span></code></a>.
-:param el: Harmonic index <span class="math notranslate nohighlight">\(\ell\)</span>.
-:type el: int
-:param spin: Spin of field over which to perform the transform. Defaults to 0.
-:type spin: int</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Normalization factor for spin-lowered wavelets.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="s2wav.filter_factory.tiling.spin_normalization_vectorised">
-<span class="sig-prename descclassname"><span class="pre">s2wav.filter_factory.tiling.</span></span><span class="sig-name descname"><span class="pre">spin_normalization_vectorised</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">el</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#s2wav.filter_factory.tiling.spin_normalization_vectorised" title="Link to this definition">#</a></dt>
-<dd><p>Vectorised version of <a class="reference internal" href="#s2wav.filter_factory.tiling.spin_normalization" title="s2wav.filter_factory.tiling.spin_normalization"><code class="xref py py-func docutils literal notranslate"><span class="pre">spin_normalization()</span></code></a>.
-:param el: Harmonic index <span class="math notranslate nohighlight">\(\ell\)</span>.
-:type el: int
-:param spin: Spin of field over which to perform the transform. Defaults to 0.
-:type spin: int</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Normalization factor for spin-lowered wavelets.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="s2wav.filter_factory.tiling.tiling_direction">
-<span class="sig-prename descclassname"><span class="pre">s2wav.filter_factory.tiling.</span></span><span class="sig-name descname"><span class="pre">tiling_direction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#s2wav.filter_factory.tiling.tiling_direction" title="Link to this definition">#</a></dt>
-<dd><dl class="simple">
-<dt>Generates the harmonic coefficients for the directionality component of the</dt><dd><p>tiling functions.</p>
-</dd>
-</dl>
-<p>Formally, this function implements the follow equation</p>
-<div class="math notranslate nohighlight">
-\[_{s}\eta_{\el m} = \nu \vu \sqrt{\frac{1}{2^{\gamma}} \big ( \binom{\gamma}{
-        (\gamma - m)/2} \big )}\]</div>
-<p>which was first derived in <a class="reference external" href="https://arxiv.org/pdf/1211.1680.pdf">[1]</a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>L</strong> (<em>int</em>) – Harmonic band-limit.</p></li>
-<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – Upper orientational band-limit. Defaults to 1.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>Harmonic coefficients of directionality components</dt><dd><p><span class="math notranslate nohighlight">\(_{s}\eta_{\el m}\)</span>.</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<dl class="simple">
-<dt>[1] J. McEwen et. al., “Directional spin wavelets on the sphere”, arXiv preprint</dt><dd><p>arXiv:1509.06749 (2015).</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="s2wav.filter_factory.tiling.tiling_direction_jax">
-<span class="sig-prename descclassname"><span class="pre">s2wav.filter_factory.tiling.</span></span><span class="sig-name descname"><span class="pre">tiling_direction_jax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#s2wav.filter_factory.tiling.tiling_direction_jax" title="Link to this definition">#</a></dt>
-<dd><dl class="simple">
-<dt>JAX version of tiling_direction. Generates the harmonic coefficients for the directionality component of the</dt><dd><p>tiling functions.</p>
-</dd>
-</dl>
-<p>Formally, this function implements the follow equation</p>
-<div class="math notranslate nohighlight">
-\[_{s}\eta_{\ell m} = \nu \vu \sqrt{\frac{1}{2^{\gamma}} \big ( \binom{\gamma}{
-        (\gamma - m)/2} \big )}\]</div>
-<p>which was first derived in <a class="reference external" href="https://arxiv.org/pdf/1211.1680.pdf">[1]</a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>L</strong> (<em>int</em>) – Harmonic band-limit.</p></li>
-<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – Upper orientational band-limit. Defaults to 1.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>Harmonic coefficients of directionality components</dt><dd><p><span class="math notranslate nohighlight">\(_{s}\eta_{\ell m}\)</span>.</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<dl class="simple">
-<dt>[1] J. McEwen et. al., “Directional spin wavelets on the sphere”, arXiv preprint</dt><dd><p>arXiv:1509.06749 (2015).</p>
-</dd>
-</dl>
-</dd></dl>
-
+<span class="c1"># Generate a random bandlimited signal to work with</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">12346161</span><span class="p">)</span>
+<span class="n">flm</span> <span class="o">=</span> <span class="n">s2fft</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">signal_generator</span><span class="o">.</span><span class="n">generate_flm</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">s2fft</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">flm</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We can calculate the wavelet and scaling coefficients by running</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wavelet_coeffs</span><span class="p">,</span> <span class="n">scaling_coeffs</span> <span class="o">=</span> <span class="n">s2wav</span><span class="o">.</span><span class="n">analysis_base</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>when an exact sampling theorem is chosen we can recover the original signal to machine precision by running</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f_check</span> <span class="o">=</span> <span class="n">s2wav</span><span class="o">.</span><span class="n">synthesis_base</span><span class="p">(</span><span class="n">wavelet_coeffs</span><span class="p">,</span> <span class="n">scaling_coeffs</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Lets double check that we actually got machine precision!</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean absolute error = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f_check</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">f</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Mean absolute error = 2.056856753687673e-14
+</pre></div></div>
+</div>
 </section>
 
 
@@ -626,20 +555,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="filters.html"
+       href="../index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Filter Generator</p>
+        <p class="prev-next-title">Notebooks</p>
       </div>
     </a>
     <a class="right-next"
-       href="kernels.html"
+       href="../jax_transform/jax_transforms.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Wavelet Kernels</p>
+        <p class="prev-next-title">Wavelet transform (JAX)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -649,6 +578,20 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../_sources/tutorials/numpy_transform/numpy_transforms.nblink.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
               
             
           </div>

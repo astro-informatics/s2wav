@@ -54,8 +54,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/filter_factory/index';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Filter Generator" href="filters.html" />
-    <link rel="prev" title="Transforms (JAX)" href="../transforms/jax_wavelets.html" />
+    <link rel="next" title="Filter functions" href="filters.html" />
+    <link rel="prev" title="PyTorch Transforms (Precompute)" href="../transforms/wavelet_precompute_torch.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -110,7 +110,7 @@
 
 
   <div class="bd-header-announcement container-fluid bd-header-announcement">
-    <div class="bd-header-announcement__content">s2wav is currently in an open alpha, please provide feedback on GitHub</div>
+    <div class="bd-header-announcement__content">s2wav is currently in an open beta, please provide feedback on GitHub</div>
   </div>
 
   
@@ -403,19 +403,19 @@ document.write(`
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Namespaces</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../transforms/index.html">Wavelet Transforms</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../transforms/numpy_wavelets.html">Transforms (numpy)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../transforms/jax_wavelets.html">Transforms (JAX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../transforms/base.html">Numpy Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../transforms/construct.html">Matrice Precomputes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../transforms/wavelet.html">JAX Transforms (Recursive)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../transforms/wavelet_precompute.html">JAX Transforms (Precompute)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../transforms/wavelet_precompute_torch.html">PyTorch Transforms (Precompute)</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Filter Factory</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="filters.html">Filter Generator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tiling.html">Tiling Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kernels.html">Wavelet Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters.html">Filter functions</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../utility/index.html">Utility Functions</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../utility/math_functions.html">Maths Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utility/shapes.html">Array Shape Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utility/samples.html">Array Shape Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -489,17 +489,17 @@ document.write(`
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="filters.html#s2wav.filter_factory.filters.filters_axisym" title="s2wav.filter_factory.filters.filters_axisym"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters_axisym()</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="filters.html#s2wav.filters.filters_axisym" title="s2wav.filters.filters_axisym"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters_axisym()</span></code></a></p></td>
 <td><p>Computes wavelet kernels <span class="math notranslate nohighlight">\(\Psi^j_{\ell m}\)</span> and scaling kernel <span class="math notranslate nohighlight">\(\Phi_{\ell m}\)</span> in harmonic space.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="filters.html#s2wav.filter_factory.filters.filters_directional" title="s2wav.filter_factory.filters.filters_directional"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters_directional()</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="filters.html#s2wav.filters.filters_directional" title="s2wav.filters.filters_directional"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters_directional()</span></code></a></p></td>
 <td><p>Generates the harmonic coefficients for the directional tiling wavelets in harmonic space.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="filters.html#s2wav.filter_factory.filters.filters_axisym_vectorised" title="s2wav.filter_factory.filters.filters_axisym_vectorised"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters_axisym_vectorised()</span></code></a></p></td>
-<td><p>Vectorised implementation of <a class="reference internal" href="filters.html#s2wav.filter_factory.filters.filters_directional" title="s2wav.filter_factory.filters.filters_directional"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters_directional()</span></code></a>.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="filters.html#s2wav.filters.filters_axisym_vectorised" title="s2wav.filters.filters_axisym_vectorised"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters_axisym_vectorised()</span></code></a></p></td>
+<td><p>Vectorised implementation of <a class="reference internal" href="filters.html#s2wav.filters.filters_directional" title="s2wav.filters.filters_directional"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters_directional()</span></code></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="filters.html#s2wav.filter_factory.filters.filters_directional_vectorised" title="s2wav.filter_factory.filters.filters_directional_vectorised"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters_directional_vectorised()</span></code></a></p></td>
-<td><p>Vectorised implementation of <a class="reference internal" href="filters.html#s2wav.filter_factory.filters.filters_directional" title="s2wav.filter_factory.filters.filters_directional"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters_directional()</span></code></a>.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="filters.html#s2wav.filters.filters_directional_vectorised" title="s2wav.filters.filters_directional_vectorised"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters_directional_vectorised()</span></code></a></p></td>
+<td><p>Vectorised implementation of <a class="reference internal" href="filters.html#s2wav.filters.filters_directional" title="s2wav.filters.filters_directional"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters_directional()</span></code></a>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -515,13 +515,13 @@ document.write(`
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="kernels.html#s2wav.filter_factory.kernels.tiling_integrand" title="s2wav.filter_factory.kernels.tiling_integrand"><code class="xref py py-func docutils literal notranslate"><span class="pre">tiling_integrand()</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="filters.html#s2wav.filters.tiling_integrand" title="s2wav.filters.tiling_integrand"><code class="xref py py-func docutils literal notranslate"><span class="pre">tiling_integrand()</span></code></a></p></td>
 <td><p>Tiling integrand for scale-discretised wavelets.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="kernels.html#s2wav.filter_factory.kernels.part_scaling_fn" title="s2wav.filter_factory.kernels.part_scaling_fn"><code class="xref py py-func docutils literal notranslate"><span class="pre">part_scaling_fn()</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="filters.html#s2wav.filters.part_scaling_fn" title="s2wav.filters.part_scaling_fn"><code class="xref py py-func docutils literal notranslate"><span class="pre">part_scaling_fn()</span></code></a></p></td>
 <td><p>Computes integral used to calculate smoothly decreasing function <span class="math notranslate nohighlight">\(k_{\lambda}\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="kernels.html#s2wav.filter_factory.kernels.k_lam" title="s2wav.filter_factory.kernels.k_lam"><code class="xref py py-func docutils literal notranslate"><span class="pre">k_lam()</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="filters.html#s2wav.filters.k_lam" title="s2wav.filters.k_lam"><code class="xref py py-func docutils literal notranslate"><span class="pre">k_lam()</span></code></a></p></td>
 <td><p>Compute function <span class="math notranslate nohighlight">\(k_{\lambda}\)</span> used as a wavelet generating function.</p></td>
 </tr>
 </tbody>
@@ -538,14 +538,14 @@ document.write(`
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="tiling.html#s2wav.filter_factory.tiling.tiling_direction" title="s2wav.filter_factory.tiling.tiling_direction"><code class="xref py py-func docutils literal notranslate"><span class="pre">tiling_direction()</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="filters.html#s2wav.filters.tiling_direction" title="s2wav.filters.tiling_direction"><code class="xref py py-func docutils literal notranslate"><span class="pre">tiling_direction()</span></code></a></p></td>
 <td><p>Generates the harmonic coefficients for the directionality component of the tiling functions.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tiling.html#s2wav.filter_factory.tiling.spin_normalization" title="s2wav.filter_factory.tiling.spin_normalization"><code class="xref py py-func docutils literal notranslate"><span class="pre">spin_normalization()</span></code></a></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-func docutils literal notranslate"><span class="pre">spin_normalization()</span></code></p></td>
 <td><p>Computes the normalization factor for spin-lowered wavelets, which is <span class="math notranslate nohighlight">\(\sqrt{\frac{(l+s)!}{(l-s)!}}\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tiling.html#s2wav.filter_factory.tiling.spin_normalization_vectorised" title="s2wav.filter_factory.tiling.spin_normalization_vectorised"><code class="xref py py-func docutils literal notranslate"><span class="pre">spin_normalization_vectorised()</span></code></a></p></td>
-<td><p>Vectorised version of <a class="reference internal" href="tiling.html#s2wav.filter_factory.tiling.spin_normalization" title="s2wav.filter_factory.tiling.spin_normalization"><code class="xref py py-func docutils literal notranslate"><span class="pre">spin_normalization()</span></code></a>.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-func docutils literal notranslate"><span class="pre">spin_normalization_vectorised()</span></code></p></td>
+<td><p>Vectorised version of <code class="xref py py-func docutils literal notranslate"><span class="pre">spin_normalization()</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -564,12 +564,12 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../transforms/jax_wavelets.html"
+       href="../transforms/wavelet_precompute_torch.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Transforms (JAX)</p>
+        <p class="prev-next-title">PyTorch Transforms (Precompute)</p>
       </div>
     </a>
     <a class="right-next"
@@ -577,7 +577,7 @@ document.write(`
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Filter Generator</p>
+        <p class="prev-next-title">Filter functions</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

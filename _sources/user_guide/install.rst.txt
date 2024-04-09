@@ -42,7 +42,8 @@ from the root directory of the repository. Unit tests can then be executed to en
 installation was successful by running 
 
 .. code-block:: bash 
-
+    
+    pip install -r requirements/requirements-tests.txt
     pytest tests/ 
 
 Installing JAX for NVIDIA GPUs

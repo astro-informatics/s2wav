@@ -109,7 +109,7 @@
 
 
   <div class="bd-header-announcement container-fluid bd-header-announcement">
-    <div class="bd-header-announcement__content">s2wav is currently in an open alpha, please provide feedback on GitHub</div>
+    <div class="bd-header-announcement__content">s2wav is currently in an open beta, please provide feedback on GitHub</div>
   </div>
 
   
@@ -425,15 +425,27 @@ document.write(`
                   
   <section id="differentiable-and-accelerated-spherical-wavelets">
 <h1>Differentiable and accelerated spherical wavelets<a class="headerlink" href="#differentiable-and-accelerated-spherical-wavelets" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">S2WAV</span></code> is a JAX package for computing wavelet transforms on the sphere and rotation
-group.  It leverages autodiff to provide differentiable transforms, which are also
-deployable on modern hardware accelerators (e.g. GPUs and TPUs), and can be mapped
-across multiple accelerators.</p>
-<p>More specifically, <code class="docutils literal notranslate"><span class="pre">S2WAV</span></code> provides support for scale-discretised wavelet transforms
-on the sphere and rotation group (for both real and complex signals), with support for
-adjoints where needed, and comes with a variety of different optimisations (e.g. precompute
-or not, multi-resolution algorithms) that one may select depending on available resources
-and desired angular resolution <span class="math notranslate nohighlight">\(L\)</span>.</p>
+<p><cite>S2WAV</cite> is a python package for computing wavelet transforms on the sphere
+and rotation group, both in JAX and PyTorch. It leverages autodiff to provide differentiable
+transforms, which are also deployable on modern hardware accelerators
+(e.g. GPUs and TPUs), and can be mapped across multiple accelerators.</p>
+<p>More specifically, <cite>S2WAV</cite> provides support for scale-discretised
+wavelet transforms on the sphere and rotation group (for both real and
+complex signals), with support for adjoints where needed, and comes with
+a variety of different optimisations (e.g. precompute or not,
+multi-resolution algorithms) that one may select depending on available
+resources and desired angular resolution <span class="math notranslate nohighlight">\(L\)</span>. <cite>S2WAV</cite> is a sister package of
+<a class="reference external" href="https://github.com/astro-informatics/s2fft">S2FFT</a>, both of which are part of the <cite>SAX</cite>
+project, which aims to provide comprehensive support for differentiable transforms on the
+sphere and rotation group.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>As of version 1.0.0 <cite>S2WAV</cite> also provides partial frontend support for PyTorch. In future
+this will be expanded to full support. Also note that this release also provides JAX support
+for existing C spherical harmonic libraries, specifically <cite>SSHT</cite>. This works be wrapping
+python bindings with custom JAX frontends. Note that currently this C to JAX interoperability
+is limited to CPU.</p>
+</div>
 <section id="wavelet-transform-zap">
 <h2>Wavelet Transform ⚡<a class="headerlink" href="#wavelet-transform-zap" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">S2WAV</span></code> is an updated implementation of the scale-discretised wavelet transform on the
@@ -478,6 +490,18 @@ wonderful people (<a class="reference external" href="https://allcontributors.or
 <span class="p">}</span>
 </pre></div>
 </div>
+<p>we also request that you cite the following paper</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@article</span><span class="p">{</span><span class="n">price</span><span class="p">:</span><span class="n">s2fft</span><span class="p">,</span>
+    <span class="n">author</span>      <span class="o">=</span> <span class="s2">&quot;Matthew A. Price and Jason D. McEwen&quot;</span><span class="p">,</span>
+    <span class="n">title</span>       <span class="o">=</span> <span class="s2">&quot;Differentiable and accelerated spherical harmonic and Wigner transforms&quot;</span><span class="p">,</span>
+    <span class="n">journal</span>     <span class="o">=</span> <span class="s2">&quot;Journal of Computational Physics, submitted&quot;</span><span class="p">,</span>
+    <span class="n">year</span>        <span class="o">=</span> <span class="s2">&quot;2023&quot;</span><span class="p">,</span>
+    <span class="n">eprint</span>      <span class="o">=</span> <span class="s2">&quot;arXiv:2311.14670&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>in which the core underlying algorithms for the spherical harmonic and Wigner transforms
+are developed.</p>
 </section>
 <section id="license-memo">
 <h2>License 📝<a class="headerlink" href="#license-memo" title="Link to this heading">#</a></h2>

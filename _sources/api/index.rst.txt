@@ -9,7 +9,7 @@ directory structure for the software.
 
 .. toctree::
    :hidden:
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Namespaces
 
    transforms/index

@@ -49,13 +49,9 @@
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/utility/math_functions';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Array Shape Functions" href="shapes.html" />
-    <link rel="prev" title="Utility Functions" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -110,7 +106,7 @@
 
 
   <div class="bd-header-announcement container-fluid bd-header-announcement">
-    <div class="bd-header-announcement__content">s2wav is currently in an open alpha, please provide feedback on GitHub</div>
+    <div class="bd-header-announcement__content">s2wav is currently in an open beta, please provide feedback on GitHub</div>
   </div>
 
   
@@ -168,7 +164,7 @@
                     </li>
                 
 
-                    <li class="nav-item current active">
+                    <li class="nav-item">
                       <a class="nav-link nav-internal" href="../index.html">
                         API
                       </a>
@@ -288,7 +284,9 @@ document.write(`
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
 
   
@@ -315,7 +313,7 @@ document.write(`
                     </li>
                 
 
-                    <li class="nav-item current active">
+                    <li class="nav-item">
                       <a class="nav-link nav-internal" href="../index.html">
                         API
                       </a>
@@ -395,34 +393,6 @@ document.write(`
     
   </div>
   
-    <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item">
-<nav class="bd-docs-nav bd-links"
-     aria-label="Section Navigation">
-  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Namespaces</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../transforms/index.html">Wavelet Transforms</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../transforms/numpy_wavelets.html">Transforms (numpy)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../transforms/jax_wavelets.html">Transforms (JAX)</a></li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../filter_factory/index.html">Filter Factory</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../filter_factory/filters.html">Filter Generator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../filter_factory/tiling.html">Tiling Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../filter_factory/kernels.html">Wavelet Kernels</a></li>
-</ul>
-</li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Utility Functions</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Maths Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="shapes.html">Array Shape Functions</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</nav></div>
-    </div>
-  
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
@@ -455,12 +425,6 @@ document.write(`
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">API</a></li>
-    
-    
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Utility Functions</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page">Maths Functions</li>
   </ul>
 </nav>
@@ -478,48 +442,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-s2wav.utils.math_functions">
-<span id="maths-functions"></span><h1>Maths Functions<a class="headerlink" href="#module-s2wav.utils.math_functions" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="s2wav.utils.math_functions.binomial_coefficient">
-<span class="sig-prename descclassname"><span class="pre">s2wav.utils.math_functions.</span></span><span class="sig-name descname"><span class="pre">binomial_coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#s2wav.utils.math_functions.binomial_coefficient" title="Link to this definition">#</a></dt>
-<dd><p>Computes the binomial coefficient <span class="math notranslate nohighlight">\(\binom{n}{k}\)</span>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> (<em>int</em>) – Number of elements to choose from.</p></li>
-<li><p><strong>k</strong> (<em>int</em>) – Number of elements to pick.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Number of possible subsets.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>(int)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="s2wav.utils.math_functions.binomial_coefficient_jax">
-<span class="sig-prename descclassname"><span class="pre">s2wav.utils.math_functions.</span></span><span class="sig-name descname"><span class="pre">binomial_coefficient_jax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#s2wav.utils.math_functions.binomial_coefficient_jax" title="Link to this definition">#</a></dt>
-<dd><p>Computes the binomial coefficient <span class="math notranslate nohighlight">\(\binom{n}{k}\)</span>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> (<em>int</em>) – Number of elements to choose from.</p></li>
-<li><p><strong>k</strong> (<em>int</em>) – Number of elements to pick.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Number of possible subsets.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>(int)</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <section id="maths-functions">
+<h1>Maths Functions<a class="headerlink" href="#maths-functions" title="Link to this heading">#</a></h1>
 </section>
 
 
@@ -532,24 +456,6 @@ document.write(`
                 <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="index.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Utility Functions</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="shapes.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Array Shape Functions</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               

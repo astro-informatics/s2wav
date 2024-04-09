@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Tutorial &#8212; S2WAV 0.0.1 documentation</title>
+    <title>Wavelet transform (PyTorch) &#8212; S2WAV 0.0.1 documentation</title>
   
   
   
@@ -52,11 +52,11 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/transforms/wavelet_transforms';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/torch_transform/torch_transforms';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Tutorial" href="../precompute_transforms/wavelet_transforms_precompute.html" />
-    <link rel="prev" title="Notebooks" href="../index.html" />
+    <link rel="next" title="API" href="../../api/index.html" />
+    <link rel="prev" title="Wavelet transform (JAX-SSHT)" href="../jax_ssht_transform/jax_transforms.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -111,7 +111,7 @@
 
 
   <div class="bd-header-announcement container-fluid bd-header-announcement">
-    <div class="bd-header-announcement__content">s2wav is currently in an open alpha, please provide feedback on GitHub</div>
+    <div class="bd-header-announcement__content">s2wav is currently in an open beta, please provide feedback on GitHub</div>
   </div>
 
   
@@ -407,8 +407,10 @@ document.write(`
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Jupyter Notebooks</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../precompute_transforms/wavelet_transforms_precompute.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../numpy_transform/numpy_transforms.html">Wavelet transform (Numpy)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jax_transform/jax_transforms.html">Wavelet transform (JAX)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jax_ssht_transform/jax_transforms.html">Wavelet transform (JAX-SSHT)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Wavelet transform (PyTorch)</a></li>
 </ul>
 </div>
 </nav></div>
@@ -449,7 +451,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Notebooks</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Tutorial</li>
+    <li class="breadcrumb-item active" aria-current="page">Wavelet...</li>
   </ul>
 </nav>
 </div>
@@ -466,42 +468,107 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="Tutorial">
-<h1>Tutorial<a class="headerlink" href="#Tutorial" title="Link to this heading">#</a></h1>
-<p>Basically just do whatever you like in a notebook such as this.</p>
-<p>Then add an `nblink’ file to docs/tutorials that looks like</p>
+  <section id="Wavelet-transform-(PyTorch)">
+<h1>Wavelet transform (PyTorch)<a class="headerlink" href="#Wavelet-transform-(PyTorch)" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://colab.research.google.com/github/astro-informatics/s2wav/blob/main/notebooks/torch_transform.ipynb"><img alt="colab image" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p>Note that currently we only provide precompute support for PyTorch, so these transforms will only work up until around a bandlimit of <span class="math notranslate nohighlight">\(L\sim1024\)</span>. Support for recursive, or so called <em>on-the-fly</em>, algorithms is already provided in JAX and should reach PyTorch soon.</p>
+<p>Lets start by importing some packages which we’ll be using in this notebook</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="n">d</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install s2wav</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>s2wav<span class="w"> </span><span class="p">&amp;</span>&gt;<span class="w"> </span>/dev/null
 </pre></div>
 </div>
 </div>
+<p>Lets start by importing some packages which we’ll be using in this notebook</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>       <span class="c1"># Differentiable programming ecosystem</span>
+<span class="kn">import</span> <span class="nn">s2wav</span>       <span class="c1"># Wavelet transforms on the sphere and rotation group</span>
+<span class="kn">import</span> <span class="nn">s2fft</span>       <span class="c1"># Spherical harmonic and Wigner transforms</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+JAX is not using 64-bit precision. This will dramatically affect numerical precision at even moderate L.
+</pre></div></div>
+</div>
+<p>Now we’ll define the constraints of the problem and generated some random data just for this example</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;../assets/static_notebooks/template_notebook.ipynb&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div>
-<p>and then add this to the main documentation by editing the top level index.rst by adding the following</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">toctree</span><span class="p">::</span>
-   <span class="p">:</span><span class="n">hidden</span><span class="p">:</span>
-   <span class="p">:</span><span class="n">maxdepth</span><span class="p">:</span> <span class="mi">2</span>
-   <span class="p">:</span><span class="n">caption</span><span class="p">:</span> <span class="n">Tutorials</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="mi">16</span>            <span class="c1"># Spherical harmonic bandlimit</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">3</span>             <span class="c1"># Azimuthal (directional) bandlimit</span>
 
-   <span class="n">tutorials</span><span class="o">/</span><span class="n">template_notebook</span><span class="o">.</span><span class="n">nblink</span>
+<span class="c1"># Generate a random bandlimited signal to work with</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">12346161</span><span class="p">)</span>
+<span class="n">flm</span> <span class="o">=</span> <span class="n">s2fft</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">signal_generator</span><span class="o">.</span><span class="n">generate_flm</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">s2fft</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">flm</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
+
+<span class="c1"># We&#39;ll need to convert this numpy array into a torch.tensor</span>
+<span class="n">f_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<p>We can calculate the wavelet and scaling coefficients by first building a bank of wavelet filters and precomputing and caching all matrices involved in the core transforms</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filter_bank</span> <span class="o">=</span> <span class="n">s2wav</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">filters_directional_vectorised</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">using_torch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">analysis_matrices</span> <span class="o">=</span> <span class="n">s2wav</span><span class="o">.</span><span class="n">construct</span><span class="o">.</span><span class="n">generate_full_precomputes</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">using_torch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">forward</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">synthesis_matrices</span> <span class="o">=</span> <span class="n">s2wav</span><span class="o">.</span><span class="n">construct</span><span class="o">.</span><span class="n">generate_full_precomputes</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">using_torch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">forward</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now we can run the transforms, which are straightforwared linear algebra, by running</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wavelet_coeffs</span><span class="p">,</span> <span class="n">scaling_coeffs</span> <span class="o">=</span> <span class="n">s2wav</span><span class="o">.</span><span class="n">analysis_precomp_torch</span><span class="p">(</span>
+    <span class="n">f_torch</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filter_bank</span><span class="p">,</span> <span class="n">precomps</span><span class="o">=</span><span class="n">analysis_matrices</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>When an exact sampling theorem is chosen we can recover the original signal to machine precision by running</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f_check</span> <span class="o">=</span> <span class="n">s2wav</span><span class="o">.</span><span class="n">synthesis_precomp_torch</span><span class="p">(</span>
+    <span class="n">wavelet_coeffs</span><span class="p">,</span> <span class="n">scaling_coeffs</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filter_bank</span><span class="p">,</span> <span class="n">precomps</span><span class="o">=</span><span class="n">synthesis_matrices</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Again this first call is quite slow, but subsequent calls should be much faster. Lets double check that we actually got machine precision!</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean absolute error = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f_check</span><span class="o">.</span><span class="n">resolve_conj</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">f</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Mean absolute error = 2.0514116979479282e-14
+</pre></div></div>
 </div>
 </section>
 
@@ -516,20 +583,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../index.html"
+       href="../jax_ssht_transform/jax_transforms.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Notebooks</p>
+        <p class="prev-next-title">Wavelet transform (JAX-SSHT)</p>
       </div>
     </a>
     <a class="right-next"
-       href="../precompute_transforms/wavelet_transforms_precompute.html"
+       href="../../api/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Tutorial</p>
+        <p class="prev-next-title">API</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -546,7 +613,7 @@ document.write(`
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../../_sources/tutorials/transforms/wavelet_transforms.nblink.txt">
+    <a href="../../_sources/tutorials/torch_transform/torch_transforms.nblink.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

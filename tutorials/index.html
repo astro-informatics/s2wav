@@ -52,7 +52,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/index';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Tutorial" href="transforms/wavelet_transforms.html" />
+    <link rel="next" title="Wavelet transform (Numpy)" href="numpy_transform/numpy_transforms.html" />
     <link rel="prev" title="Installation" href="../user_guide/install.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -108,7 +108,7 @@
 
 
   <div class="bd-header-announcement container-fluid bd-header-announcement">
-    <div class="bd-header-announcement__content">s2wav is currently in an open alpha, please provide feedback on GitHub</div>
+    <div class="bd-header-announcement__content">s2wav is currently in an open beta, please provide feedback on GitHub</div>
   </div>
 
   
@@ -400,8 +400,10 @@ document.write(`
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Jupyter Notebooks</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="transforms/wavelet_transforms.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="precompute_transforms/wavelet_transforms_precompute.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numpy_transform/numpy_transforms.html">Wavelet transform (Numpy)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jax_transform/jax_transforms.html">Wavelet transform (JAX)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jax_ssht_transform/jax_transforms.html">Wavelet transform (JAX-SSHT)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="torch_transform/torch_transforms.html">Wavelet transform (PyTorch)</a></li>
 </ul>
 </div>
 </nav></div>
@@ -463,8 +465,8 @@ document.write(`
 in the time being feel free to contact contributors for advice! At a high-level the
 <code class="docutils literal notranslate"><span class="pre">S2WAV</span></code> package is structured such that the 2 primary transforms, the analysis and
 synthesis directional wavelet transforms, can easily be accessed.</p>
-<section id="usage-rocket">
-<h2>Usage 🚀<a class="headerlink" href="#usage-rocket" title="Link to this heading">#</a></h2>
+<section id="core-usage-rocket">
+<h2>Core usage 🚀<a class="headerlink" href="#core-usage-rocket" title="Link to this heading">#</a></h2>
 <p>To import and use <code class="docutils literal notranslate"><span class="pre">S2WAV</span></code>  is as simple follows:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">s2wav</span>
 
@@ -476,9 +478,20 @@ synthesis directional wavelet transforms, can easily be accessed.</p>
 </pre></div>
 </div>
 </section>
-<section id="benchmarking-hourglass-flowing-sand">
-<h2>Benchmarking ⏳<a class="headerlink" href="#benchmarking-hourglass-flowing-sand" title="Link to this heading">#</a></h2>
-<p>TODO: Add table here when results available</p>
+<section id="c-backend-library-support-bulb">
+<h2>C backend library support 💡<a class="headerlink" href="#c-backend-library-support-bulb" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">S2WAV</span></code> also supports JAX frontend wrappers for the existing <a class="reference external" href="https://astro-informatics.github.io/ssht/">SSHT</a>
+spherical harmonic and Wigner transform C libraries which, though limited to CPU compute, are nevertheless very fast
+and memory efficient when e.g. GPU compute is not available. To call this operating mode simply run</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">s2wav</span>
+
+<span class="c1"># Compute wavelet coefficients</span>
+<span class="n">f_wav</span><span class="p">,</span> <span class="n">f_scal</span> <span class="o">=</span> <span class="n">s2wav</span><span class="o">.</span><span class="n">analysis</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">use_c_backend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Map back to signal on the sphere</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">s2wav</span><span class="o">.</span><span class="n">synthesis</span><span class="p">(</span><span class="n">f_wav</span><span class="p">,</span> <span class="n">f_scal</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">use_c_backend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -504,11 +517,11 @@ synthesis directional wavelet transforms, can easily be accessed.</p>
       </div>
     </a>
     <a class="right-next"
-       href="transforms/wavelet_transforms.html"
+       href="numpy_transform/numpy_transforms.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Tutorial</p>
+        <p class="prev-next-title">Wavelet transform (Numpy)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

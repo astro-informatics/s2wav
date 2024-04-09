@@ -53,7 +53,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Wavelet Transforms" href="transforms/index.html" />
-    <link rel="prev" title="Tutorial" href="../tutorials/precompute_transforms/wavelet_transforms_precompute.html" />
+    <link rel="prev" title="Wavelet transform (PyTorch)" href="../tutorials/torch_transform/torch_transforms.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -108,7 +108,7 @@
 
 
   <div class="bd-header-announcement container-fluid bd-header-announcement">
-    <div class="bd-header-announcement__content">s2wav is currently in an open alpha, please provide feedback on GitHub</div>
+    <div class="bd-header-announcement__content">s2wav is currently in an open beta, please provide feedback on GitHub</div>
   </div>
 
   
@@ -401,19 +401,19 @@ document.write(`
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Namespaces</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="transforms/index.html">Wavelet Transforms</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="transforms/numpy_wavelets.html">Transforms (numpy)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="transforms/jax_wavelets.html">Transforms (JAX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transforms/base.html">Numpy Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transforms/construct.html">Matrice Precomputes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transforms/wavelet.html">JAX Transforms (Recursive)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transforms/wavelet_precompute.html">JAX Transforms (Precompute)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transforms/wavelet_precompute_torch.html">PyTorch Transforms (Precompute)</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="filter_factory/index.html">Filter Factory</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="filter_factory/filters.html">Filter Generator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filter_factory/tiling.html">Tiling Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filter_factory/kernels.html">Wavelet Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filter_factory/filters.html">Filter functions</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="utility/index.html">Utility Functions</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="utility/math_functions.html">Maths Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utility/shapes.html">Array Shape Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utility/samples.html">Array Shape Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -490,12 +490,12 @@ directory structure for the software.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../tutorials/precompute_transforms/wavelet_transforms_precompute.html"
+       href="../tutorials/torch_transform/torch_transforms.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Tutorial</p>
+        <p class="prev-next-title">Wavelet transform (PyTorch)</p>
       </div>
     </a>
     <a class="right-next"
