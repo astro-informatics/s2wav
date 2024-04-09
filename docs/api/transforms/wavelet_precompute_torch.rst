@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-Array Shape Functions
+PyTorch Transforms (Precompute)
 **************************
-.. automodule:: s2wav.utils.shapes
+.. automodule:: s2wav.transforms.wavelet_precompute_torch
    :members: 

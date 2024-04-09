@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-Filter functions
+Array Shape Functions
 **************************
-.. automodule:: s2wav.filters
+.. automodule:: s2wav.samples
    :members: 

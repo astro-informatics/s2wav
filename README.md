@@ -10,8 +10,8 @@
 
 # Differentiable and accelerated wavelet transform on the sphere
 
-`S2WAV` is a JAX package for computing wavelet transforms on the sphere
-and rotation group. It leverages autodiff to provide differentiable
+`S2WAV` is a python package for computing wavelet transforms on the sphere
+and rotation group, both in JAX and PyTorch. It leverages autodiff to provide differentiable
 transforms, which are also deployable on modern hardware accelerators
 (e.g. GPUs and TPUs), and can be mapped across multiple accelerators.
 
@@ -20,10 +20,27 @@ wavelet transforms on the sphere and rotation group (for both real and
 complex signals), with support for adjoints where needed, and comes with
 a variety of different optimisations (e.g. precompute or not,
 multi-resolution algorithms) that one may select depending on available
-resources and desired angular resolution $L$. `S2WAV` is a sister package of [`S2FFT`](https://github.com/astro-informatics/s2fft), both of which are part of the `SAX` project, which aims to provide comprehensive support for differentiable transforms on the sphere and rotation group.
+resources and desired angular resolution $L$. `S2WAV` is a sister package of 
+[`S2FFT`](https://github.com/astro-informatics/s2fft), both of which are part of the `SAX` 
+project, which aims to provide comprehensive support for differentiable transforms on the 
+sphere and rotation group.
+
+> [!TIP]
+> As of version 1.0.0 `S2WAV` also provides partial frontend support for PyTorch. In future 
+> this will be expanded to full support. Also note that this release also provides JAX support 
+> for existing C spherical harmonic libraries, specifically `SSHT`. This works be wrapping 
+> python bindings with custom JAX frontends. Note that currently this C to JAX interoperability 
+> is limited to CPU.
 
 ## Wavelet Transform :zap: 
-`S2WAV` is an updated implementation of the scale-discretised wavelet transform on the sphere, which builds upon the papers of [Leistedt et al 2013](https://arxiv.org/abs/1211.1680) and [McEwen et al 2017](https://arxiv.org/abs/1509.06749). This wavelet transform is designed to have excellent localisation and uncorrelation properties, and has been successfully adopted for various applications e.g. scattering transforms on the sphere [McEwen et al 2022](https://arxiv.org/pdf/2102.02828.pdf). The wavelet dictionary is constructed by tiling the harmonic line with infinitely differentiable Cauchy-Schwartz functions, which can straightforwardly be performed in an efficient multiresolution manner, as in the Euclidean case. This is what the directional wavelet filters look like in pixel space.
+`S2WAV` is an updated implementation of the scale-discretised wavelet transform on the 
+sphere, which builds upon the papers of [Leistedt et al 2013](https://arxiv.org/abs/1211.1680) 
+and [McEwen et al 2017](https://arxiv.org/abs/1509.06749). This wavelet transform is designed to 
+have excellent localisation and uncorrelation properties, and has been successfully adopted for 
+various applications e.g. scattering transforms on the sphere [McEwen et al 2022](https://arxiv.org/pdf/2102.02828.pdf). 
+The wavelet dictionary is constructed by tiling the harmonic line with infinitely differentiable 
+Cauchy-Schwartz functions, which can straightforwardly be performed in an efficient multiresolution 
+manner, as in the Euclidean case. This is what the directional wavelet filters look like in pixel space.
 
 <p align="center">
   <img src="./docs/assets/figures/spherical_wavelets.png" width="700"/>
@@ -36,35 +53,75 @@ The Python dependencies for the `S2WAV` package are listed in the file
 into the active python environment by [pip](https://pypi.org) when running
 
 ``` bash
-pip install .        
+pip install s2wav     
 ```
+This will install the core functionality which includes JAX support (including PyTorch support).
 
-from the root directory of the repository. Unit tests can then be
-executed to ensure the installation was successful by running
+Alternatively, the `S2WAV` package may be installed directly from GitHub by cloning this 
+repository and then running
 
 ``` bash
-pytest tests/
+pip install .
 ```
 
-In the near future one will be able to install `S2WAV` directly from
-[PyPi](https://pypi.org) by `pip install s2wav` but this is not yet supported.
-Note that to run `JAX` on NVIDIA GPUs you will need to follow the
-[guide](https://github.com/google/jax#installation) outlined by Google.
+from the root directory.
+
+Unit tests can then be executed to ensure the installation was successful by first 
+installing the test requirements and then running pytest
+
+``` bash
+pip install -r requirements/requirements-tests.txt
+pytest tests/  
+```
+
+Documentation for the released version is available [here](https://astro-informatics.github.io/s2wav/).
+To build the documentation locally run 
+
+``` bash
+pip install -r requirements/requirements-docs.txt
+cd docs 
+make html
+open _build/html/index.html
+```
 
 ## Usage :rocket:
 
 To import and use `S2WAV` is as simple follows:
 
 ``` python
-import s2wav 
-
 # Compute wavelet coefficients
 f_wav, f_scal = s2wav.analysis(f, L, N)
 
 # Map back to signal on the sphere 
 f = s2wav.synthesis(f_wav, f_scal, L, N)
 ```
-however we strongly recommend that the multiresolution argument is set to true, as this will accelerate the transform by a factor of the total number of wavelet scales, which can be around an order of magnitude.
+> [!NOTE]  
+> However we strongly recommend that the multiresolution argument is set to true, as this 
+> will accelerate the transform by a factor of the total number of wavelet scales, which 
+> can be around an order of magnitude.
+
+## C JAX Frontends for SSHT :bulb:
+
+`S2WAV` also provides JAX support for SSHT, which is a highly optimised C library which 
+implements the underlying spherical harmonic transforms. This works by wrapping python 
+bindings with custom JAX frontends. Note that this C to JAX interoperability is currently 
+limited to CPU.
+
+For example, one may call these alternate backends for the spherical wavelet transform by:
+
+``` python
+# Compute wavelet coefficients using SSHT C library backend
+f_wav, f_scal = s2wav.analysis(f, L, N, use_c_backend=True)
+
+# Map back to signal on the sphere using SSHT C library backend
+f = s2wav.synthesis(f_wav, f_scal, L, N, use_c_backend=True)
+```
+These JAX frontends supports out of the box reverse mode automatic differentiation, 
+and under the hood is simply linking to the C packages you are familiar with. In this 
+way S2fft enhances existing packages with gradient functionality for modern scientific 
+computing or machine learning applications!
+
+For further details on usage see the associated [notebooks](https://astro-informatics.github.io/s2wav/tutorials/index.html).
 
 ## Contributors ✨
 We strongly encourage contributions from any interested developers; a
@@ -104,6 +161,21 @@ A BibTeX entry for `S2WAV` is:
      year = {2024}
 }
 ```
+
+we also request that you cite the following paper 
+
+``` 
+@article{price:s2fft, 
+   author      = "Matthew A. Price and Jason D. McEwen",
+   title       = "Differentiable and accelerated spherical harmonic and Wigner transforms",
+   journal     = "Journal of Computational Physics, submitted",
+   year        = "2023",
+   eprint      = "arXiv:2311.14670"        
+}
+```
+
+in which the core underlying algorithms for the spherical harmonic and Wigner transforms 
+are developed.
 
 ## License :memo:
 
