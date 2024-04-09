@@ -1,10 +1,10 @@
 [![image](https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml)
 [![image](https://codecov.io/gh/astro-informatics/s2wav/branch/main/graph/badge.svg?token=ZES6J4K3KZ)](https://codecov.io/gh/astro-informatics/s2wav)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![image](https://badge.fury.io/py/s2fft.svg)](https://badge.fury.io/py/s2wav)
 [![image](http://img.shields.io/badge/arXiv-2402.01282-orange.svg?style=flat)](https://arxiv.org/abs/2402.01282) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-) <!-- ALL-CONTRIBUTORS-BADGE:END --> 
-[![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/15E64EAQ7TIp2a3cCoXtnNgf7Ud9MYjVq?usp=sharing)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)]([https://colab.research.google.com/drive/15E64EAQ7TIp2a3cCoXtnNgf7Ud9MYjVq?usp=sharing](https://colab.research.google.com/github/astro-informatics/s2wav/blob/main/notebooks/jax_transform.ipynb))
 
 <img align="left" height="85" width="98" src="./docs/assets/sax_logo.png">
 
