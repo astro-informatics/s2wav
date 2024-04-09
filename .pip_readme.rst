@@ -29,6 +29,12 @@ resources and desired angular resolution $L$. `S2WAV` is a sister package of
 project, which aims to provide comprehensive support for differentiable transforms on the 
 sphere and rotation group.
 
+As of version 1.0.0 `S2WAV` also provides partial frontend support for PyTorch. In future 
+this will be expanded to full support. Also note that this release also provides JAX support 
+for existing C spherical harmonic libraries, specifically `SSHT`. This works be wrapping 
+python bindings with custom JAX frontends. Note that currently this C to JAX interoperability 
+is limited to CPU.
+
 Documentation
 =============
 

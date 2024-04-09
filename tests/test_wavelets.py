@@ -3,7 +3,12 @@ import numpy as np
 import torch
 import pys2let as s2let
 from s2fft import base_transforms as sht_base
-from s2wav.transforms import rec_wav_jax, pre_wav_jax, pre_wav_torch, construct
+from s2wav.transforms import (
+    wavelet,
+    wavelet_precompute,
+    wavelet_precompute_torch,
+    construct,
+)
 from s2wav import filters, samples
 
 L_to_test = [8]
@@ -14,6 +19,8 @@ reality = [False, True]
 sampling_to_test = ["mw", "mwss", "dh", "gl"]
 recursive_transform = [False, True]
 using_torch_frontend = [False, True]
+using_c_backend = [False, True]
+_ssht_backends = [0, 1]
 
 
 @pytest.mark.parametrize("L", L_to_test)
@@ -23,6 +30,8 @@ using_torch_frontend = [False, True]
 @pytest.mark.parametrize("reality", reality)
 @pytest.mark.parametrize("recursive", recursive_transform)
 @pytest.mark.parametrize("using_torch", using_torch_frontend)
+@pytest.mark.parametrize("using_c_backend", using_c_backend)
+@pytest.mark.parametrize("_ssht_backend", _ssht_backends)
 def test_synthesis(
     wavelet_generator,
     L: int,
@@ -32,6 +41,8 @@ def test_synthesis(
     reality: bool,
     recursive: bool,
     using_torch: bool,
+    using_c_backend: bool,
+    _ssht_backend: int,
 ):
     J = samples.j_max(L, lam)
 
@@ -39,7 +50,9 @@ def test_synthesis(
     if J_min >= J:
         pytest.skip("J_min larger than J which isn't a valid test case.")
     if recursive and using_torch:
-        pytest.skip("Recursive transform not yet available for torch frontend")
+        pytest.skip("Recursive transform not yet available for torch frontend.")
+    if not recursive and using_c_backend:
+        pytest.skip("Precompute transform not supported from C backend libraries.")
 
     f_wav, f_scal, f_wav_s2let, f_scal_s2let = wavelet_generator(
         L=L, N=N, J_min=J_min, lam=lam, reality=reality, using_torch=using_torch
@@ -60,18 +73,34 @@ def test_synthesis(
         L, N, J_min, lam, using_torch=using_torch
     )
     generator = (
-        construct.generate_wigner_precomputes
-        if recursive
-        else construct.generate_full_precomputes
+        None
+        if using_c_backend
+        else (
+            construct.generate_wigner_precomputes
+            if recursive
+            else construct.generate_full_precomputes
+        )
     )
     synthesis = (
-        rec_wav_jax.synthesis
+        wavelet.synthesis
         if recursive
-        else (pre_wav_torch.synthesis if using_torch else pre_wav_jax.synthesis)
+        else (
+            wavelet_precompute_torch.synthesis
+            if using_torch
+            else wavelet_precompute.synthesis
+        )
     )
-
-    precomps = generator(
-        L, N, J_min, lam, forward=True, reality=reality, using_torch=using_torch
+    precomps = (
+        None
+        if using_c_backend
+        else generator(
+            L, N, J_min, lam, forward=True, reality=reality, using_torch=using_torch
+        )
+    )
+    args = (
+        {"use_c_backend": using_c_backend, "_ssht_backend": _ssht_backend}
+        if using_c_backend
+        else {}
     )
 
     f_check = synthesis(
@@ -84,6 +113,7 @@ def test_synthesis(
         reality=reality,
         filters=filter,
         precomps=precomps,
+        **args,
     )
 
     if using_torch:
@@ -100,6 +130,8 @@ def test_synthesis(
 @pytest.mark.parametrize("reality", reality)
 @pytest.mark.parametrize("recursive", recursive_transform)
 @pytest.mark.parametrize("using_torch", using_torch_frontend)
+@pytest.mark.parametrize("using_c_backend", using_c_backend)
+@pytest.mark.parametrize("_ssht_backend", _ssht_backends)
 def test_analysis(
     flm_generator,
     f_wav_converter,
@@ -110,6 +142,8 @@ def test_analysis(
     reality: bool,
     recursive: bool,
     using_torch: bool,
+    using_c_backend: bool,
+    _ssht_backend: int,
 ):
     J = samples.j_max(L, lam)
 
@@ -118,6 +152,8 @@ def test_analysis(
         pytest.skip("J_min larger than J which isn't a valid test case.")
     if recursive and using_torch:
         pytest.skip("Recursive transform not yet available for torch frontend")
+    if not recursive and using_c_backend:
+        pytest.skip("Precompute transform not supported from C backend libraries.")
 
     flm = flm_generator(L=L, L_lower=0, spin=0, reality=reality)
     f = sht_base.spherical.inverse(flm, L, reality=reality)
@@ -129,18 +165,37 @@ def test_analysis(
         L, N, J_min, lam, using_torch=using_torch
     )
     generator = (
-        construct.generate_wigner_precomputes
-        if recursive
-        else construct.generate_full_precomputes
+        None
+        if using_c_backend
+        else (
+            construct.generate_wigner_precomputes
+            if recursive
+            else construct.generate_full_precomputes
+        )
     )
     analysis = (
-        rec_wav_jax.analysis
+        wavelet.analysis
         if recursive
-        else (pre_wav_torch.analysis if using_torch else pre_wav_jax.analysis)
+        else (
+            wavelet_precompute_torch.analysis
+            if using_torch
+            else wavelet_precompute.analysis
+        )
     )
-    precomps = generator(
-        L, N, J_min, lam, forward=False, reality=reality, using_torch=using_torch
+    precomps = (
+        None
+        if using_c_backend
+        else generator(
+            L, N, J_min, lam, forward=False, reality=reality, using_torch=using_torch
+        )
     )
+
+    args = (
+        {"use_c_backend": using_c_backend, "_ssht_backend": _ssht_backend}
+        if using_c_backend
+        else {}
+    )
+
     f_wav_check, f_scal_check = analysis(
         torch.from_numpy(f) if using_torch else f,
         L,
@@ -150,6 +205,7 @@ def test_analysis(
         reality=reality,
         filters=filter,
         precomps=precomps,
+        **args,
     )
 
     f_wav_check = f_wav_converter(f_wav_check, L, N, J_min, lam, using_torch)
@@ -170,8 +226,18 @@ def test_analysis(
 @pytest.mark.parametrize("lam", lam_to_test)
 @pytest.mark.parametrize("reality", reality)
 @pytest.mark.parametrize("sampling", sampling_to_test)
+@pytest.mark.parametrize("using_c_backend", using_c_backend)
+@pytest.mark.parametrize("_ssht_backend", _ssht_backends)
 def test_round_trip(
-    flm_generator, L: int, N: int, J_min: int, lam: int, reality: bool, sampling: str
+    flm_generator,
+    L: int,
+    N: int,
+    J_min: int,
+    lam: int,
+    reality: bool,
+    sampling: str,
+    using_c_backend: bool,
+    _ssht_backend: int,
 ):
     J = samples.j_max(L, lam)
 
@@ -183,10 +249,24 @@ def test_round_trip(
     f = sht_base.spherical.inverse(flm, L, reality=reality, sampling=sampling)
     filter = filters.filters_directional_vectorised(L, N, J_min, lam)
 
-    f_wav, f_scal = rec_wav_jax.analysis(
-        f, L, N, J_min, lam, reality=reality, sampling=sampling, filters=filter
+    args = (
+        {"use_c_backend": using_c_backend, "_ssht_backend": _ssht_backend}
+        if using_c_backend
+        else {}
     )
-    f_check = rec_wav_jax.synthesis(
+
+    f_wav, f_scal = wavelet.analysis(
+        f,
+        L,
+        N,
+        J_min,
+        lam,
+        reality=reality,
+        sampling=sampling,
+        filters=filter,
+        **args,
+    )
+    f_check = wavelet.synthesis(
         f_wav,
         f_scal,
         L,
@@ -196,6 +276,7 @@ def test_round_trip(
         sampling=sampling,
         reality=reality,
         filters=filter,
+        **args,
     )
 
     np.testing.assert_allclose(f, f_check, atol=1e-14)

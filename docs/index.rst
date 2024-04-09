@@ -11,10 +11,17 @@ wavelet transforms on the sphere and rotation group (for both real and
 complex signals), with support for adjoints where needed, and comes with
 a variety of different optimisations (e.g. precompute or not,
 multi-resolution algorithms) that one may select depending on available
-resources and desired angular resolution $L$. `S2WAV` is a sister package of 
+resources and desired angular resolution :math:`L`. `S2WAV` is a sister package of 
 `S2FFT <https://github.com/astro-informatics/s2fft>`_, both of which are part of the `SAX` 
 project, which aims to provide comprehensive support for differentiable transforms on the 
 sphere and rotation group.
+
+.. tip::
+   As of version 1.0.0 `S2WAV` also provides partial frontend support for PyTorch. In future 
+   this will be expanded to full support. Also note that this release also provides JAX support 
+   for existing C spherical harmonic libraries, specifically `SSHT`. This works be wrapping 
+   python bindings with custom JAX frontends. Note that currently this C to JAX interoperability 
+   is limited to CPU.
 
 Wavelet Transform |:zap:|
 --------------------------

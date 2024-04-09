@@ -1,7 +1,7 @@
 :html_theme.sidebar_secondary.remove:
 
 **************************
-JAX Transforms (Recursive)
+JAX Transforms (Precompute)
 **************************
-.. automodule:: s2wav.transforms.rec_wav_jax
+.. automodule:: s2wav.transforms.wavelet_precompute
    :members: 

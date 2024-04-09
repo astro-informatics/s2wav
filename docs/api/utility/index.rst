@@ -56,4 +56,4 @@ Utility Functions
    :maxdepth: 3
    :caption: Utilities
 
-   shapes
+   samples

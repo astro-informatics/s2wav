@@ -23,35 +23,40 @@ Wavelet Transforms
    :widths: 25 25
    :header-rows: 1
 
-   * - :func:`~s2wav.transforms.rec_wav_jax.synthesis`
+   * - Function Name
+     - Description
+   * - :func:`~s2wav.transforms.wavelet.synthesis`
      - JAX implementation of mapping from wavelet to pixel space (Recursive).
-   * - :func:`~s2wav.transforms.rec_wav_jax.analysis`
+   * - :func:`~s2wav.transforms.wavelet.analysis`
      - JAX implementation of mapping from pixel to wavelet space (Recursive).
-   * - :func:`~s2wav.transforms.rec_wav_jax.flm_to_analysis`
-     - JAX implementation of mapping from harmonic to wavelet space (Recursive).
-  
-   * - :func:`~s2wav.transforms.pre_wav_jax.synthesis`
+   * - :func:`~s2wav.transforms.wavelet.flm_to_analysis`
+     - JAX implementation of mapping from harmonic to wavelet coefficients only (Recursive).
+   * - :func:`~s2wav.transforms.wavelet_precompute.synthesis`
      - JAX implementation of mapping from wavelet to pixel space (fully precompute).
-   * - :func:`~s2wav.transforms.pre_wav_jax.analysis`
+   * - :func:`~s2wav.transforms.wavelet_precompute.analysis`
      - JAX implementation of mapping from pixel to wavelet space (fully precompute).
-   * - :func:`~s2wav.transforms.pre_wav_jax.flm_to_analysis`
-     - JAX implementation of mapping from harmonic to wavelet space (fully precompute).
-    
-  .. list-table:: PyTorch transforms
+   * - :func:`~s2wav.transforms.wavelet_precompute.flm_to_analysis`
+     - JAX implementation of mapping from harmonic to wavelet coefficients only (fully precompute).
+
+.. list-table:: PyTorch transforms
    :widths: 25 25
    :header-rows: 1
 
-   * - :func:`~s2wav.transforms.pre_wav_torch.synthesis`
+   * - Function Name
+     - Description
+   * - :func:`~s2wav.transforms.wavelet_precompute_torch.synthesis`
      - PyTorch implementation of mapping from wavelet to pixel space (fully precompute).
-   * - :func:`~s2wav.transforms.pre_wav_torch.analysis`
+   * - :func:`~s2wav.transforms.wavelet_precompute_torch.analysis`
      - PyTorch implementation of mapping from pixel to wavelet space (fully precompute).
-   * - :func:`~s2wav.transforms.pre_wav_torch.flm_to_analysis`
-     - PyTorch implementation of mapping from harmonic to wavelet space (fully precompute).
-  
-  .. list-table:: Matrices precomputations
+   * - :func:`~s2wav.transforms.wavelet_precompute_torch.flm_to_analysis`
+     - PyTorch implementation of mapping from harmonic to wavelet coefficients only (fully precompute).
+
+.. list-table:: Matrices precomputations
    :widths: 25 25
    :header-rows: 1
 
+   * - Function Name
+     - Description
    * - :func:`~s2wav.transforms.construct.generate_wigner_precomputes`
      - JAX/PyTorch function to generate precompute arrays for underlying Wigner transforms.
    * - :func:`~s2wav.transforms.construct.generate_full_precomputes`
@@ -64,7 +69,7 @@ Wavelet Transforms
 
    base
    construct
-   rec_wav_jax
-   pre_wav_jax
-   pre_wav_torch
+   wavelet
+   wavelet_precompute
+   wavelet_precompute_torch
    

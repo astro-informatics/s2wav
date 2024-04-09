@@ -3,5 +3,5 @@
 **************************
 PyTorch Transforms (Precompute)
 **************************
-.. automodule:: s2wav.transforms.pre_wav_torch
+.. automodule:: s2wav.transforms.wavelet_precompute_torch
    :members: 

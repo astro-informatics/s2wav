@@ -5,4 +5,4 @@ pyyaml==6.0
 scipy
 
 # For spherical transforms
-s2fft >= 1.0.2
+s2fft >= 1.1.0
