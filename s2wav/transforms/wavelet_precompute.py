@@ -220,7 +220,7 @@ def analysis(
     return f_wav, f_scal
 
 
-@partial(jit, static_argnums=(1, 2, 3, 4, 5, 6, 7, 8))
+@partial(jit, static_argnums=(1, 2, 3, 4, 5, 6, 7, 8, 11))
 def flm_to_analysis(
     flm: jnp.ndarray,
     L: int,
@@ -233,6 +233,7 @@ def flm_to_analysis(
     reality: bool = False,
     filters: Tuple[jnp.ndarray] = None,
     precomps: List[List[jnp.ndarray]] = None,
+    _precomp_shift: bool = True,
 ) -> Tuple[jnp.ndarray]:
     r"""Wavelet analysis from pixel space to wavelet space for complex signals.
 
@@ -262,6 +263,9 @@ def flm_to_analysis(
 
         precomps (List[jnp.ndarray]): Precomputed list of recursion coefficients. At most
             of length :math:`L^2`, which is a minimal memory overhead.
+        
+        _precomp_shift (bool, optional): Whether or not the duplicated highest wavelet scale
+            precomputes are provided or not.
 
     Returns:
         f_wav (jnp.ndarray): Array of wavelet pixel-space coefficients
@@ -302,6 +306,8 @@ def flm_to_analysis(
             )
         )
         shift = 0 if j < J else -1
+        shift = shift if _precomp_shift else 0
+
         f_wav[j - J_min] = wigner.inverse_transform_jax(
             f_wav_lmn[j - J_min],
             precomps[2][j - J_min + shift],
@@ -311,5 +317,4 @@ def flm_to_analysis(
             reality,
             nside,
         )
-
     return f_wav
