@@ -4,7 +4,7 @@ import numpy as np
 import torch
 import math
 from functools import partial
-from typing import Tuple
+from typing import Tuple, List
 from s2fft.sampling import s2_samples, so3_samples
 from scipy.special import loggamma
 from jax.scipy.special import gammaln as jax_gammaln
@@ -232,116 +232,62 @@ def construct_f(
     return f
 
 
-@partial(jit, static_argnums=(0, 1, 2, 3, 4, 5, 6, 7))
+@partial(jit, static_argnums=(0, 1, 2, 3))
 def construct_f_jax(
     L: int,
-    N: int = 1,
     J_min: int = 0,
-    lam: float = 2.0,
-    sampling: str = "mw",
-    nside: int = None,
-    multiresolution: bool = False,
-    scattering: bool = False,
-) -> jnp.ndarray:
-    """Defines a list of arrays corresponding to f_wav.
+    J_max: int = None,
+    lam: float = 2.0
+) -> List:
+    """Defines a list corresponding to f_wav.
 
     Args:
         L (int): Harmonic bandlimit.
 
-        N (int, optional): Upper orientational band-limit. Defaults to 1.
-
         J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
+
+        J_max (int, optional): Highest frequency wavelet scale to be used. Defaults to None.
 
         lam (float, optional): Wavelet parameter which determines the scale factor between
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from
-            {"mw", "mwss", "dh", "gl", "healpix"}. Defaults to "mw".
-
-        nside (int, optional): HEALPix Nside resolution parameter.  Only required if
-            sampling="healpix".  Defaults to None.
-
-        multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
-            resolution or its own resolution. Defaults to False.
-
-        scattering (bool, optional): Whether to create minimal arrays for scattering transform to
-            optimise for memory. Defaults to False.
-
     Returns:
-        jnp.ndarray: Empty array (or list of empty arrays) in which to write data.
+        List: Empty list in which to write data.
     """
-    J = j_max(L, lam)
-    if scattering:
-        f = jnp.zeros(
-            f_wav_j(L, J - 1, N, lam, sampling, nside, multiresolution),
-            dtype=jnp.complex128,
-        )
-    else:
-        f = []
-        for j in range(J_min, J + 1):
-            f.append(
-                jnp.zeros(
-                    f_wav_j(L, j, N, lam, sampling, nside, multiresolution),
-                    dtype=jnp.complex128,
-                )
-            )
+    J = J_max if J_max is not None else j_max(L, lam)
+    f = []
+    for _ in range(J_min, J + 1):
+        f.append([])
     return f
 
 
 def construct_f_torch(
     L: int,
-    N: int = 1,
     J_min: int = 0,
-    lam: float = 2.0,
-    sampling: str = "mw",
-    nside: int = None,
-    multiresolution: bool = False,
-    scattering: bool = False,
-) -> torch.tensor:
-    """Defines a list of tensors corresponding to f_wav.
+    J_max: int = None,
+    lam: float = 2.0
+) -> List:
+    """Defines a list corresponding to f_wav.
 
     Args:
         L (int): Harmonic bandlimit.
 
-        N (int, optional): Upper orientational band-limit. Defaults to 1.
-
         J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
+
+        J_max (int, optional): Highest frequency wavelet scale to be used. Defaults to None.
 
         lam (float, optional): Wavelet parameter which determines the scale factor between
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
 
-        sampling (str, optional): Spherical sampling scheme from
-            {"mw", "mwss", "dh", "gl", "healpix"}. Defaults to "mw".
-
-        nside (int, optional): HEALPix Nside resolution parameter.  Only required if
-            sampling="healpix".  Defaults to None.
-
-        multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
-            resolution or its own resolution. Defaults to False.
-
-        scattering (bool, optional): Whether to create minimal arrays for scattering transform to
-            optimise for memory. Defaults to False.
-
     Returns:
-        torch.tensor: Empty tensor (or list of empty tensors) in which to write data.
+        List: Empty list in which to write data.
     """
-    J = j_max(L, lam)
-    if scattering:
-        f = torch.zeros(
-            f_wav_j(L, J - 1, N, lam, sampling, nside, multiresolution),
-            dtype=torch.complex128,
-        )
-    else:
-        f = []
-        for j in range(J_min, J + 1):
-            f.append(
-                torch.zeros(
-                    f_wav_j(L, j, N, lam, sampling, nside, multiresolution),
-                    dtype=torch.complex128,
-                )
-            )
+    J = J_max if J_max is not None else j_max(L, lam)
+    f = []
+    for _ in range(J_min, J + 1):
+        f.append([])
     return f
 
 
@@ -537,9 +483,9 @@ def construct_flmn_jax(
     L: int,
     N: int = 1,
     J_min: int = 0,
+    J_max: int = None,
     lam: float = 2.0,
-    multiresolution: bool = False,
-    scattering: bool = False,
+    multiresolution: bool = False
 ) -> jnp.ndarray:
     """Defines a list of arrays corresponding to flmn.
 
@@ -550,6 +496,8 @@ def construct_flmn_jax(
 
         J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
 
+        J_max (int, optional): Highest frequency wavelet scale to be used. Defaults to None.c
+
         lam (float, optional): Wavelet parameter which determines the scale factor between
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
@@ -557,26 +505,18 @@ def construct_flmn_jax(
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
 
-        scattering (bool, optional): Whether to create minimal arrays for scattering transform to
-            optimise for memory. Defaults to False.
-
     Returns:
         jnp.ndarray: Empty array (or list of empty arrays) in which to write data.
     """
-    J = j_max(L, lam)
-    if scattering:
-        flmn = jnp.zeros(
-            flmn_wav_j(L, J - 1, N, lam, multiresolution), dtype=jnp.complex128
-        )
-    else:
-        flmn = []
-        for j in range(J_min, J + 1):
-            flmn.append(
-                jnp.zeros(
-                    flmn_wav_j(L, j, N, lam, multiresolution),
-                    dtype=jnp.complex128,
-                )
+    J = J_max if J_max is not None else j_max(L, lam)
+    flmn = []
+    for j in range(J_min, J + 1):
+        flmn.append(
+            jnp.zeros(
+                flmn_wav_j(L, j, N, lam, multiresolution),
+                dtype=jnp.complex128,
             )
+        )
     return flmn
 
 
@@ -584,9 +524,9 @@ def construct_flmn_torch(
     L: int,
     N: int = 1,
     J_min: int = 0,
+    J_max: int = None,
     lam: float = 2.0,
-    multiresolution: bool = False,
-    scattering: bool = False,
+    multiresolution: bool = False
 ) -> torch.tensor:
     """Defines a list of tensors corresponding to flmn.
 
@@ -597,6 +537,8 @@ def construct_flmn_torch(
 
         J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
 
+        J_max (int, optional): Highest frequency wavelet scale to be used. Defaults to None.c
+
         lam (float, optional): Wavelet parameter which determines the scale factor between
             consecutive wavelet scales. Note that :math:`\lambda = 2` indicates dyadic
             wavelets. Defaults to 2.
@@ -604,26 +546,18 @@ def construct_flmn_torch(
         multiresolution (bool, optional): Whether to store the scales at :math:`j_{\text{max}}`
             resolution or its own resolution. Defaults to False.
 
-        scattering (bool, optional): Whether to create minimal arrays for scattering transform to
-            optimise for memory. Defaults to False.
-
     Returns:
         torch.tensor: Empty tensor (or list of empty tensors) in which to write data.
     """
-    J = j_max(L, lam)
-    if scattering:
-        flmn = torch.zeros(
-            flmn_wav_j(L, J - 1, N, lam, multiresolution), dtype=torch.complex128
-        )
-    else:
-        flmn = []
-        for j in range(J_min, J + 1):
-            flmn.append(
-                torch.zeros(
-                    flmn_wav_j(L, j, N, lam, multiresolution),
-                    dtype=torch.complex128,
-                )
+    J = J_max if J_max is not None else j_max(L, lam)
+    flmn = []
+    for j in range(J_min, J + 1):
+        flmn.append(
+            torch.zeros(
+                flmn_wav_j(L, j, N, lam, multiresolution),
+                dtype=torch.complex128,
             )
+        )
     return flmn
 
 
