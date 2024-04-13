@@ -227,8 +227,8 @@ def analysis(
     J = samples.j_max(L, lam)
     Ls = samples.scal_bandlimit(L, J_min, lam, True)
 
-    f_wav_lmn = samples.construct_flmn_jax(L, N, J_min, lam, True)
-    f_wav = samples.construct_f_jax(L, N, J_min, lam, sampling, nside, True)
+    f_wav_lmn = samples.construct_flmn_jax(L, N, J_min, J, lam, True)
+    f_wav = samples.construct_f_jax(L, J_min, J, lam)
 
     wav_lm = jnp.einsum(
         "jln, l->jln",
@@ -345,6 +345,8 @@ def flm_to_analysis(
 
         J_min (int, optional): Lowest frequency wavelet scale to be used. Defaults to 0.
 
+        J_max (int, optional): Highest frequency wavelet scale to be used. Defaults to None.
+
         lam (float, optional): Wavelet parameter which determines the scale factor between consecutive wavelet scales.
             Note that :math:`\lambda = 2` indicates dyadic wavelets. Defaults to 2.
 
@@ -379,8 +381,8 @@ def flm_to_analysis(
 
     J = J_max if J_max is not None else samples.j_max(L, lam)
 
-    f_wav_lmn = samples.construct_flmn_jax(L, N, J_min, lam, True)
-    f_wav = samples.construct_f_jax(L, N, J_min, lam, sampling, nside, True)
+    f_wav_lmn = samples.construct_flmn_jax(L, N, J_min, J, lam, True)
+    f_wav = samples.construct_f_jax(L, J_min, J, lam)
 
     wav_lm = jnp.einsum(
         "jln, l->jln",
@@ -406,9 +408,9 @@ def flm_to_analysis(
             )
         )
 
-        f_wav[j - J_min] = (
+        f_wav[j - J_min] = jnp.array(
             s2fft.wigner.inverse(
-                f_wav_lmn[j - J_min],
+                jnp.array(f_wav_lmn[j - J_min]),
                 Lj,
                 Nj,
                 nside,
