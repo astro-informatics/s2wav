@@ -166,10 +166,6 @@ def analysis(
 
     J = samples.j_max(L, lam)
     Ls = samples.scal_bandlimit(L, J_min, lam, True)
-
-    f_wav_lmn = samples.construct_flmn_jax(L, N, J_min, J, lam, True)
-    f_wav = samples.construct_f_jax(L, J_min, J, lam)
-
     wav_lm = jnp.einsum(
         "jln, l->jln",
         jnp.conj(filters[0]),
@@ -182,6 +178,8 @@ def analysis(
     )
     # Project all wigner coefficients for each lmn onto wavelet coefficients
     # Note that almost the entire compute is concentrated at the highest J
+    f_wav = []
+    f_wav_lmn = samples.construct_flmn_jax(L, N, J_min, J, lam, True)
     for j in range(J_min, J + 1):
         Lj, Nj, L0j = samples.LN_j(L, j, N, lam, True)
         f_wav_lmn[j - J_min] = (
@@ -197,14 +195,16 @@ def analysis(
             )
         )
         shift = 0 if j < J else -1
-        f_wav[j - J_min] = wigner.inverse_transform_jax(
-            f_wav_lmn[j - J_min],
-            precomps[2][j - J_min + shift],
-            Lj,
-            Nj,
-            sampling,
-            reality,
-            nside,
+        f_wav.append(
+            wigner.inverse_transform_jax(
+                f_wav_lmn[j - J_min],
+                precomps[2][j - J_min + shift],
+                Lj,
+                Nj,
+                sampling,
+                reality,
+                nside,
+            )
         )
 
     # Project all harmonic coefficients for each lm onto scaling coefficients
@@ -263,7 +263,7 @@ def flm_to_analysis(
 
         precomps (List[jnp.ndarray]): Precomputed list of recursion coefficients. At most
             of length :math:`L^2`, which is a minimal memory overhead.
-        
+
         _precomp_shift (bool, optional): Whether or not the duplicated highest wavelet scale
             precomputes are provided or not.
 
@@ -278,10 +278,6 @@ def flm_to_analysis(
         raise ValueError("Must provide precomputed kernels for this transform!")
 
     J = J_max if J_max is not None else samples.j_max(L, lam)
-
-    f_wav_lmn = samples.construct_flmn_jax(L, N, J_min, J, lam, True)
-    f_wav = samples.construct_f_jax(L, J_min, J, lam)
-
     wav_lm = jnp.einsum(
         "jln, l->jln",
         jnp.conj(filters),
@@ -291,6 +287,8 @@ def flm_to_analysis(
 
     # Project all wigner coefficients for each lmn onto wavelet coefficients
     # Note that almost the entire compute is concentrated at the highest J
+    f_wav = []
+    f_wav_lmn = samples.construct_flmn_jax(L, N, J_min, J, lam, True)
     for j in range(J_min, J + 1):
         Lj, Nj, L0j = samples.LN_j(L, j, N, lam, True)
         f_wav_lmn[j - J_min] = (
@@ -308,13 +306,15 @@ def flm_to_analysis(
         shift = 0 if j < J else -1
         shift = shift if _precomp_shift else 0
 
-        f_wav[j - J_min] = wigner.inverse_transform_jax(
-            f_wav_lmn[j - J_min],
-            precomps[2][j - J_min + shift],
-            Lj,
-            Nj,
-            sampling,
-            reality,
-            nside,
+        f_wav.append(
+            wigner.inverse_transform_jax(
+                f_wav_lmn[j - J_min],
+                precomps[2][j - J_min + shift],
+                Lj,
+                Nj,
+                sampling,
+                reality,
+                nside,
+            )
         )
     return f_wav
