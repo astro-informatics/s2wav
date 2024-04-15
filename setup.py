@@ -20,7 +20,7 @@ setup(
         "Intended Audience :: Science/Research",
     ],
     name="s2wav",
-    version="1.0.3",
+    version="1.0.4",
     url="https://github.com/astro-informatics/s2wav",
     author="Authors & Contributors",
     license="GNU General Public License v3 (GPLv3)",
