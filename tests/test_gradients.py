@@ -5,7 +5,7 @@ import pytest
 import jax.numpy as jnp
 from jax.test_util import check_grads
 import s2fft
-from s2wav.transforms import wavelet, wavelet_precompute, construct
+from s2wav.transforms import wavelet, wavelet_c, wavelet_precompute, construct
 from s2wav import filters, samples
 
 L_to_test = [8]
@@ -14,7 +14,6 @@ J_min_to_test = [2]
 reality = [False, True]
 recursive_transform = [False, True]
 using_c_backend = [False, True]
-_ssht_backends = [0, 1]
 
 
 @pytest.mark.parametrize("L", L_to_test)
@@ -23,7 +22,6 @@ _ssht_backends = [0, 1]
 @pytest.mark.parametrize("reality", reality)
 @pytest.mark.parametrize("recursive", recursive_transform)
 @pytest.mark.parametrize("using_c_backend", using_c_backend)
-@pytest.mark.parametrize("_ssht_backend", _ssht_backends)
 def test_jax_synthesis_gradients(
     wavelet_generator,
     L: int,
@@ -32,7 +30,6 @@ def test_jax_synthesis_gradients(
     reality: bool,
     recursive: bool,
     using_c_backend: bool,
-    _ssht_backend: int,
 ):
     J = samples.j_max(L)
 
@@ -60,7 +57,11 @@ def test_jax_synthesis_gradients(
             else construct.generate_full_precomputes
         )
     )
-    synthesis = wavelet.synthesis if recursive else wavelet_precompute.synthesis
+    synthesis = (
+        (wavelet_c.synthesis if using_c_backend else wavelet.synthesis)
+        if recursive
+        else wavelet_precompute.synthesis
+    )
 
     precomps = (
         None
@@ -68,11 +69,7 @@ def test_jax_synthesis_gradients(
         else generator(L, N, J_min, 2, forward=True, reality=reality)
     )
 
-    args = (
-        {"use_c_backend": using_c_backend, "_ssht_backend": _ssht_backend}
-        if using_c_backend
-        else {}
-    )
+    args = {"precomps": precomps} if not using_c_backend else {}
 
     def func(f_wav, f_scal):
         f = synthesis(
@@ -83,7 +80,6 @@ def test_jax_synthesis_gradients(
             J_min,
             reality=reality,
             filters=filter,
-            precomps=precomps,
             **args,
         )
         return jnp.sum(jnp.abs(f) ** 2)
@@ -97,7 +93,6 @@ def test_jax_synthesis_gradients(
 @pytest.mark.parametrize("reality", reality)
 @pytest.mark.parametrize("recursive", recursive_transform)
 @pytest.mark.parametrize("using_c_backend", using_c_backend)
-@pytest.mark.parametrize("_ssht_backend", _ssht_backends)
 def test_jax_analysis_gradients(
     flm_generator,
     wavelet_generator,
@@ -107,7 +102,6 @@ def test_jax_analysis_gradients(
     reality: bool,
     recursive: bool,
     using_c_backend: bool,
-    _ssht_backend: int,
 ):
     J = samples.j_max(L)
     if J_min >= J:
@@ -137,22 +131,22 @@ def test_jax_analysis_gradients(
             else construct.generate_full_precomputes
         )
     )
-    analysis = wavelet.analysis if recursive else wavelet_precompute.analysis
+    analysis = (
+        (wavelet_c.analysis if using_c_backend else wavelet.analysis)
+        if recursive
+        else wavelet_precompute.analysis
+    )
     precomps = (
         None
         if using_c_backend
         else generator(L, N, J_min, forward=False, reality=reality)
     )
 
-    args = (
-        {"use_c_backend": using_c_backend, "_ssht_backend": _ssht_backend}
-        if using_c_backend
-        else {}
-    )
+    args = {"precomps": precomps} if not using_c_backend else {}
 
     def func(f):
         f_wav, f_scal = analysis(
-            f, L, N, J_min, reality=reality, filters=filter, precomps=precomps, **args
+            f, L, N, J_min, reality=reality, filters=filter, **args
         )
         loss = jnp.sum(jnp.abs(f_scal - f_scal_target) ** 2)
         for j in range(J - J_min):

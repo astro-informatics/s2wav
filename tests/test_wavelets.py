@@ -8,6 +8,7 @@ import pys2let as s2let
 from s2fft import base_transforms as sht_base
 from s2wav.transforms import (
     wavelet,
+    wavelet_c,
     wavelet_precompute,
     wavelet_precompute_torch,
     construct,
@@ -23,7 +24,6 @@ sampling_to_test = ["mw", "mwss", "dh", "gl"]
 recursive_transform = [False, True]
 using_torch_frontend = [False, True]
 using_c_backend = [False, True]
-_ssht_backends = [0, 1]
 
 
 @pytest.mark.parametrize("L", L_to_test)
@@ -34,7 +34,6 @@ _ssht_backends = [0, 1]
 @pytest.mark.parametrize("recursive", recursive_transform)
 @pytest.mark.parametrize("using_torch", using_torch_frontend)
 @pytest.mark.parametrize("using_c_backend", using_c_backend)
-@pytest.mark.parametrize("_ssht_backend", _ssht_backends)
 def test_synthesis(
     wavelet_generator,
     L: int,
@@ -45,7 +44,6 @@ def test_synthesis(
     recursive: bool,
     using_torch: bool,
     using_c_backend: bool,
-    _ssht_backend: int,
 ):
     J = samples.j_max(L, lam)
 
@@ -85,7 +83,7 @@ def test_synthesis(
         )
     )
     synthesis = (
-        wavelet.synthesis
+        (wavelet_c.synthesis if using_c_backend else wavelet.synthesis)
         if recursive
         else (
             wavelet_precompute_torch.synthesis
@@ -100,23 +98,10 @@ def test_synthesis(
             L, N, J_min, lam, forward=True, reality=reality, using_torch=using_torch
         )
     )
-    args = (
-        {"use_c_backend": using_c_backend, "_ssht_backend": _ssht_backend}
-        if using_c_backend
-        else {}
-    )
+    args = {"precomps": precomps} if not using_c_backend else {}
 
     f_check = synthesis(
-        f_wav,
-        f_scal,
-        L,
-        N,
-        J_min,
-        lam,
-        reality=reality,
-        filters=filter,
-        precomps=precomps,
-        **args,
+        f_wav, f_scal, L, N, J_min, lam, reality=reality, filters=filter, **args
     )
 
     if using_torch:
@@ -134,7 +119,6 @@ def test_synthesis(
 @pytest.mark.parametrize("recursive", recursive_transform)
 @pytest.mark.parametrize("using_torch", using_torch_frontend)
 @pytest.mark.parametrize("using_c_backend", using_c_backend)
-@pytest.mark.parametrize("_ssht_backend", _ssht_backends)
 def test_analysis(
     flm_generator,
     f_wav_converter,
@@ -146,7 +130,6 @@ def test_analysis(
     recursive: bool,
     using_torch: bool,
     using_c_backend: bool,
-    _ssht_backend: int,
 ):
     J = samples.j_max(L, lam)
 
@@ -177,7 +160,7 @@ def test_analysis(
         )
     )
     analysis = (
-        wavelet.analysis
+        (wavelet_c.analysis if using_c_backend else wavelet.analysis)
         if recursive
         else (
             wavelet_precompute_torch.analysis
@@ -193,11 +176,7 @@ def test_analysis(
         )
     )
 
-    args = (
-        {"use_c_backend": using_c_backend, "_ssht_backend": _ssht_backend}
-        if using_c_backend
-        else {}
-    )
+    args = {"precomps": precomps} if not using_c_backend else {}
 
     f_wav_check, f_scal_check = analysis(
         torch.from_numpy(f) if using_torch else f,
@@ -207,7 +186,6 @@ def test_analysis(
         lam,
         reality=reality,
         filters=filter,
-        precomps=precomps,
         **args,
     )
 
@@ -230,7 +208,6 @@ def test_analysis(
 @pytest.mark.parametrize("reality", reality)
 @pytest.mark.parametrize("sampling", sampling_to_test)
 @pytest.mark.parametrize("using_c_backend", using_c_backend)
-@pytest.mark.parametrize("_ssht_backend", _ssht_backends)
 def test_round_trip(
     flm_generator,
     L: int,
@@ -240,7 +217,6 @@ def test_round_trip(
     reality: bool,
     sampling: str,
     using_c_backend: bool,
-    _ssht_backend: int,
 ):
     J = samples.j_max(L, lam)
 
@@ -252,24 +228,13 @@ def test_round_trip(
     f = sht_base.spherical.inverse(flm, L, reality=reality, sampling=sampling)
     filter = filters.filters_directional_vectorised(L, N, J_min, lam)
 
-    args = (
-        {"use_c_backend": using_c_backend, "_ssht_backend": _ssht_backend}
-        if using_c_backend
-        else {}
-    )
+    analysis_func = wavelet_c.analysis if using_c_backend else wavelet.analysis
+    synthesis_func = wavelet_c.synthesis if using_c_backend else wavelet.synthesis
 
-    f_wav, f_scal = wavelet.analysis(
-        f,
-        L,
-        N,
-        J_min,
-        lam,
-        reality=reality,
-        sampling=sampling,
-        filters=filter,
-        **args,
+    f_wav, f_scal = analysis_func(
+        f, L, N, J_min, lam, reality=reality, sampling=sampling, filters=filter
     )
-    f_check = wavelet.synthesis(
+    f_check = synthesis_func(
         f_wav,
         f_scal,
         L,
@@ -279,7 +244,6 @@ def test_round_trip(
         sampling=sampling,
         reality=reality,
         filters=filter,
-        **args,
     )
 
     np.testing.assert_allclose(f, f_check, atol=1e-14)
@@ -293,7 +257,6 @@ def test_round_trip(
 @pytest.mark.parametrize("recursive", recursive_transform)
 @pytest.mark.parametrize("using_torch", using_torch_frontend)
 @pytest.mark.parametrize("using_c_backend", using_c_backend)
-@pytest.mark.parametrize("_ssht_backend", _ssht_backends)
 def test_flm_to_analysis(
     flm_generator,
     f_wav_converter,
@@ -305,7 +268,6 @@ def test_flm_to_analysis(
     recursive: bool,
     using_torch: bool,
     using_c_backend: bool,
-    _ssht_backend: int,
 ):
     J = samples.j_max(L, lam)
 
@@ -337,7 +299,7 @@ def test_flm_to_analysis(
         )
     )
     analysis = (
-        wavelet.flm_to_analysis
+        (wavelet_c.flm_to_analysis if using_c_backend else wavelet.flm_to_analysis)
         if recursive
         else (
             wavelet_precompute_torch.flm_to_analysis
@@ -353,11 +315,7 @@ def test_flm_to_analysis(
         )
     )
 
-    args = (
-        {"use_c_backend": using_c_backend, "_ssht_backend": _ssht_backend}
-        if using_c_backend
-        else {}
-    )
+    args = {"precomps": precomps} if not using_c_backend else {}
 
     f_wav_check = analysis(
         torch.from_numpy(flm) if using_torch else flm,
@@ -368,7 +326,6 @@ def test_flm_to_analysis(
         lam,
         reality=reality,
         filters=filter,
-        precomps=precomps,
         **args,
     )
 

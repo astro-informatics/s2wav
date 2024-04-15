@@ -8,6 +8,11 @@ from . import transforms
 # JAX recursive transforms
 from .transforms.wavelet import analysis, synthesis, flm_to_analysis
 
+# C Backend transforms
+from .transforms.wavelet_c import analysis as analysis_c
+from .transforms.wavelet_c import synthesis as synthesis_c
+from .transforms.wavelet_c import flm_to_analysis as flm_to_analysis_c
+
 # Base transforms
 from .transforms.base import analysis as analysis_base
 from .transforms.base import synthesis as synthesis_base
