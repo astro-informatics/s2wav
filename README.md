@@ -2,7 +2,7 @@
 
 <img class="dark-light" height="98" width="98" alt="s2wav placeholder logo" src="./docs/assets/s2wav_logo-modified.png">
 
-# s2wav: differentiable and accelerated wavelet transforms on the sphere
+# s2wav: Differentiable and Accelerated Wavelet Transforms on The Sphere
 
 [![image](https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml)
 [![image](https://codecov.io/gh/astro-informatics/s2wav/branch/main/graph/badge.svg?token=ZES6J4K3KZ)](https://codecov.io/gh/astro-informatics/s2wav)
