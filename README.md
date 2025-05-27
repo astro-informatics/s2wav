@@ -1,3 +1,9 @@
+<div style="text-align: center;" align="center">
+
+<img class="dark-light" height="98" width="98" alt="s2wav placeholder logo" src="./docs/assets/s2wav_logo-modified.png">
+
+# s2wav: Differentiable and accelerated wavelet transforms on the sphere
+
 [![image](https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/astro-informatics/s2wav/actions/workflows/tests.yml)
 [![image](https://codecov.io/gh/astro-informatics/s2wav/branch/main/graph/badge.svg?token=ZES6J4K3KZ)](https://codecov.io/gh/astro-informatics/s2wav)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -6,34 +12,32 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-) <!-- ALL-CONTRIBUTORS-BADGE:END --> 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)]([https://colab.research.google.com/drive/15E64EAQ7TIp2a3cCoXtnNgf7Ud9MYjVq?usp=sharing](https://colab.research.google.com/github/astro-informatics/s2wav/blob/main/notebooks/jax_transform.ipynb))
 
-<img align="left" height="85" width="98" src="./docs/assets/sax_logo.png">
+</div>
 
-# Differentiable and accelerated wavelet transform on the sphere
-
-`S2WAV` is a python package for computing wavelet transforms on the sphere
+`s2wav` is a python package for computing wavelet transforms on the sphere
 and rotation group, both in JAX and PyTorch. It leverages autodiff to provide differentiable
 transforms, which are also deployable on modern hardware accelerators
 (e.g. GPUs and TPUs), and can be mapped across multiple accelerators.
 
-More specifically, `S2WAV` provides support for scale-discretised
+More specifically, `s2wav` provides support for scale-discretised
 wavelet transforms on the sphere and rotation group (for both real and
 complex signals), with support for adjoints where needed, and comes with
 a variety of different optimisations (e.g. precompute or not,
 multi-resolution algorithms) that one may select depending on available
-resources and desired angular resolution $L$. `S2WAV` is a sister package of 
-[`S2FFT`](https://github.com/astro-informatics/s2fft), both of which are part of the `SAX` 
+resources and desired angular resolution $L$. `s2wav` is a sister package of 
+[`s2fft`](https://github.com/astro-informatics/s2fft), both of which are part of the `s2x` 
 project, which aims to provide comprehensive support for differentiable transforms on the 
 sphere and rotation group.
 
 > [!TIP]
-> As of version 1.0.0 `S2WAV` also provides partial frontend support for PyTorch. In future 
+> As of version 1.0.0 `s2wav` also provides partial frontend support for PyTorch. In future 
 > this will be expanded to full support. Also note that this release also provides JAX support 
 > for existing C spherical harmonic libraries, specifically `SSHT`. This works be wrapping 
 > python bindings with custom JAX frontends. Note that currently this C to JAX interoperability 
 > is limited to CPU.
 
 ## Wavelet Transform :zap: 
-`S2WAV` is an updated implementation of the scale-discretised wavelet transform on the 
+`s2wav` is an updated implementation of the scale-discretised wavelet transform on the 
 sphere, which builds upon the papers of [Leistedt et al 2013](https://arxiv.org/abs/1211.1680) 
 and [McEwen et al 2017](https://arxiv.org/abs/1509.06749). This wavelet transform is designed to 
 have excellent localisation and uncorrelation properties, and has been successfully adopted for 
@@ -48,7 +52,7 @@ manner, as in the Euclidean case. This is what the directional wavelet filters l
 
 ## Installation :computer:
 
-The Python dependencies for the `S2WAV` package are listed in the file
+The Python dependencies for the `s2wav` package are listed in the file
 `requirements/requirements-core.txt` and will be automatically installed
 into the active python environment by [pip](https://pypi.org) when running
 
@@ -57,7 +61,7 @@ pip install s2wav
 ```
 This will install the core functionality which includes JAX support (including PyTorch support).
 
-Alternatively, the `S2WAV` package may be installed directly from GitHub by cloning this 
+Alternatively, the `s2wav` package may be installed directly from GitHub by cloning this 
 repository and then running
 
 ``` bash
@@ -86,7 +90,7 @@ open _build/html/index.html
 
 ## Usage :rocket:
 
-To import and use `S2WAV` is as simple follows:
+To import and use `s2wav` is as simple follows:
 
 ``` python
 # Compute wavelet coefficients
@@ -102,7 +106,7 @@ f = s2wav.synthesis(f_wav, f_scal, L, N)
 
 ## C JAX Frontends for SSHT :bulb:
 
-`S2WAV` also provides JAX support for SSHT, which is a highly optimised C library which 
+`s2wav` also provides JAX support for SSHT, which is a highly optimised C library which 
 implements the underlying spherical harmonic transforms. This works by wrapping python 
 bindings with custom JAX frontends. Note that this C to JAX interoperability is currently 
 limited to CPU.
@@ -151,7 +155,7 @@ key](https://allcontributors.org/docs/en/emoji-key)):
 
 ## Attribution
 
-A BibTeX entry for `S2WAV` is:
+A BibTeX entry for `s2wav` is:
 
 ``` 
 @article{price:s2wav, 
@@ -182,5 +186,5 @@ are developed.
 Copyright 2024 Matthew Price, Jessica Whtiney, Alicja Polanska, Jason
 McEwen and contributors.
 
-`S2WAV` is free software made available under the MIT License. For
+`s2wav` is free software made available under the MIT License. For
 details see the LICENSE file.
